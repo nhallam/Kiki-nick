@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/data.ts","./src/main.tsx","./src/theme.ts","./src/ui.tsx","./src/screens/BookingFlow.tsx","./src/screens/Explore.tsx","./src/screens/ListingDetail.tsx","./src/screens/Rank.tsx","./src/screens/TabBar.tsx","./src/screens/Trips.tsx"],"version":"5.9.3"}

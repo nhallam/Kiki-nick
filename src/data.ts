@@ -1,0 +1,121 @@
+/**
+ * Mock data for the prototype, mirroring the shapes the real flow gets from
+ * bookingRequestApi.getInfoForBookingRequest / getBookingRequestsForUser.
+ * Dates match the reference screenshots (Ieva's Room, 21–26 Aug 2026).
+ */
+
+export interface Listing {
+	id: number;
+	listerName: string;
+	title: string;
+	area: string;
+	city: string;
+	nightlyRate: number;
+	roomType: 'Room' | 'Whole place';
+	availableStart: string; // yyyy-mm-dd inclusive
+	availableEnd: string;
+	openToCouples: boolean;
+	securityDeposit: number;
+	nationalityFlag: string; // emoji flag
+	description: string;
+	favouritedBy: number;
+	vouchedForBy: string;
+	photoVariant: PhotoVariant;
+}
+
+export type PhotoVariant = 'ieva' | 'tash' | 'jake';
+
+export const LISTINGS: Listing[] = [
+	{
+		id: 1,
+		listerName: 'Ieva',
+		title: "Ieva's Room",
+		area: 'Homerton',
+		city: 'London',
+		nightlyRate: 35,
+		roomType: 'Room',
+		availableStart: '2026-08-21',
+		availableEnd: '2026-08-26',
+		openToCouples: false,
+		securityDeposit: 160,
+		nationalityFlag: '🇱🇹',
+		description:
+			'A bright, spacious room with a king-size bed, large windows, and a private en-suite bathroom with a shower and toilet. The flat has a clean, minimal aesthetic and is designed to feel calm, comfortable and welcoming. You will have the whole place to yourself while I am away — perfect for exploring East London.',
+		favouritedBy: 1,
+		vouchedForBy: 'Sara',
+		photoVariant: 'ieva',
+	},
+	{
+		id: 2,
+		listerName: 'Jake',
+		title: "Jake's Room",
+		area: 'London Fields',
+		city: 'London',
+		nightlyRate: 40,
+		roomType: 'Room',
+		availableStart: '2026-08-16',
+		availableEnd: '2026-09-13',
+		openToCouples: true,
+		securityDeposit: 180,
+		nationalityFlag: '🇬🇧',
+		description: 'A cosy room right by London Fields park.',
+		favouritedBy: 3,
+		vouchedForBy: 'Ana',
+		photoVariant: 'jake',
+	},
+];
+
+export interface UserProfile {
+	id: number;
+	name: string;
+	shortName: string;
+	occupation: string;
+	age: number;
+	nationalityFlag: string;
+	type: 'user' | 'partner' | 'other';
+}
+
+export const MY_PROFILE: UserProfile = {
+	id: 101,
+	name: 'Reviewer 1 Tester',
+	shortName: 'Reviewer',
+	occupation: 'Kiki Tester',
+	age: 26,
+	nationalityFlag: '🇬🇧',
+	type: 'user',
+};
+
+export const OTHER_PROFILES: UserProfile[] = [
+	{
+		id: 102,
+		name: 'Sam Doe',
+		shortName: 'Sam',
+		occupation: 'Designer',
+		age: 27,
+		nationalityFlag: '🇮🇪',
+		type: 'other',
+	},
+];
+
+export interface SentRequest {
+	id: number;
+	title: string;
+	dates: string;
+	nightlyRate: number;
+	status: string;
+	photoVariant: PhotoVariant;
+}
+
+/** Pre-existing active request the new one gets ranked against. */
+export const EXISTING_REQUESTS: SentRequest[] = [
+	{
+		id: 900,
+		title: "Tash's Room in Clapham common, London",
+		dates: '19 Aug - 22 Aug',
+		nightlyRate: 42,
+		status: 'In review by host',
+		photoVariant: 'tash',
+	},
+];
+
+export const MIN_PEOPLE_INTRO_LENGTH = 100;
