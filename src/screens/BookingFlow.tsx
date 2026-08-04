@@ -196,6 +196,9 @@ function DatesStep({
 		}
 	};
 
+	const selectFullDuration = () =>
+		onChange({ moveInDate: availStart, moveOutDate: availEnd });
+
 	const nights =
 		formData.moveInDate && formData.moveOutDate
 			? diffDays(formData.moveOutDate, formData.moveInDate)
@@ -206,14 +209,41 @@ function DatesStep({
 			? Math.max(0, minNights - nights)
 			: 0;
 	const isShort = daysShort > 0;
+	const isFullDuration =
+		!!formData.moveInDate &&
+		!!formData.moveOutDate &&
+		isSameDay(formData.moveInDate, availStart) &&
+		isSameDay(formData.moveOutDate, availEnd);
+
+	// Guide the next tap: pick move-in first, then move-out.
+	const hint = !formData.moveInDate
+		? 'Tap your move-in date to start'
+		: !formData.moveOutDate
+			? 'Now tap your move-out date'
+			: null;
 
 	return (
 		<>
 			<div className="step-title">When do you want to move in and out?</div>
-			<div className="tip-card">
-				<IconStar size={16} />
-				book for the full duration to be top pick
-			</div>
+			<button
+				className={`tip-card actionable${isFullDuration ? ' done' : ''}`}
+				onClick={selectFullDuration}
+			>
+				<span className="tip-text">
+					<IconStar size={16} />
+					book for the full duration to be top pick
+				</span>
+				<span className="tip-action">
+					{isFullDuration ? (
+						<>
+							<IconCheck size={14} /> Selected
+						</>
+					) : (
+						'Select all'
+					)}
+				</span>
+			</button>
+			{hint && <div className="date-hint">{hint}</div>}
 			{formData.moveInDate && formData.moveOutDate && (
 				<div className={`selected-card${isShort ? ' short' : ''}`}>
 					<div className="header">
@@ -221,9 +251,16 @@ function DatesStep({
 						Selected Dates:
 					</div>
 					<div className="value">
-						Paying for {nights} {nightsWord(nights)}
+						{formatDoMMM(formData.moveInDate)} →{' '}
+						{formatDoMMM(formData.moveOutDate)} · {nights} {nightsWord(nights)}
 						{isShort ? ` (${daysShort} ${nightsWord(daysShort)} short)` : ''}
 					</div>
+					{!isShort && (
+						<div className="price-preview">
+							{nights} × £{listing.nightlyRate} ={' '}
+							<strong>£{nights * listing.nightlyRate}</strong> rent
+						</div>
+					)}
 				</div>
 			)}
 			<DateRangeCalendar
@@ -340,12 +377,21 @@ function PaymentStep({
 
 			<div className="summary-card">
 				<div className="summary-row">
-					<span>Rent</span>
+					<span>
+						Rent{' '}
+						<span className="summary-sub">
+							({nights} {nights === 1 ? 'night' : 'nights'} × £
+							{listing.nightlyRate})
+						</span>
+					</span>
 					<span>£{rentTotal}</span>
 				</div>
 				{listing.securityDeposit > 0 && (
 					<div className="summary-row">
-						<span>Security deposit</span>
+						<span>
+							Security deposit{' '}
+							<span className="summary-sub">(refunded after your stay)</span>
+						</span>
 						<span>£{listing.securityDeposit}</span>
 					</div>
 				)}
@@ -441,7 +487,11 @@ function GuestInfoStep({
 						>
 							<span>
 								<div className="option-label">{option.label}</div>
-								<div className="option-desc">{option.description}</div>
+								<div className="option-desc">
+									{isDisabled
+										? `${listing.listerName}'s place isn't open to couples`
+										: option.description}
+								</div>
 							</span>
 							<span className={`check-circle${isSelected ? ' selected' : ''}`}>
 								{isSelected && <IconCheck size={15} color="#fff" />}
@@ -520,6 +570,15 @@ function MessageStep({
 			: trimmed < MIN_PEOPLE_INTRO_LENGTH
 				? 'Add a little more detail...'
 				: undefined;
+	const counterMet = trimmed >= MIN_PEOPLE_INTRO_LENGTH;
+
+	const nights =
+		formData.moveInDate && formData.moveOutDate
+			? diffDays(formData.moveOutDate, formData.moveInDate)
+			: 0;
+	const guests = formData.guestProfiles.filter(Boolean).length;
+	const total =
+		nights * listing.nightlyRate + listing.securityDeposit;
 
 	return (
 		<>
@@ -534,6 +593,15 @@ function MessageStep({
 				placeholder="Tip: 93% of people who get accepted write 4-6 sentences"
 				onChange={(e) => onChange({ peopleIntro: e.target.value })}
 			/>
+			<div className={`char-counter${counterMet ? ' met' : ''}`}>
+				{counterMet ? (
+					<>
+						<IconCheck size={13} /> Looks good
+					</>
+				) : (
+					`${trimmed} / ${MIN_PEOPLE_INTRO_LENGTH} characters minimum`
+				)}
+			</div>
 			{showErrors && introError && (
 				<div className="helper-error">{introError}</div>
 			)}
@@ -546,6 +614,22 @@ function MessageStep({
 					onChange={(e) => onChange({ extraQuestions: e.target.value })}
 				/>
 			</div>
+
+			{/* Pre-send recap so nobody sends a request with the wrong details. */}
+			{formData.moveInDate && formData.moveOutDate && (
+				<div className="recap-card">
+					<div className="recap-title">You're requesting</div>
+					<div className="recap-line">
+						{listing.title} · {formatDoMMM(formData.moveInDate)} →{' '}
+						{formatDoMMM(formData.moveOutDate)} · {guests}{' '}
+						{guests === 1 ? 'guest' : 'guests'}
+					</div>
+					<div className="recap-line sub">
+						£{total} total (incl. £{listing.securityDeposit} refundable deposit)
+						· no payment taken until {listing.listerName} accepts
+					</div>
+				</div>
+			)}
 		</>
 	);
 }
@@ -563,6 +647,7 @@ export function BookingFlowScreen({
 }) {
 	const [stepIndex, setStepIndex] = useState(0);
 	const [attemptedNext, setAttemptedNext] = useState(false);
+	const [confirmLeave, setConfirmLeave] = useState(false);
 	const [formData, setFormData] = useState<BookingFormData>({
 		moveInDate: null,
 		moveOutDate: null,
@@ -624,6 +709,23 @@ export function BookingFlowScreen({
 		setStepIndex((i) => i - 1);
 	};
 
+	// Confirm before discarding progress (mirrors the real app's Leave alert).
+	const hasProgress = !isFirstStep || !!formData.moveInDate;
+	const requestClose = () => {
+		if (hasProgress) {
+			setConfirmLeave(true);
+		} else {
+			onClose();
+		}
+	};
+
+	const STEP_LABELS: Record<Step, string> = {
+		dates: 'Dates',
+		payment: 'Payments',
+		guest: 'Guests',
+		message: 'Introduction',
+	};
+
 	return (
 		<>
 			<div className="modal-backdrop" />
@@ -631,14 +733,14 @@ export function BookingFlowScreen({
 				<div className="form-header">
 					<button
 						className="icon-btn"
-						onClick={isFirstStep ? onClose : handleBack}
+						onClick={isFirstStep ? requestClose : handleBack}
 						aria-label={isFirstStep ? 'Close' : 'Back'}
 					>
 						{isFirstStep ? <IconClose size={26} /> : <IconArrowLeft size={26} />}
 					</button>
 					<button
 						className={`icon-btn${isFirstStep ? ' hidden' : ''}`}
-						onClick={onClose}
+						onClick={requestClose}
 						aria-label="Close"
 					>
 						<IconClose size={26} />
@@ -646,6 +748,12 @@ export function BookingFlowScreen({
 				</div>
 
 				<div className="progress-container">
+					<div className="progress-meta">
+						<span>
+							Step {stepIndex + 1} of {STEPS.length}
+						</span>
+						<span className="progress-step-name">{STEP_LABELS[step]}</span>
+					</div>
 					<div className="progress-track">
 						<div
 							className="progress-fill"
@@ -689,6 +797,28 @@ export function BookingFlowScreen({
 						{isLastStep ? 'Send booking request' : 'Continue'}
 					</button>
 				</div>
+
+				{confirmLeave && (
+					<div className="dialog-overlay" onClick={() => setConfirmLeave(false)}>
+						<div className="dialog" onClick={(e) => e.stopPropagation()}>
+							<div className="dialog-title">Leave booking?</div>
+							<div className="dialog-body">
+								Are you sure you want to leave? Your progress will be lost.
+							</div>
+							<div className="dialog-actions">
+								<button
+									className="dialog-btn"
+									onClick={() => setConfirmLeave(false)}
+								>
+									Stay
+								</button>
+								<button className="dialog-btn destructive" onClick={onClose}>
+									Leave
+								</button>
+							</div>
+						</div>
+					</div>
+				)}
 			</div>
 		</>
 	);

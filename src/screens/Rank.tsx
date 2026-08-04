@@ -87,6 +87,10 @@ export function RankScreen({
 					</span>
 					<IconInfo size={22} color="#9CA3AF" />
 				</div>
+				<div className="rank-explainer">
+					Your #1 request is prioritised — if two of your requests get
+					accepted, we'll book the higher-ranked one.
+				</div>
 
 				<div className="rank-list">
 					{order.map((id, index) => (

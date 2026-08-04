@@ -226,6 +226,19 @@ input {
 .progress-container {
 	padding: 12px 16px;
 }
+.progress-meta {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--gray);
+	letter-spacing: 0.02em;
+	margin-bottom: 6px;
+}
+.progress-meta .progress-step-name {
+	color: var(--primary);
+}
 .progress-track {
 	height: 8px;
 	background: var(--white);
@@ -272,6 +285,51 @@ input {
 	padding: 12px;
 	margin-bottom: 16px;
 	font-size: 14px;
+}
+.tip-card.actionable {
+	width: 100%;
+	justify-content: space-between;
+	text-align: left;
+	color: var(--dark);
+}
+.tip-card .tip-text {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.tip-card .tip-action {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	background: var(--primary);
+	color: var(--white);
+	font-size: 13px;
+	font-weight: 600;
+	border-radius: 14px;
+	padding: 6px 12px;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+.tip-card.done .tip-action {
+	background: var(--primary-tint);
+	color: var(--primary-dark);
+}
+
+.date-hint {
+	font-size: 14px;
+	color: var(--gray);
+	margin: -6px 0 12px;
+}
+
+.price-preview {
+	margin-top: 6px;
+	padding-top: 8px;
+	border-top: 1px solid var(--border-light);
+	font-size: 14px;
+	color: var(--primary-dark);
+}
+.selected-card.short .price-preview {
+	display: none;
 }
 
 .selected-card {
@@ -557,6 +615,10 @@ input {
 	font-weight: 700;
 	color: var(--primary);
 }
+.summary-sub {
+	font-size: 13px;
+	color: var(--gray);
+}
 
 /* ---------- Guests step ---------- */
 
@@ -743,7 +805,47 @@ input {
 
 .questions-section {
 	margin-top: 24px;
+	margin-bottom: 24px;
+}
+
+.char-counter {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 13px;
+	color: var(--gray);
+	margin-top: 6px;
+}
+.char-counter.met {
+	color: var(--success);
+	font-weight: 600;
+}
+
+.recap-card {
+	background: var(--primary-tint);
+	border: 1px solid rgba(32, 165, 152, 0.18);
+	border-radius: 12px;
+	padding: 14px;
 	margin-bottom: 32px;
+}
+.recap-title {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--primary-dark);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	margin-bottom: 6px;
+}
+.recap-line {
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 21px;
+}
+.recap-line.sub {
+	font-weight: 400;
+	color: var(--primary-dark);
+	margin-top: 4px;
+	font-size: 13px;
 }
 
 /* ---------- Rank / reorder ---------- */
@@ -764,6 +866,64 @@ input {
 	font-size: 15px;
 	color: var(--gray);
 	line-height: 22px;
+}
+
+.rank-explainer {
+	background: var(--primary-tint);
+	border-radius: 10px;
+	padding: 12px 14px;
+	font-size: 13px;
+	line-height: 20px;
+	color: var(--primary-dark);
+	margin: -8px 0 20px;
+}
+
+/* ---------- Confirm dialog ---------- */
+
+.dialog-overlay {
+	position: absolute;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.4);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 30;
+	animation: fade-in 0.2s ease;
+}
+.dialog {
+	width: 300px;
+	background: var(--white);
+	border-radius: 16px;
+	padding: 20px;
+	text-align: center;
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+.dialog-title {
+	font-size: 17px;
+	font-weight: 700;
+	margin-bottom: 6px;
+}
+.dialog-body {
+	font-size: 14px;
+	color: var(--gray);
+	line-height: 20px;
+	margin-bottom: 16px;
+}
+.dialog-actions {
+	display: flex;
+	gap: 10px;
+}
+.dialog-btn {
+	flex: 1;
+	padding: 11px;
+	border-radius: 10px;
+	font-size: 15px;
+	font-weight: 600;
+	background: var(--light-gray);
+}
+.dialog-btn.destructive {
+	background: #fef2f2;
+	color: var(--error);
 }
 
 .rank-list {
