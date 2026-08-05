@@ -223,8 +223,10 @@ function GuestsSheet({
 	);
 	const [choosingRelation, setChoosingRelation] = useState(false);
 
+	// Not open to couples ⇒ single-occupancy: no adding guests at all.
+	const soloOnly = !listing.openToCouples;
 	const partnerTaken = extras.some((g) => g.relation === 'partner');
-	const partnerDisabled = !listing.openToCouples || partnerTaken;
+	const partnerDisabled = partnerTaken;
 
 	const derivedWho: BookingFormData['whoIsStaying'] =
 		extras.length === 0
@@ -279,88 +281,91 @@ function GuestsSheet({
 						</div>
 					</div>
 
-					{extras.map((guest, i) => (
-						<div key={i} className="slot-row">
-							<div className="guest-row-header">
-								<span>
-									{guest.relation === 'partner'
-										? 'Your partner'
-										: `Guest ${i + 2}`}{' '}
-									<span className="relation-tag">
-										{guest.relation === 'partner' ? 'Partner' : 'Friend'}
-									</span>
-								</span>
-								<button
-									className="guest-remove"
-									onClick={() => removeGuest(i)}
-									aria-label="Remove guest"
-								>
-									<IconClose size={16} />
-								</button>
-							</div>
-							{guest.profile ? (
-								<div className="profile-card">
-									<Avatar initial={guest.profile.name[0]} size={48} />
-									<span className="info">
-										<span className="name-row">{guest.profile.name}</span>
-									</span>
-								</div>
-							) : (
-								<button className="choose-slot">
-									Choose or create profile
-								</button>
-							)}
-						</div>
-					))}
-
-					{choosingRelation ? (
-						<div className="relation-chooser">
-							<div className="slot-title">Who are they?</div>
-							<div className="relation-chips">
-								<button
-									className="relation-chip"
-									disabled={partnerDisabled}
-									onClick={() => addGuest('partner')}
-								>
-									My partner
-								</button>
-								<button
-									className="relation-chip"
-									onClick={() => addGuest('friend')}
-								>
-									A friend
-								</button>
-								<button
-									className="relation-chip cancel"
-									onClick={() => setChoosingRelation(false)}
-								>
-									Cancel
-								</button>
-							</div>
-							{!listing.openToCouples && (
-								<div className="slot-helper">
-									{listing.listerName}'s place isn't open to couples.
-								</div>
-							)}
+					{soloOnly ? (
+						<div className="slot-helper">
+							This place is only open for one person.
 						</div>
 					) : (
-						<button
-							className="choose-slot"
-							onClick={() => setChoosingRelation(true)}
-						>
-							+ Add another guest
-						</button>
-					)}
+						<>
+							{extras.map((guest, i) => (
+								<div key={i} className="slot-row">
+									<div className="guest-row-header">
+										<span>
+											{guest.relation === 'partner'
+												? 'Your partner'
+												: `Guest ${i + 2}`}{' '}
+											<span className="relation-tag">
+												{guest.relation === 'partner' ? 'Partner' : 'Friend'}
+											</span>
+										</span>
+										<button
+											className="guest-remove"
+											onClick={() => removeGuest(i)}
+											aria-label="Remove guest"
+										>
+											<IconClose size={16} />
+										</button>
+									</div>
+									{guest.profile ? (
+										<div className="profile-card">
+											<Avatar initial={guest.profile.name[0]} size={48} />
+											<span className="info">
+												<span className="name-row">{guest.profile.name}</span>
+											</span>
+										</div>
+									) : (
+										<button className="choose-slot">
+											Choose or create profile
+										</button>
+									)}
+								</div>
+							))}
 
-					{hasEmptySlot && (
-						<div className="slot-helper" style={{ marginTop: 10 }}>
-							A profile is required for each person staying.
-						</div>
-					)}
+							{choosingRelation ? (
+								<div className="relation-chooser">
+									<div className="slot-title">Who are they?</div>
+									<div className="relation-chips">
+										<button
+											className="relation-chip"
+											disabled={partnerDisabled}
+											onClick={() => addGuest('partner')}
+										>
+											My partner
+										</button>
+										<button
+											className="relation-chip"
+											onClick={() => addGuest('friend')}
+										>
+											A friend
+										</button>
+										<button
+											className="relation-chip cancel"
+											onClick={() => setChoosingRelation(false)}
+										>
+											Cancel
+										</button>
+									</div>
+								</div>
+							) : (
+								<button
+									className="choose-slot"
+									onClick={() => setChoosingRelation(true)}
+								>
+									+ Add another guest
+								</button>
+							)}
 
-					<div className="derived-note">
-						This will be sent as {DERIVED_LABEL[derivedWho]} booking.
-					</div>
+							{hasEmptySlot && (
+								<div className="slot-helper" style={{ marginTop: 10 }}>
+									A profile is required for each person staying.
+								</div>
+							)}
+
+							<div className="derived-note">
+								This will be sent as {DERIVED_LABEL[derivedWho]} booking.
+							</div>
+						</>
+					)}
 				</div>
 				<div className="editor-footer">
 					<button
