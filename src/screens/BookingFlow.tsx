@@ -810,21 +810,7 @@ function MessageStep({
 				/>
 			</div>
 
-			{/* Pre-send recap so nobody sends a request with the wrong details. */}
-			{formData.moveInDate && formData.moveOutDate && (
-				<div className="recap-card">
-					<div className="recap-title">You're requesting</div>
-					<div className="recap-line">
-						{listing.title} · {formatDoMMM(formData.moveInDate)} →{' '}
-						{formatDoMMM(formData.moveOutDate)} · {guests}{' '}
-						{guests === 1 ? 'guest' : 'guests'}
-					</div>
-					<div className="recap-line sub">
-						£{total} total (incl. £{listing.securityDeposit} refundable deposit)
-						· no payment taken until {listing.listerName} accepts
-					</div>
-				</div>
-			)}
+			{/* The recap lives in the combined summary + send footer now. */}
 		</>
 	);
 }
@@ -979,37 +965,65 @@ export function BookingFlowScreen({
 					)}
 				</div>
 
-				<div className="form-footer">
-					{step === 'dates' && canProceed && (
-						<button
-							className="footer-price-strip"
-							onClick={() => {
-								const reduce = window.matchMedia(
-									'(prefers-reduced-motion: reduce)',
-								).matches;
-								document
-									.querySelector('.payment-reveal')
-									?.scrollIntoView({
-										behavior: reduce ? 'auto' : 'smooth',
-										block: 'start',
-									});
-							}}
-						>
-							<span className="footer-price">
+				{isLastStep && formData.moveInDate && formData.moveOutDate ? (
+					/* Summary + send as one component: what you're committing to
+					   and the button that commits it, in a single card. */
+					<div className="form-footer">
+						<div className="summary-cta-card">
+							<div className="recap-title">You're requesting</div>
+							<div className="recap-line">
+								{listing.title} · {formatDoMMM(formData.moveInDate)} →{' '}
+								{formatDoMMM(formData.moveOutDate)} ·{' '}
+								{formData.guestProfiles.filter(Boolean).length}{' '}
+								{formData.guestProfiles.filter(Boolean).length === 1
+									? 'guest'
+									: 'guests'}
+							</div>
+							<div className="recap-line sub">
 								£{nights * listing.nightlyRate + listing.securityDeposit} total
-								· {nights} {nights === 1 ? 'night' : 'nights'}
-							</span>
-							<span className="footer-price-link">See breakdown ↓</span>
+								(incl. £{listing.securityDeposit} refundable deposit)
+							</div>
+							<button className="btn-primary" onClick={handleNext}>
+								Send booking request
+							</button>
+							<div className="summary-cta-caption">
+								No payment taken until {listing.listerName} accepts.
+							</div>
+						</div>
+					</div>
+				) : (
+					<div className="form-footer">
+						{step === 'dates' && canProceed && (
+							<button
+								className="footer-price-strip"
+								onClick={() => {
+									const reduce = window.matchMedia(
+										'(prefers-reduced-motion: reduce)',
+									).matches;
+									document
+										.querySelector('.payment-reveal')
+										?.scrollIntoView({
+											behavior: reduce ? 'auto' : 'smooth',
+											block: 'start',
+										});
+								}}
+							>
+								<span className="footer-price">
+									£{nights * listing.nightlyRate + listing.securityDeposit}{' '}
+									total · {nights} {nights === 1 ? 'night' : 'nights'}
+								</span>
+								<span className="footer-price-link">See breakdown ↓</span>
+							</button>
+						)}
+						<button
+							className="btn-primary"
+							disabled={!isLastStep && !canProceed}
+							onClick={handleNext}
+						>
+							{isLastStep ? 'Send booking request' : 'Continue'}
 						</button>
-					)}
-					<button
-						className="btn-primary"
-						disabled={!isLastStep && !canProceed}
-						onClick={handleNext}
-					>
-						{isLastStep ? 'Send booking request' : 'Continue'}
-					</button>
-				</div>
+					</div>
+				)}
 
 				{confirmLeave && (
 					<div className="dialog-overlay" onClick={() => setConfirmLeave(false)}>
