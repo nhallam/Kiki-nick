@@ -42,8 +42,9 @@ const VERSIONS = [
 	{
 		id: 'option3',
 		label: 'Option 3',
-		blurb: 'Reserved for the next iteration.',
-		branch: null, // placeholder — no build yet
+		blurb:
+			'Review-centric (Airbnb-style): one "Review and request" hub with Change buttons opening dates/guests editor sheets, price details expander, trust line — no wizard.',
+		branch: 'booking-flow-airbnb-style',
 	},
 ];
 
