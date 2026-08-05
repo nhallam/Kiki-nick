@@ -578,8 +578,10 @@ function GuestInfoStep({
 	);
 	const [choosingRelation, setChoosingRelation] = useState(false);
 
+	// Not open to couples ⇒ single-occupancy: no adding guests at all.
+	const soloOnly = !listing.openToCouples;
 	const partnerTaken = extras.some((g) => g.relation === 'partner');
-	const partnerDisabled = !listing.openToCouples || partnerTaken;
+	const partnerDisabled = partnerTaken;
 
 	const deriveWho = (list: ExtraGuest[]): WhoIsStaying =>
 		list.length === 0
@@ -628,6 +630,12 @@ function GuestInfoStep({
 					<ProfileCard profile={MY_PROFILE} youBadge />
 				</div>
 
+				{soloOnly ? (
+					<div className="slot-helper">
+						This place is only open for one person.
+					</div>
+				) : (
+					<>
 				{extras.map((guest, i) => (
 					<div key={i} className="slot-row">
 						<div className="guest-row-header">
@@ -679,11 +687,6 @@ function GuestInfoStep({
 								Cancel
 							</button>
 						</div>
-						{!listing.openToCouples && (
-							<div className="slot-helper">
-								{listing.listerName}'s place isn't open to couples.
-							</div>
-						)}
 					</div>
 				) : (
 					<button
@@ -703,6 +706,8 @@ function GuestInfoStep({
 				<div className="derived-note">
 					This will be sent as {DERIVED_LABEL[deriveWho(extras)]} booking.
 				</div>
+					</>
+				)}
 			</div>
 		</>
 	);
