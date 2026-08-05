@@ -622,7 +622,6 @@ function GuestInfoStep({
 
 	return (
 		<>
-			<div className="page-title">Guests</div>
 			<div className="section-label">Who's coming?</div>
 
 			<div className="profile-section" style={{ marginTop: 0 }}>
@@ -942,12 +941,12 @@ export function BookingFlowScreen({
 				</div>
 
 				<div className="progress-container">
-					<div className="progress-meta">
-						<span>
-							Step {stepIndex + 1} of {STEPS.length}
-						</span>
-						<span className="progress-meta-sep">·</span>
-						<span className="progress-step-name">{STEP_LABELS[step]}</span>
+					{/* Step title + count sit above the bar on every step. */}
+					<div className="page-title" style={{ marginBottom: 2 }}>
+						{STEP_LABELS[step]}
+					</div>
+					<div className="step-support">
+						Step {stepIndex + 1} of {STEPS.length}
 					</div>
 					<div className="progress-track">
 						<div

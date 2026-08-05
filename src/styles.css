@@ -224,7 +224,16 @@ input {
 }
 
 .progress-container {
-	padding: 12px 16px;
+	padding: 14px 24px 12px;
+}
+.progress-container .progress-track {
+	margin-top: 12px;
+}
+.step-support {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--gray);
+	letter-spacing: 0.02em;
 }
 .progress-meta {
 	display: flex;
