@@ -37,14 +37,10 @@ export default function App() {
 			status: 'In review by host',
 			photoVariant: listing.photoVariant,
 		};
-		// Match the real flow: rank the new request against other active ones
-		// (skip straight to Trips + sheet when it's the only active request).
+		// Sending goes straight to Trips + the success sheet; ranking is a
+		// pull action afterwards via Reorder on the Trips screen.
 		const all = [...EXISTING_REQUESTS, newRequest];
-		if (EXISTING_REQUESTS.length === 0) {
-			setRoute({ name: 'trips', requests: all, showSuccess: true, newRequest });
-		} else {
-			setRoute({ name: 'rank', requests: all, newRequest });
-		}
+		setRoute({ name: 'trips', requests: all, showSuccess: true, newRequest });
 	};
 
 	switch (route.name) {
@@ -83,11 +79,12 @@ export default function App() {
 			return (
 				<RankScreen
 					requests={route.requests}
+					mode="reorder"
 					onSubmit={(ordered) =>
 						setRoute({
 							name: 'trips',
 							requests: ordered,
-							showSuccess: true,
+							showSuccess: false,
 							newRequest: route.newRequest,
 						})
 					}
@@ -104,6 +101,13 @@ export default function App() {
 					successPhotoVariant={route.newRequest.photoVariant}
 					onDismissSuccess={() =>
 						setRoute({ ...route, showSuccess: false })
+					}
+					onReorder={() =>
+						setRoute({
+							name: 'rank',
+							requests: route.requests,
+							newRequest: route.newRequest,
+						})
 					}
 				/>
 			);
