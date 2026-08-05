@@ -21,6 +21,13 @@ export interface Listing {
 	favouritedBy: number;
 	vouchedForBy: string;
 	photoVariant: PhotoVariant;
+	/** Host profile shown at the bottom of the listing page */
+	hostAge: number;
+	hostGender: string;
+	hostNationality: string;
+	hostHometown: string;
+	hostJob: string;
+	instagram: string;
 }
 
 export type PhotoVariant = 'ieva' | 'tash' | 'jake';
@@ -44,6 +51,12 @@ export const LISTINGS: Listing[] = [
 		favouritedBy: 1,
 		vouchedForBy: 'Sara',
 		photoVariant: 'ieva',
+		hostAge: 27,
+		hostGender: 'Female',
+		hostNationality: 'Lithuanian',
+		hostHometown: 'Vilnius, Lithuania',
+		hostJob: 'Product designer',
+		instagram: 'ieva.kas',
 	},
 	{
 		// Long availability (76 nights) so the 45+ day split-payment path is
@@ -65,6 +78,12 @@ export const LISTINGS: Listing[] = [
 		favouritedBy: 3,
 		vouchedForBy: 'Ana',
 		photoVariant: 'jake',
+		hostAge: 29,
+		hostGender: 'Male',
+		hostNationality: 'British',
+		hostHometown: 'London, England, GB',
+		hostJob: 'Musician',
+		instagram: 'jake_lf',
 	},
 ];
 
