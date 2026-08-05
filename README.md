@@ -37,3 +37,9 @@ npm run build   # single-file build → dist/index.html
 ```
 
 `dist/index.html` is a self-contained single file — open it anywhere.
+
+## Deploy
+
+`main` deploys the **version gallery** (`gallery/index.html`) as a static
+site on Vercel — see `vercel.json`. After changing any option branch, run
+`node gallery/build.mjs` and commit the regenerated gallery to `main`.
