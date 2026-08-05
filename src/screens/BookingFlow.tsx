@@ -28,7 +28,7 @@ import {
 /* ---------- date helpers (stand-ins for date-fns) ---------- */
 
 const MS_DAY = 86400000;
-const parseISO = (s: string) => {
+export const parseISO = (s: string) => {
 	const [y, m, d] = s.split('-').map(Number);
 	return new Date(y, m - 1, d);
 };
@@ -36,9 +36,9 @@ const isSameDay = (a: Date, b: Date) =>
 	a.getFullYear() === b.getFullYear() &&
 	a.getMonth() === b.getMonth() &&
 	a.getDate() === b.getDate();
-const diffDays = (a: Date, b: Date) =>
+export const diffDays = (a: Date, b: Date) =>
 	Math.round((a.getTime() - b.getTime()) / MS_DAY);
-const MONTHS = [
+export const MONTHS = [
 	'January', 'February', 'March', 'April', 'May', 'June',
 	'July', 'August', 'September', 'October', 'November', 'December',
 ];
@@ -56,7 +56,7 @@ export const formatDoMMMYYYY = (d: Date) =>
  * Seasonal min-stay rule mirrored from apps/mobile-app/utils/minStay: a stay
  * must cover ≥50% of the availability window Apr–Aug, ≥30% Sep–Mar.
  */
-function minNightsForAvailability(start: Date, end: Date) {
+export function minNightsForAvailability(start: Date, end: Date) {
 	const availNights = diffDays(end, start);
 	const month = start.getMonth(); // 0-based
 	const pct = month >= 3 && month <= 7 ? 0.5 : 0.3;
@@ -88,7 +88,7 @@ type Step = (typeof STEPS)[number];
 
 const DAYS_OF_WEEK = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-function DateRangeCalendar({
+export function DateRangeCalendar({
 	month,
 	selectedStart,
 	selectedEnd,
@@ -337,7 +337,7 @@ function DatesStep({
 
 /* ---------- Payment preview (inline on the Dates step) ---------- */
 
-interface SchedulePayment {
+export interface SchedulePayment {
 	amount: number;
 	date?: Date; // undefined → due on signing
 }
@@ -347,7 +347,7 @@ interface SchedulePayment {
  * on signing; longer stays split into ~30-night blocks, the first due on
  * signing and the rest due at the start of each block.
  */
-function computeRentPayments(
+export function computeRentPayments(
 	moveIn: Date,
 	nights: number,
 	nightlyRate: number,
@@ -385,7 +385,7 @@ function PaymentBlock({ payment, index }: { payment: SchedulePayment; index: num
 	);
 }
 
-function PaymentScheduleGraphic({
+export function PaymentScheduleGraphic({
 	payments,
 	moveIn,
 	moveOut,
@@ -669,7 +669,7 @@ function GuestInfoStep({
  * Sentence starters that beat blank-page paralysis and nudge intros toward
  * what hosts actually want to know. Tapping appends the starter to the intro.
  */
-const INTRO_PROMPTS = [
+export const INTRO_PROMPTS = [
 	{ label: "Why I'm in town", starter: "I'm coming to London to " },
 	{ label: 'What I do', starter: 'I work as ' },
 	{ label: 'My interests', starter: 'Outside work I love ' },

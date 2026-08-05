@@ -6,7 +6,8 @@
 import React, { useState } from 'react';
 
 import { EXISTING_REQUESTS, LISTINGS, Listing, SentRequest } from './data';
-import { BookingFlowScreen, BookingFormData } from './screens/BookingFlow';
+import { BookingFormData } from './screens/BookingFlow';
+import { ReviewRequestScreen } from './screens/ReviewRequest';
 import { ExploreScreen } from './screens/Explore';
 import { ListingDetailScreen } from './screens/ListingDetail';
 import { RankScreen } from './screens/Rank';
@@ -72,7 +73,7 @@ export default function App() {
 						onBack={() => {}}
 						onRequestToBook={() => {}}
 					/>
-					<BookingFlowScreen
+					<ReviewRequestScreen
 						listing={route.listing}
 						onClose={() => setRoute({ name: 'listing', listing: route.listing })}
 						onSubmitted={(formData) => handleSubmitted(route.listing, formData)}
