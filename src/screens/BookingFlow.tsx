@@ -363,18 +363,12 @@ function PaymentStep({
 
 	return (
 		<div className="payment-step">
-			<div className="dates-card">
-				<div className="title">Selected Dates</div>
-				<div className="row">
-					<div className="col">
-						<span className="label">Move In</span>
-						<span className="value">{formatDoMMMYYYY(moveInDate)}</span>
-					</div>
-					<div className="col">
-						<span className="label">Move Out</span>
-						<span className="value">{formatDoMMMYYYY(moveOutDate)}</span>
-					</div>
+			{/* Dates live in the schedule stepper below — no summary card needed. */}
+			<div>
+				<div className="page-title" style={{ marginBottom: 2 }}>
+					Payments
 				</div>
+				<div className="step-support">Step 2 of 4</div>
 			</div>
 
 			<p className="payment-copy">
@@ -764,13 +758,17 @@ export function BookingFlowScreen({
 				</div>
 
 				<div className="progress-container">
-					<div className="progress-meta">
-						<span>
-							Step {stepIndex + 1} of {STEPS.length}
-						</span>
-						<span className="progress-meta-sep">·</span>
-						<span className="progress-step-name">{STEP_LABELS[step]}</span>
-					</div>
+					{/* The payment step carries its own on-page header, so skip the
+					    meta line there to avoid saying it twice. */}
+					{step !== 'payment' && (
+						<div className="progress-meta">
+							<span>
+								Step {stepIndex + 1} of {STEPS.length}
+							</span>
+							<span className="progress-meta-sep">·</span>
+							<span className="progress-step-name">{STEP_LABELS[step]}</span>
+						</div>
+					)}
 					<div className="progress-track">
 						<div
 							className="progress-fill"
