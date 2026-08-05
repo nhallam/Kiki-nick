@@ -283,6 +283,11 @@ function DatesStep({
 
 /* ---------- Step 2: Payment ---------- */
 
+/**
+ * Payment schedule as a plain vertical stepper (delivery-tracking pattern):
+ * events read top-to-bottom — Move in, payment, Move out. Same information
+ * as the old timeline graphic, none of the abstraction.
+ */
 function PaymentScheduleGraphic({
 	amount,
 	moveIn,
@@ -293,34 +298,45 @@ function PaymentScheduleGraphic({
 	moveOut: Date;
 }) {
 	return (
-		<div className="schedule-single">
-			<div className="schedule-vbar" />
-			<div className="schedule-block-wrap">
-				<div className="schedule-block">
-					<div className="schedule-accent" />
-					<div className="schedule-block-text">
-						<div className="schedule-amount">£{amount.toLocaleString()}</div>
-						<div className="schedule-due">Due on signing of sublet agreement</div>
+		<div className="pay-steps">
+			<div className="pay-step">
+				<div className="pay-step-rail">
+					<span className="pay-step-dot">
+						<IconCalendar size={13} />
+					</span>
+					<span className="pay-step-line" />
+				</div>
+				<div className="pay-step-body">
+					<div className="pay-step-title">Move in</div>
+					<div className="pay-step-sub">{formatDoMMM(moveIn)}</div>
+				</div>
+			</div>
+
+			<div className="pay-step">
+				<div className="pay-step-rail">
+					<span className="pay-step-dot pay">£</span>
+					<span className="pay-step-line" />
+				</div>
+				<div className="pay-step-body">
+					<div className="pay-step-card">
+						<div className="pay-step-amount">£{amount.toLocaleString()}</div>
+						<div className="pay-step-due">
+							Due on signing of sublet agreement
+						</div>
 					</div>
 				</div>
 			</div>
-			<div className="schedule-indicator move-in">
-				<span className="schedule-dot" />
-				<span className="schedule-line-wrap">
-					<span className="schedule-label above">
-						{formatDoMMM(moveIn)} - Move in
+
+			<div className="pay-step">
+				<div className="pay-step-rail">
+					<span className="pay-step-dot">
+						<IconCalendar size={13} />
 					</span>
-					<span className="schedule-hline" />
-				</span>
-			</div>
-			<div className="schedule-indicator move-out">
-				<span className="schedule-dot" />
-				<span className="schedule-line-wrap">
-					<span className="schedule-hline" />
-					<span className="schedule-label below">
-						{formatDoMMM(moveOut)} - Move out
-					</span>
-				</span>
+				</div>
+				<div className="pay-step-body last">
+					<div className="pay-step-title">Move out</div>
+					<div className="pay-step-sub">{formatDoMMM(moveOut)}</div>
+				</div>
 			</div>
 		</div>
 	);
