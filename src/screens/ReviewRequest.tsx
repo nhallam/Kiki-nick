@@ -186,38 +186,66 @@ function DatesSheet({
 	);
 }
 
-/* ---------- Guests editor sheet ---------- */
+/* ---------- Guests editor sheet (guest-list-first) ---------- */
 
-const GUEST_OPTIONS: {
-	value: BookingFormData['whoIsStaying'];
-	label: string;
-	description: string;
-}[] = [
-	{ value: 'individual', label: 'Individual', description: 'Just me' },
-	{ value: 'couple', label: 'Couple', description: 'Me and my partner' },
-	{
-		value: 'group',
-		label: '2 or more people',
-		description: 'Me and one friend or multiple friends',
-	},
-];
+interface ExtraGuest {
+	relation: 'partner' | 'friend';
+	profile: UserProfile | null;
+}
 
+/**
+ * No "who's staying" type question: the sheet is just the list of who's
+ * coming, starting with you. Adding a guest asks "partner or friend?" inline,
+ * and Individual / Couple / Group is derived from the list.
+ */
 function GuestsSheet({
 	listing,
 	whoIsStaying,
+	guestProfiles,
 	onSave,
 	onClose,
 }: {
 	listing: Listing;
 	whoIsStaying: BookingFormData['whoIsStaying'];
+	guestProfiles: (UserProfile | null)[];
 	onSave: (
 		who: BookingFormData['whoIsStaying'],
 		profiles: (UserProfile | null)[],
 	) => void;
 	onClose: () => void;
 }) {
-	const [who, setWho] = useState(whoIsStaying);
-	const isCoupleDisabled = !listing.openToCouples;
+	const [extras, setExtras] = useState<ExtraGuest[]>(() =>
+		guestProfiles.slice(1).map((profile, i) => ({
+			relation:
+				whoIsStaying === 'couple' && i === 0 ? 'partner' : 'friend',
+			profile,
+		})),
+	);
+	const [choosingRelation, setChoosingRelation] = useState(false);
+
+	const partnerTaken = extras.some((g) => g.relation === 'partner');
+	const partnerDisabled = !listing.openToCouples || partnerTaken;
+
+	const derivedWho: BookingFormData['whoIsStaying'] =
+		extras.length === 0
+			? 'individual'
+			: extras.length === 1 && extras[0].relation === 'partner'
+				? 'couple'
+				: 'group';
+	const DERIVED_LABEL: Record<BookingFormData['whoIsStaying'], string> = {
+		individual: 'an Individual',
+		couple: 'a Couple',
+		group: 'a Group',
+	};
+
+	const addGuest = (relation: ExtraGuest['relation']) => {
+		setExtras((prev) => [...prev, { relation, profile: null }]);
+		setChoosingRelation(false);
+	};
+	const removeGuest = (index: number) =>
+		setExtras((prev) => prev.filter((_, i) => i !== index));
+
+	const hasEmptySlot = extras.some((g) => !g.profile);
 
 	return (
 		<div className="sheet-overlay" onClick={onClose}>
@@ -229,92 +257,116 @@ function GuestsSheet({
 					</button>
 				</div>
 				<div className="editor-body">
-					<div className="section-label">Who'll be staying?</div>
-					<div className="options">
-						{GUEST_OPTIONS.map((option) => {
-							const isSelected = who === option.value;
-							const isDisabled =
-								option.value === 'couple' && isCoupleDisabled;
-							return (
-								<button
-									key={option.value}
-									className={`option-card${isDisabled ? ' disabled' : ''}`}
-									disabled={isDisabled}
-									onClick={() => setWho(option.value)}
-								>
-									<span>
-										<div className="option-label">{option.label}</div>
-										<div className="option-desc">
-											{isDisabled
-												? `${listing.listerName}'s place isn't open to couples`
-												: option.description}
-										</div>
-									</span>
-									<span
-										className={`check-circle${isSelected ? ' selected' : ''}`}
-									>
-										{isSelected && <IconCheck size={15} color="#fff" />}
-									</span>
-								</button>
-							);
-						})}
-					</div>
-					<div className="profile-section">
-						<div className="booking-info-card">
-							<IconPersonCircle size={24} color="#9CA3AF" />
-							<span>
-								<div className="booking-info-title">
-									{who === 'individual'
-										? 'Individual'
-										: who === 'couple'
-											? 'Couple'
-											: 'Group'}{' '}
-									Booking
-								</div>
-								<div className="booking-info-subtitle">
-									A profile is required for each person staying
-								</div>
+					<div className="section-label">Who's coming?</div>
+
+					<div className="slot-row">
+						<div className="profile-card">
+							<Avatar
+								variant="me"
+								initial={MY_PROFILE.name[0]}
+								size={48}
+								flag={MY_PROFILE.nationalityFlag}
+							/>
+							<span className="info">
+								<span className="name-row">
+									{MY_PROFILE.name} <span>{MY_PROFILE.nationalityFlag}</span>
+									<span className="you-badge">You</span>
+								</span>
+								<span className="subtitle">
+									{MY_PROFILE.occupation}, {MY_PROFILE.age}
+								</span>
 							</span>
 						</div>
-						<div className="slot-row">
-							<div className="slot-title">Your profile</div>
-							<div className="profile-card">
-								<Avatar
-									variant="me"
-									initial={MY_PROFILE.name[0]}
-									size={48}
-									flag={MY_PROFILE.nationalityFlag}
-								/>
-								<span className="info">
-									<span className="name-row">
-										{MY_PROFILE.name} <span>{MY_PROFILE.nationalityFlag}</span>
-									</span>
-									<span className="subtitle">
-										{MY_PROFILE.occupation}, {MY_PROFILE.age}
+					</div>
+
+					{extras.map((guest, i) => (
+						<div key={i} className="slot-row">
+							<div className="guest-row-header">
+								<span>
+									{guest.relation === 'partner'
+										? 'Your partner'
+										: `Guest ${i + 2}`}{' '}
+									<span className="relation-tag">
+										{guest.relation === 'partner' ? 'Partner' : 'Friend'}
 									</span>
 								</span>
+								<button
+									className="guest-remove"
+									onClick={() => removeGuest(i)}
+									aria-label="Remove guest"
+								>
+									<IconClose size={16} />
+								</button>
 							</div>
-						</div>
-						{who !== 'individual' && (
-							<div className="slot-row">
-								<div className="slot-title">
-									{who === 'couple' ? "Your partner's profile" : 'Guest 2'}
+							{guest.profile ? (
+								<div className="profile-card">
+									<Avatar initial={guest.profile.name[0]} size={48} />
+									<span className="info">
+										<span className="name-row">{guest.profile.name}</span>
+									</span>
 								</div>
+							) : (
 								<button className="choose-slot">
 									Choose or create profile
 								</button>
+							)}
+						</div>
+					))}
+
+					{choosingRelation ? (
+						<div className="relation-chooser">
+							<div className="slot-title">Who are they?</div>
+							<div className="relation-chips">
+								<button
+									className="relation-chip"
+									disabled={partnerDisabled}
+									onClick={() => addGuest('partner')}
+								>
+									My partner
+								</button>
+								<button
+									className="relation-chip"
+									onClick={() => addGuest('friend')}
+								>
+									A friend
+								</button>
+								<button
+									className="relation-chip cancel"
+									onClick={() => setChoosingRelation(false)}
+								>
+									Cancel
+								</button>
 							</div>
-						)}
+							{!listing.openToCouples && (
+								<div className="slot-helper">
+									{listing.listerName}'s place isn't open to couples.
+								</div>
+							)}
+						</div>
+					) : (
+						<button
+							className="choose-slot"
+							onClick={() => setChoosingRelation(true)}
+						>
+							+ Add another guest
+						</button>
+					)}
+
+					{hasEmptySlot && (
+						<div className="slot-helper" style={{ marginTop: 10 }}>
+							A profile is required for each person staying.
+						</div>
+					)}
+
+					<div className="derived-note">
+						This will be sent as {DERIVED_LABEL[derivedWho]} booking.
 					</div>
 				</div>
 				<div className="editor-footer">
 					<button
 						className="btn-primary square"
 						onClick={() =>
-							onSave(
-								who,
-								who === 'individual' ? [MY_PROFILE] : [MY_PROFILE, null],
-							)
+							onSave(derivedWho, [MY_PROFILE, ...extras.map((g) => g.profile)])
 						}
 					>
 						Save guests
@@ -625,6 +677,7 @@ export function ReviewRequestScreen({
 					<GuestsSheet
 						listing={listing}
 						whoIsStaying={formData.whoIsStaying}
+						guestProfiles={formData.guestProfiles}
 						onSave={(who, profiles) => {
 							onChange({ whoIsStaying: who, guestProfiles: profiles });
 							setEditing(null);
