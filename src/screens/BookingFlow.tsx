@@ -363,14 +363,6 @@ function PaymentStep({
 
 	return (
 		<div className="payment-step">
-			{/* Dates live in the schedule stepper below — no summary card needed. */}
-			<div>
-				<div className="page-title" style={{ marginBottom: 2 }}>
-					Payments
-				</div>
-				<div className="step-support">Step 2 of 4</div>
-			</div>
-
 			<p className="payment-copy">
 				Here's a breakdown of the payments you'd make (based on{' '}
 				{listing.listerName}'s listed £{listing.nightlyRate} nightly rate)
@@ -482,7 +474,6 @@ function GuestInfoStep({
 
 	return (
 		<>
-			<div className="page-title">Guests</div>
 			<div className="section-label">Who'll be staying?</div>
 			<div className="options">
 				{GUEST_TYPE_OPTIONS.map((option) => {
@@ -758,17 +749,13 @@ export function BookingFlowScreen({
 				</div>
 
 				<div className="progress-container">
-					{/* The payment step carries its own on-page header, so skip the
-					    meta line there to avoid saying it twice. */}
-					{step !== 'payment' && (
-						<div className="progress-meta">
-							<span>
-								Step {stepIndex + 1} of {STEPS.length}
-							</span>
-							<span className="progress-meta-sep">·</span>
-							<span className="progress-step-name">{STEP_LABELS[step]}</span>
-						</div>
-					)}
+					{/* Step title + count sit above the bar on every step. */}
+					<div className="page-title" style={{ marginBottom: 2 }}>
+						{STEP_LABELS[step]}
+					</div>
+					<div className="step-support">
+						Step {stepIndex + 1} of {STEPS.length}
+					</div>
 					<div className="progress-track">
 						<div
 							className="progress-fill"
