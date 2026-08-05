@@ -268,6 +268,40 @@ input {
 	border-top: 1px solid var(--border-light);
 }
 
+/* Persistent price strip on the dates step so the breakdown below the fold
+   can't be missed. */
+.footer-price-strip {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding: 0 4px 12px;
+	font-size: 14px;
+}
+.footer-price {
+	font-weight: 700;
+}
+.footer-price-link {
+	color: var(--primary);
+	font-weight: 600;
+}
+
+/* Reveal animation for the payment section appearing under the calendar. */
+.payment-reveal {
+	animation: payment-in 0.45s ease;
+}
+@keyframes payment-in {
+	from {
+		opacity: 0;
+		transform: translateY(14px);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.payment-reveal {
+		animation: none;
+	}
+}
+
 /* ---------- Dates step ---------- */
 
 .step-title {

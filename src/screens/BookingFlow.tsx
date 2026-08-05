@@ -4,7 +4,7 @@
  * steps/. Same step order (Dates → Payment → Guests → Message), same
  * validation rules (min-stay %, ≥100-char intro), same copy.
  */
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
 	Listing,
@@ -268,6 +268,23 @@ function DatesStep({
 	const hasValidRange =
 		!!formData.moveInDate && !!formData.moveOutDate && !isShort;
 
+	// The payment breakdown renders below the fold — bring it into view when a
+	// valid range completes so users can't miss it (see also the footer strip).
+	const paymentRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		if (!hasValidRange) return;
+		const t = setTimeout(() => {
+			const reduce = window.matchMedia(
+				'(prefers-reduced-motion: reduce)',
+			).matches;
+			paymentRef.current?.scrollIntoView({
+				behavior: reduce ? 'auto' : 'smooth',
+				block: 'start',
+			});
+		}, 400);
+		return () => clearTimeout(t);
+	}, [hasValidRange]);
+
 	return (
 		<>
 			<div className="step-title">When do you want to move in and out?</div>
@@ -329,7 +346,9 @@ function DatesStep({
 				</div>
 			)}
 			{hasValidRange && (
-				<PaymentSection listing={listing} formData={formData} />
+				<div ref={paymentRef} className="payment-reveal">
+					<PaymentSection listing={listing} formData={formData} />
+				</div>
 			)}
 		</>
 	);
@@ -929,6 +948,28 @@ export function BookingFlowScreen({
 				</div>
 
 				<div className="form-footer">
+					{step === 'dates' && canProceed && (
+						<button
+							className="footer-price-strip"
+							onClick={() => {
+								const reduce = window.matchMedia(
+									'(prefers-reduced-motion: reduce)',
+								).matches;
+								document
+									.querySelector('.payment-reveal')
+									?.scrollIntoView({
+										behavior: reduce ? 'auto' : 'smooth',
+										block: 'start',
+									});
+							}}
+						>
+							<span className="footer-price">
+								£{nights * listing.nightlyRate + listing.securityDeposit} total
+								· {nights} {nights === 1 ? 'night' : 'nights'}
+							</span>
+							<span className="footer-price-link">See breakdown ↓</span>
+						</button>
+					)}
 					<button
 						className="btn-primary"
 						disabled={!isLastStep && !canProceed}
