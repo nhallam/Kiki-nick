@@ -371,22 +371,12 @@ function computeRentPayments(
 	return payments;
 }
 
-function PaymentBlock({ payment, index }: { payment: SchedulePayment; index: number }) {
-	return (
-		<div className="schedule-block">
-			<div className="schedule-accent" />
-			<div className="schedule-block-text">
-				<div className="schedule-amount">£{payment.amount.toLocaleString()}</div>
-				<div className="schedule-due">
-					{index === 0 || !payment.date
-						? 'Due on signing of sublet agreement'
-						: `Due on ${formatDoMMM(payment.date)}`}
-				</div>
-			</div>
-		</div>
-	);
-}
-
+/**
+ * Payment schedule as a plain vertical stepper (delivery-tracking pattern):
+ * events read top-to-bottom — Move in, each payment, Move out. Same
+ * information as the old timeline graphic, none of the abstraction. Handles
+ * one payment or many (45+ day splits) with the same layout.
+ */
 function PaymentScheduleGraphic({
 	payments,
 	moveIn,
@@ -396,55 +386,52 @@ function PaymentScheduleGraphic({
 	moveIn: Date;
 	moveOut: Date;
 }) {
-	if (payments.length > 1) {
-		// 45+ day split stays stack the payments vertically between the
-		// move-in/move-out markers (port of the web/mobile multi layout).
-		return (
-			<div className="schedule-multi">
-				<div className="schedule-multi-row">
-					<span className="schedule-dot" />
-					<span className="schedule-multi-label">
-						{formatDoMMM(moveIn)} - Move in
-					</span>
-				</div>
-				{payments.map((p, i) => (
-					<div key={i} className="schedule-multi-block">
-						<PaymentBlock payment={p} index={i} />
-					</div>
-				))}
-				<div className="schedule-multi-row">
-					<span className="schedule-dot" />
-					<span className="schedule-multi-label">
-						{formatDoMMM(moveOut)} - Move out
-					</span>
-				</div>
-			</div>
-		);
-	}
-
 	return (
-		<div className="schedule-single">
-			<div className="schedule-vbar" />
-			<div className="schedule-block-wrap">
-				<PaymentBlock payment={payments[0]} index={0} />
-			</div>
-			<div className="schedule-indicator move-in">
-				<span className="schedule-dot" />
-				<span className="schedule-line-wrap">
-					<span className="schedule-label above">
-						{formatDoMMM(moveIn)} - Move in
+		<div className="pay-steps">
+			<div className="pay-step">
+				<div className="pay-step-rail">
+					<span className="pay-step-dot">
+						<IconCalendar size={13} />
 					</span>
-					<span className="schedule-hline" />
-				</span>
+					<span className="pay-step-line" />
+				</div>
+				<div className="pay-step-body">
+					<div className="pay-step-title">Move in</div>
+					<div className="pay-step-sub">{formatDoMMM(moveIn)}</div>
+				</div>
 			</div>
-			<div className="schedule-indicator move-out">
-				<span className="schedule-dot" />
-				<span className="schedule-line-wrap">
-					<span className="schedule-hline" />
-					<span className="schedule-label below">
-						{formatDoMMM(moveOut)} - Move out
+
+			{payments.map((payment, index) => (
+				<div key={index} className="pay-step">
+					<div className="pay-step-rail">
+						<span className="pay-step-dot pay">£</span>
+						<span className="pay-step-line" />
+					</div>
+					<div className="pay-step-body">
+						<div className="pay-step-card">
+							<div className="pay-step-amount">
+								£{payment.amount.toLocaleString()}
+							</div>
+							<div className="pay-step-due">
+								{index === 0 || !payment.date
+									? 'Due on signing of sublet agreement'
+									: `Due on ${formatDoMMM(payment.date)}`}
+							</div>
+						</div>
+					</div>
+				</div>
+			))}
+
+			<div className="pay-step">
+				<div className="pay-step-rail">
+					<span className="pay-step-dot">
+						<IconCalendar size={13} />
 					</span>
-				</span>
+				</div>
+				<div className="pay-step-body last">
+					<div className="pay-step-title">Move out</div>
+					<div className="pay-step-sub">{formatDoMMM(moveOut)}</div>
+				</div>
 			</div>
 		</div>
 	);
