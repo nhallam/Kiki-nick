@@ -890,6 +890,60 @@ input {
 	letter-spacing: 0.03em;
 }
 
+.relation-tag {
+	background: var(--light-gray);
+	color: var(--gray);
+	font-size: 11px;
+	font-weight: 700;
+	border-radius: 8px;
+	padding: 2px 8px;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+	margin-left: 6px;
+}
+.guest-remove {
+	color: var(--gray);
+	display: flex;
+	padding: 4px;
+}
+.relation-chooser {
+	border: 1px solid var(--border-light);
+	border-radius: 12px;
+	padding: 14px;
+}
+.relation-chips {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+.relation-chip {
+	border: 1px solid var(--primary);
+	color: var(--primary-dark);
+	font-size: 14px;
+	font-weight: 600;
+	border-radius: 18px;
+	padding: 9px 16px;
+	background: var(--white);
+}
+.relation-chip:disabled {
+	border-color: var(--border-medium);
+	color: var(--disabled-text);
+	cursor: default;
+}
+.relation-chip.cancel {
+	border-color: transparent;
+	color: var(--gray);
+}
+.derived-note {
+	margin-top: 12px;
+	background: var(--primary-tint);
+	border-radius: 10px;
+	padding: 11px 14px;
+	font-size: 13.5px;
+	font-weight: 600;
+	color: var(--primary-dark);
+}
+
 .slot-helper {
 	font-size: 13px;
 	color: var(--gray);

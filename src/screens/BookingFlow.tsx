@@ -506,27 +506,7 @@ function PaymentSection({
 	);
 }
 
-/* ---------- Step 2: Guests ---------- */
-
-const GUEST_TYPE_OPTIONS: {
-	value: WhoIsStaying;
-	label: string;
-	description: string;
-}[] = [
-	{ value: 'individual', label: 'Individual', description: 'Just me' },
-	{ value: 'couple', label: 'Couple', description: 'Me and my partner' },
-	{
-		value: 'group',
-		label: '2 or more people',
-		description: 'Me and one friend or multiple friends',
-	},
-];
-
-const BOOKING_TYPE_TITLE: Record<WhoIsStaying, string> = {
-	individual: 'Individual',
-	couple: 'Couple',
-	group: 'Group',
-};
+/* ---------- Step 2: Guests (guest-list-first) ---------- */
 
 function ProfileCard({
 	profile,
@@ -557,6 +537,29 @@ function ProfileCard({
 	);
 }
 
+interface ExtraGuest {
+	relation: 'partner' | 'friend';
+	profile: UserProfile | null;
+}
+
+/** Mock stand-in for the choose/create-profile picker. */
+const MOCK_GUEST_NAMES = ['Sam Doe', 'Alex Kim', 'Riva Patel'];
+const mockProfile = (i: number): UserProfile => ({
+	id: 200 + i,
+	name: MOCK_GUEST_NAMES[i % MOCK_GUEST_NAMES.length],
+	shortName: MOCK_GUEST_NAMES[i % MOCK_GUEST_NAMES.length].split(' ')[0],
+	occupation: 'Friend',
+	age: 27 + i,
+	nationalityFlag: '🇮🇪',
+	type: 'other',
+});
+
+/**
+ * Guest-list-first (ported from Option 3): no who's-staying type question —
+ * the step is just the list of who's coming, starting with you. Adding a
+ * guest asks partner-or-friend inline, and Individual / Couple / Group is
+ * derived from the list.
+ */
 function GuestInfoStep({
 	listing,
 	formData,
@@ -566,78 +569,140 @@ function GuestInfoStep({
 	formData: BookingFormData;
 	onChange: (d: Partial<BookingFormData>) => void;
 }) {
-	const isCoupleDisabled = !listing.openToCouples;
-	const isGroup = formData.whoIsStaying === 'group';
+	const [extras, setExtras] = useState<ExtraGuest[]>(() =>
+		formData.guestProfiles.slice(1).map((profile, i) => ({
+			relation:
+				formData.whoIsStaying === 'couple' && i === 0 ? 'partner' : 'friend',
+			profile,
+		})),
+	);
+	const [choosingRelation, setChoosingRelation] = useState(false);
 
-	const setType = (value: WhoIsStaying) => {
-		const guestProfiles: (UserProfile | null)[] =
-			value === 'individual'
-				? [MY_PROFILE]
-				: value === 'couple'
-					? [MY_PROFILE, null]
-					: [MY_PROFILE, null];
-		onChange({ whoIsStaying: value, guestProfiles });
+	const partnerTaken = extras.some((g) => g.relation === 'partner');
+	const partnerDisabled = !listing.openToCouples || partnerTaken;
+
+	const deriveWho = (list: ExtraGuest[]): WhoIsStaying =>
+		list.length === 0
+			? 'individual'
+			: list.length === 1 && list[0].relation === 'partner'
+				? 'couple'
+				: 'group';
+	const DERIVED_LABEL: Record<WhoIsStaying, string> = {
+		individual: 'an Individual',
+		couple: 'a Couple',
+		group: 'a Group',
 	};
 
-	const hasEmptySlot = formData.guestProfiles.some((p) => !p);
+	// Keep the wizard's form state in sync so validation and the recap step
+	// always see the current list.
+	const commit = (list: ExtraGuest[]) => {
+		setExtras(list);
+		onChange({
+			whoIsStaying: deriveWho(list),
+			guestProfiles: [MY_PROFILE, ...list.map((g) => g.profile)],
+		});
+	};
+
+	const addGuest = (relation: ExtraGuest['relation']) => {
+		commit([...extras, { relation, profile: null }]);
+		setChoosingRelation(false);
+	};
+	const removeGuest = (index: number) =>
+		commit(extras.filter((_, i) => i !== index));
+	const fillProfile = (index: number) =>
+		commit(
+			extras.map((g, i) =>
+				i === index ? { ...g, profile: mockProfile(index) } : g,
+			),
+		);
+
+	const hasEmptySlot = extras.some((g) => !g.profile);
 
 	return (
 		<>
 			<div className="page-title">Guests</div>
-			<div className="section-label">Who'll be staying?</div>
-			{/* Compact single-line rows instead of full-height cards — this is a
-			    quick pick, not the screen's main content. */}
-			<div className="option-list">
-				{GUEST_TYPE_OPTIONS.map((option, i) => {
-					const isSelected = formData.whoIsStaying === option.value;
-					const isDisabled = option.value === 'couple' && isCoupleDisabled;
-					return (
-						<button
-							key={option.value}
-							className={`option-row${isDisabled ? ' disabled' : ''}${i === 0 ? ' first' : ''}`}
-							disabled={isDisabled}
-							onClick={() => setType(option.value)}
-						>
-							<span className="option-row-text">
-								<span className="option-row-label">{option.label}</span>
-								<span className="option-row-desc">
-									{isDisabled
-										? `${listing.listerName}'s place isn't open to couples`
-										: option.description}
+			<div className="section-label">Who's coming?</div>
+
+			<div className="profile-section" style={{ marginTop: 0 }}>
+				<div className="slot-row">
+					<ProfileCard profile={MY_PROFILE} youBadge />
+				</div>
+
+				{extras.map((guest, i) => (
+					<div key={i} className="slot-row">
+						<div className="guest-row-header">
+							<span>
+								{guest.relation === 'partner' ? 'Your partner' : `Guest ${i + 2}`}{' '}
+								<span className="relation-tag">
+									{guest.relation === 'partner' ? 'Partner' : 'Friend'}
 								</span>
 							</span>
-							<span className={`check-circle${isSelected ? ' selected' : ''}`}>
-								{isSelected && <IconCheck size={15} color="#fff" />}
-							</span>
-						</button>
-					);
-				})}
-			</div>
-
-			{/* Only what's actionable: your (prefilled) profile, plus extra slots
-			    when the party needs them. */}
-			<div className="profile-section">
-				{formData.guestProfiles.map((profile, i) => (
-					<div key={i} className="slot-row">
-						<div className="slot-title">
-							{i === 0
-								? 'Your profile'
-								: isGroup
-									? `Guest ${i + 1}`
-									: "Your partner's profile"}
+							<button
+								className="guest-remove"
+								onClick={() => removeGuest(i)}
+								aria-label="Remove guest"
+							>
+								<IconClose size={16} />
+							</button>
 						</div>
-						{profile ? (
-							<ProfileCard profile={profile} youBadge={i === 0} />
+						{guest.profile ? (
+							<ProfileCard profile={guest.profile} />
 						) : (
-							<button className="choose-slot">Choose or create profile</button>
+							<button className="choose-slot" onClick={() => fillProfile(i)}>
+								Choose or create profile
+							</button>
 						)}
 					</div>
 				))}
+
+				{choosingRelation ? (
+					<div className="relation-chooser">
+						<div className="slot-title">Who are they?</div>
+						<div className="relation-chips">
+							<button
+								className="relation-chip"
+								disabled={partnerDisabled}
+								onClick={() => addGuest('partner')}
+							>
+								My partner
+							</button>
+							<button
+								className="relation-chip"
+								onClick={() => addGuest('friend')}
+							>
+								A friend
+							</button>
+							<button
+								className="relation-chip cancel"
+								onClick={() => setChoosingRelation(false)}
+							>
+								Cancel
+							</button>
+						</div>
+						{!listing.openToCouples && (
+							<div className="slot-helper">
+								{listing.listerName}'s place isn't open to couples.
+							</div>
+						)}
+					</div>
+				) : (
+					<button
+						className="choose-slot"
+						onClick={() => setChoosingRelation(true)}
+					>
+						+ Add another guest
+					</button>
+				)}
+
 				{hasEmptySlot && (
 					<div className="slot-helper">
 						A profile is required for each person staying.
 					</div>
 				)}
+
+				<div className="derived-note">
+					This will be sent as {DERIVED_LABEL[deriveWho(extras)]} booking.
+				</div>
 			</div>
 		</>
 	);
@@ -805,11 +870,12 @@ export function BookingFlowScreen({
 				return (
 					!!formData.moveInDate && !!formData.moveOutDate && !isBelowMinStay
 				);
-			case 'guest': {
-				const filled = formData.guestProfiles.filter(Boolean).length;
-				const required = formData.whoIsStaying === 'individual' ? 1 : 2;
-				return filled >= required;
-			}
+			case 'guest':
+				// Everyone in the list needs a profile before continuing.
+				return (
+					formData.guestProfiles.length >= 1 &&
+					formData.guestProfiles.every(Boolean)
+				);
 			case 'message':
 				return formData.peopleIntro.trim().length >= MIN_PEOPLE_INTRO_LENGTH;
 		}
