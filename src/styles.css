@@ -229,7 +229,7 @@ input {
 .progress-meta {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	gap: 5px;
 	font-size: 12px;
 	font-weight: 600;
 	color: var(--gray);

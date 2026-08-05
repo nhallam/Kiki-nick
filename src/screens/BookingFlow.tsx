@@ -897,6 +897,7 @@ export function BookingFlowScreen({
 						<span>
 							Step {stepIndex + 1} of {STEPS.length}
 						</span>
+						<span className="progress-meta-sep">·</span>
 						<span className="progress-step-name">{STEP_LABELS[step]}</span>
 					</div>
 					<div className="progress-track">
