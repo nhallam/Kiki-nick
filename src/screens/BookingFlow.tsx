@@ -78,7 +78,10 @@ export interface BookingFormData {
 	extraQuestions: string;
 }
 
-const STEPS = ['dates', 'payment', 'guest', 'message'] as const;
+// Dates and payment are one step: the payment preview is informational, so it
+// renders below the calendar as soon as a valid range exists — the flow drops
+// from 4 steps to 3.
+const STEPS = ['dates', 'guest', 'message'] as const;
 type Step = (typeof STEPS)[number];
 
 /* ---------- calendar (port of DateRangeCalendar) ---------- */
@@ -92,6 +95,10 @@ function DateRangeCalendar({
 	minDate,
 	maxDate,
 	onSelectDate,
+	onPrevMonth,
+	onNextMonth,
+	prevMonthLabel,
+	nextMonthLabel,
 }: {
 	month: Date;
 	selectedStart: Date | null;
@@ -99,6 +106,11 @@ function DateRangeCalendar({
 	minDate: Date;
 	maxDate: Date;
 	onSelectDate: (d: Date) => void;
+	onPrevMonth: () => void;
+	onNextMonth: () => void;
+	/** Short label of the adjacent available month ("Sep"), null at bounds. */
+	prevMonthLabel: string | null;
+	nextMonthLabel: string | null;
 }) {
 	const first = new Date(month.getFullYear(), month.getMonth(), 1);
 	const daysInMonth = new Date(
@@ -122,13 +134,23 @@ function DateRangeCalendar({
 	return (
 		<div className="calendar">
 			<div className="month-header">
-				<button className="month-nav" disabled>
+				<button
+					className="month-nav"
+					disabled={!prevMonthLabel}
+					onClick={onPrevMonth}
+				>
 					<IconChevronLeft size={22} />
+					{prevMonthLabel}
 				</button>
 				<span className="month-title">
 					{MONTHS[month.getMonth()]} {month.getFullYear()}
 				</span>
-				<button className="month-nav right" disabled>
+				<button
+					className="month-nav right"
+					disabled={!nextMonthLabel}
+					onClick={onNextMonth}
+				>
+					{nextMonthLabel}
 					<IconChevronRight size={22} />
 				</button>
 			</div>
@@ -184,7 +206,27 @@ function DatesStep({
 }) {
 	const availStart = parseISO(listing.availableStart);
 	const availEnd = parseISO(listing.availableEnd);
-	const month = new Date(availStart.getFullYear(), availStart.getMonth(), 1);
+
+	// One calendar page per month of the availability window, with named
+	// prev/next arrows (matches the production DatesStep).
+	const months = useMemo(() => {
+		const list: Date[] = [];
+		const cursor = new Date(availStart.getFullYear(), availStart.getMonth(), 1);
+		const last = new Date(availEnd.getFullYear(), availEnd.getMonth(), 1);
+		while (cursor <= last) {
+			list.push(new Date(cursor));
+			cursor.setMonth(cursor.getMonth() + 1);
+		}
+		return list;
+	}, [listing.availableStart, listing.availableEnd]);
+	const [monthIndex, setMonthIndex] = useState(0);
+	const month = months[Math.min(monthIndex, months.length - 1)];
+	const prevMonthLabel =
+		monthIndex > 0 ? MONTHS[months[monthIndex - 1].getMonth()].slice(0, 3) : null;
+	const nextMonthLabel =
+		monthIndex < months.length - 1
+			? MONTHS[months[monthIndex + 1].getMonth()].slice(0, 3)
+			: null;
 
 	const handleSelect = (date: Date) => {
 		if (!formData.moveInDate || formData.moveOutDate) {
@@ -222,9 +264,18 @@ function DatesStep({
 			? 'Now tap your move-out date'
 			: null;
 
+	const availNights = diffDays(availEnd, availStart);
+	const hasValidRange =
+		!!formData.moveInDate && !!formData.moveOutDate && !isShort;
+
 	return (
 		<>
 			<div className="step-title">When do you want to move in and out?</div>
+			<div className="avail-context">
+				<IconCalendar size={15} />
+				{listing.listerName}'s dates: {formatDoMMM(availStart)} –{' '}
+				{formatDoMMM(availEnd)} · {availNights} {nightsWord(availNights)}
+			</div>
 			<button
 				className={`tip-card actionable${isFullDuration ? ' done' : ''}`}
 				onClick={selectFullDuration}
@@ -255,12 +306,6 @@ function DatesStep({
 						{formatDoMMM(formData.moveOutDate)} · {nights} {nightsWord(nights)}
 						{isShort ? ` (${daysShort} ${nightsWord(daysShort)} short)` : ''}
 					</div>
-					{!isShort && (
-						<div className="price-preview">
-							{nights} × £{listing.nightlyRate} ={' '}
-							<strong>£{nights * listing.nightlyRate}</strong> rent
-						</div>
-					)}
 				</div>
 			)}
 			<DateRangeCalendar
@@ -270,6 +315,12 @@ function DatesStep({
 				minDate={availStart}
 				maxDate={availEnd}
 				onSelectDate={handleSelect}
+				onPrevMonth={() => setMonthIndex((i) => Math.max(0, i - 1))}
+				onNextMonth={() =>
+					setMonthIndex((i) => Math.min(months.length - 1, i + 1))
+				}
+				prevMonthLabel={prevMonthLabel}
+				nextMonthLabel={nextMonthLabel}
 			/>
 			{isShort && (
 				<div className="min-stay-error">
@@ -277,32 +328,103 @@ function DatesStep({
 					{minNights} nights of their dates.
 				</div>
 			)}
+			{hasValidRange && (
+				<PaymentSection listing={listing} formData={formData} />
+			)}
 		</>
 	);
 }
 
-/* ---------- Step 2: Payment ---------- */
+/* ---------- Payment preview (inline on the Dates step) ---------- */
+
+interface SchedulePayment {
+	amount: number;
+	date?: Date; // undefined → due on signing
+}
+
+/**
+ * Mirror of the API's rent schedule: stays under 45 nights are one payment due
+ * on signing; longer stays split into ~30-night blocks, the first due on
+ * signing and the rest due at the start of each block.
+ */
+function computeRentPayments(
+	moveIn: Date,
+	nights: number,
+	nightlyRate: number,
+): SchedulePayment[] {
+	if (nights < 45) {
+		return [{ amount: nights * nightlyRate }];
+	}
+	const payments: SchedulePayment[] = [];
+	for (let start = 0; start < nights; start += 30) {
+		const blockNights = Math.min(30, nights - start);
+		payments.push({
+			amount: blockNights * nightlyRate,
+			date:
+				start === 0
+					? undefined
+					: new Date(moveIn.getTime() + start * MS_DAY),
+		});
+	}
+	return payments;
+}
+
+function PaymentBlock({ payment, index }: { payment: SchedulePayment; index: number }) {
+	return (
+		<div className="schedule-block">
+			<div className="schedule-accent" />
+			<div className="schedule-block-text">
+				<div className="schedule-amount">£{payment.amount.toLocaleString()}</div>
+				<div className="schedule-due">
+					{index === 0 || !payment.date
+						? 'Due on signing of sublet agreement'
+						: `Due on ${formatDoMMM(payment.date)}`}
+				</div>
+			</div>
+		</div>
+	);
+}
 
 function PaymentScheduleGraphic({
-	amount,
+	payments,
 	moveIn,
 	moveOut,
 }: {
-	amount: number;
+	payments: SchedulePayment[];
 	moveIn: Date;
 	moveOut: Date;
 }) {
+	if (payments.length > 1) {
+		// 45+ day split stays stack the payments vertically between the
+		// move-in/move-out markers (port of the web/mobile multi layout).
+		return (
+			<div className="schedule-multi">
+				<div className="schedule-multi-row">
+					<span className="schedule-dot" />
+					<span className="schedule-multi-label">
+						{formatDoMMM(moveIn)} - Move in
+					</span>
+				</div>
+				{payments.map((p, i) => (
+					<div key={i} className="schedule-multi-block">
+						<PaymentBlock payment={p} index={i} />
+					</div>
+				))}
+				<div className="schedule-multi-row">
+					<span className="schedule-dot" />
+					<span className="schedule-multi-label">
+						{formatDoMMM(moveOut)} - Move out
+					</span>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="schedule-single">
 			<div className="schedule-vbar" />
 			<div className="schedule-block-wrap">
-				<div className="schedule-block">
-					<div className="schedule-accent" />
-					<div className="schedule-block-text">
-						<div className="schedule-amount">£{amount.toLocaleString()}</div>
-						<div className="schedule-due">Due on signing of sublet agreement</div>
-					</div>
-				</div>
+				<PaymentBlock payment={payments[0]} index={0} />
 			</div>
 			<div className="schedule-indicator move-in">
 				<span className="schedule-dot" />
@@ -326,7 +448,7 @@ function PaymentScheduleGraphic({
 	);
 }
 
-function PaymentStep({
+function PaymentSection({
 	listing,
 	formData,
 }: {
@@ -334,43 +456,26 @@ function PaymentStep({
 	formData: BookingFormData;
 }) {
 	const { moveInDate, moveOutDate } = formData;
-	if (!moveInDate || !moveOutDate) {
-		return (
-			<p className="payment-copy">
-				Go back and pick your dates to see the payment breakdown.
-			</p>
-		);
-	}
+	if (!moveInDate || !moveOutDate) return null;
 	const nights = diffDays(moveOutDate, moveInDate);
 	const rentTotal = nights * listing.nightlyRate;
 	const total = rentTotal + listing.securityDeposit;
+	const payments = computeRentPayments(moveInDate, nights, listing.nightlyRate);
+	const singular = payments.length === 1;
 
 	return (
-		<div className="payment-step">
-			<div className="dates-card">
-				<div className="title">Selected Dates</div>
-				<div className="row">
-					<div className="col">
-						<span className="label">Move In</span>
-						<span className="value">{formatDoMMMYYYY(moveInDate)}</span>
-					</div>
-					<div className="col">
-						<span className="label">Move Out</span>
-						<span className="value">{formatDoMMMYYYY(moveOutDate)}</span>
-					</div>
-				</div>
+		<div className="payment-step" style={{ marginTop: 24 }}>
+			<div className="section-label" style={{ marginBottom: 0 }}>
+				Payment breakdown
 			</div>
-
 			<p className="payment-copy">
-				Here's a breakdown of the payments you'd make (based on{' '}
-				{listing.listerName}'s listed £{listing.nightlyRate} nightly rate)
-			</p>
-			<p className="payment-copy">
-				We don't charge you any fees so this is the total amount.
+				Based on {listing.listerName}'s listed £{listing.nightlyRate} nightly
+				rate. We don't charge you any fees so{' '}
+				{singular ? 'this is the total amount.' : 'these are the total amounts.'}
 			</p>
 
 			<PaymentScheduleGraphic
-				amount={rentTotal}
+				payments={payments}
 				moveIn={moveInDate}
 				moveOut={moveOutDate}
 			/>
@@ -400,11 +505,19 @@ function PaymentStep({
 					<span>£{total}</span>
 				</div>
 			</div>
+
+			{nights >= 45 && (
+				<div className="info-card">
+					With matches 45 days or longer, you can request to split your payment
+					across the length of your stay. Both Kiki and {listing.listerName}{' '}
+					must approve the new payment schedule.
+				</div>
+			)}
 		</div>
 	);
 }
 
-/* ---------- Step 3: Guests ---------- */
+/* ---------- Step 2: Guests ---------- */
 
 const GUEST_TYPE_OPTIONS: {
 	value: WhoIsStaying;
@@ -552,6 +665,17 @@ function GuestInfoStep({
 
 /* ---------- Step 4: Message ---------- */
 
+/**
+ * Sentence starters that beat blank-page paralysis and nudge intros toward
+ * what hosts actually want to know. Tapping appends the starter to the intro.
+ */
+const INTRO_PROMPTS = [
+	{ label: "Why I'm in town", starter: "I'm coming to London to " },
+	{ label: 'What I do', starter: 'I work as ' },
+	{ label: 'My interests', starter: 'Outside work I love ' },
+	{ label: 'At home', starter: "Around the house I'm " },
+];
+
 function MessageStep({
 	listing,
 	formData,
@@ -593,6 +717,28 @@ function MessageStep({
 				placeholder="Tip: 93% of people who get accepted write 4-6 sentences"
 				onChange={(e) => onChange({ peopleIntro: e.target.value })}
 			/>
+			<div className="prompt-chips">
+				{INTRO_PROMPTS.map((prompt) => {
+					const used = formData.peopleIntro.includes(prompt.starter.trim());
+					return (
+						<button
+							key={prompt.label}
+							className={`prompt-chip${used ? ' used' : ''}`}
+							disabled={used}
+							onClick={() =>
+								onChange({
+									peopleIntro:
+										formData.peopleIntro.replace(/\s+$/, '') +
+										'\n' +
+										prompt.starter,
+								})
+							}
+						>
+							{used ? <IconCheck size={12} /> : '+'} {prompt.label}
+						</button>
+					);
+				})}
+			</div>
 			<div className={`char-counter${counterMet ? ' met' : ''}`}>
 				{counterMet ? (
 					<>
@@ -679,8 +825,6 @@ export function BookingFlowScreen({
 				return (
 					!!formData.moveInDate && !!formData.moveOutDate && !isBelowMinStay
 				);
-			case 'payment':
-				return true;
 			case 'guest': {
 				const filled = formData.guestProfiles.filter(Boolean).length;
 				const required = formData.whoIsStaying === 'individual' ? 1 : 2;
@@ -720,8 +864,7 @@ export function BookingFlowScreen({
 	};
 
 	const STEP_LABELS: Record<Step, string> = {
-		dates: 'Dates',
-		payment: 'Payments',
+		dates: 'Dates & payments',
 		guest: 'Guests',
 		message: 'Introduction',
 	};
@@ -767,9 +910,6 @@ export function BookingFlowScreen({
 				<div className="form-content">
 					{step === 'dates' && (
 						<DatesStep listing={listing} formData={formData} onChange={onChange} />
-					)}
-					{step === 'payment' && (
-						<PaymentStep listing={listing} formData={formData} />
 					)}
 					{step === 'guest' && (
 						<GuestInfoStep

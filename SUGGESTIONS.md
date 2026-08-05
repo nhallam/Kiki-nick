@@ -64,12 +64,39 @@ The rank screen now states what ranking does: "Your #1 request is prioritised
 Previously this lived behind an info icon; a forced step should explain
 itself.
 
-## Ideas discussed but *not* implemented (bigger scope — for later)
+---
 
-- Merge Dates + Payment into one step (the payment preview is informational
-  and could live below the calendar, shortening the flow to 3 steps).
-- Available-dates context in the calendar header (e.g. "Ieva's dates:
-  21–26 Aug") instead of relying on disabled cells alone.
-- Intro message prompts/chips ("Why I'm coming to London", "My interests") to
-  beat blank-page paralysis and raise intro quality for hosts.
-- Model the 45+ day split-payment path.
+# Round 2 — bigger ideas, applied on `booking-flow-bigger-ideas`
+
+## 11. Merged Dates + Payment into one step (flow is now 3 steps)
+
+The payment preview was purely informational — its own step added a tap
+without adding a decision. The breakdown (schedule graphic, summary,
+split-payment note) now renders under the calendar the moment a valid range
+exists, so choosing dates and seeing their cost are one motion. Progress
+label reads "Dates & payments".
+
+## 12. Availability context up front
+
+A tinted chip under the step title states the host's window in words:
+"Ieva's dates: 21st Aug – 26th Aug · 5 nights". Disabled calendar cells alone
+made users discover the window by trial and error. The calendar also now
+supports multi-month availability with named prev/next arrows ("‹ Aug",
+"Sep ›"), matching the production DatesStep.
+
+## 13. Intro prompt chips
+
+Four sentence-starter chips under the intro field ("Why I'm in town",
+"What I do", "My interests", "At home") append a starter line to the message
+and flip to a used state. Beats blank-page paralysis, and nudges intros
+toward what hosts actually want to know — raising intro quality raises
+acceptance rates, which the 100-char minimum alone can't do.
+
+## 14. 45+ day split-payment path modelled
+
+Jake's listing now has a 76-night window to exercise it: stays of 45+ nights
+split rent into ~30-night blocks (first due on signing, the rest due at each
+block start), rendered with the stacked multi-payment schedule graphic and
+the "you can request to split your payment" note from the production app.
+This also demos the seasonal min-stay rule at scale (50% of 76 nights = 38
+nights minimum) — the "Select all" tip makes the valid path one tap.

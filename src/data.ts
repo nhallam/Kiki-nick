@@ -46,6 +46,8 @@ export const LISTINGS: Listing[] = [
 		photoVariant: 'ieva',
 	},
 	{
+		// Long availability (76 nights) so the 45+ day split-payment path is
+		// demoable end-to-end.
 		id: 2,
 		listerName: 'Jake',
 		title: "Jake's Room",
@@ -54,16 +56,41 @@ export const LISTINGS: Listing[] = [
 		nightlyRate: 40,
 		roomType: 'Room',
 		availableStart: '2026-08-16',
-		availableEnd: '2026-09-13',
+		availableEnd: '2026-10-31',
 		openToCouples: true,
 		securityDeposit: 180,
 		nationalityFlag: '🇬🇧',
-		description: 'A cosy room right by London Fields park.',
+		description:
+			'A cosy room right by London Fields park, with a big desk for remote work, fast wifi and a sunny shared kitchen. Lido and the best coffee in Hackney within five minutes walk.',
 		favouritedBy: 3,
 		vouchedForBy: 'Ana',
 		photoVariant: 'jake',
 	},
 ];
+
+const SHORT_MONTHS = [
+	'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+	'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+
+export const parseISODate = (s: string) => {
+	const [y, m, d] = s.split('-').map(Number);
+	return new Date(y, m - 1, d);
+};
+
+export const shortDate = (d: Date) =>
+	`${d.getDate()} ${SHORT_MONTHS[d.getMonth()]}`;
+
+/** "16 Aug - 31 Oct" for listing cards / chips. */
+export const availabilityRange = (listing: Listing) =>
+	`${shortDate(parseISODate(listing.availableStart))} - ${shortDate(parseISODate(listing.availableEnd))}`;
+
+export const availabilityNights = (listing: Listing) =>
+	Math.round(
+		(parseISODate(listing.availableEnd).getTime() -
+			parseISODate(listing.availableStart).getTime()) /
+			86400000,
+	);
 
 export interface UserProfile {
 	id: number;

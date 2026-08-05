@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { LISTINGS, Listing } from '../data';
+import { LISTINGS, Listing, availabilityRange } from '../data';
 import {
 	Avatar,
 	IconBell,
@@ -19,8 +19,7 @@ function ListingCard({
 	listing: Listing;
 	onOpen: () => void;
 }) {
-	const dates =
-		listing.id === 1 ? '20 Aug - 25 Aug' : '16 Aug - 13 Sep';
+	const dates = availabilityRange(listing);
 	return (
 		<button className="listing-card" onClick={onOpen}>
 			<div className="top">

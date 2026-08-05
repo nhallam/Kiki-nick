@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Listing } from '../data';
+import { Listing, availabilityNights, availabilityRange } from '../data';
 import {
 	Avatar,
 	IconArrowLeft,
@@ -82,8 +82,10 @@ export function ListingDetailScreen({
 				<div className="detail-section" style={{ paddingTop: 0 }}>
 					<h2>Available Dates</h2>
 					<div className="avail-chip">
-						<span>21 Aug 2026 → 26 Aug 2026</span>
-						<span style={{ color: 'var(--primary)' }}>5 nights</span>
+						<span>{availabilityRange(listing).replace(' - ', ' → ')} 2026</span>
+						<span style={{ color: 'var(--primary)' }}>
+							{availabilityNights(listing)} nights
+						</span>
 					</div>
 				</div>
 			</div>
