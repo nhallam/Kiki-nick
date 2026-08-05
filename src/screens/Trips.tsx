@@ -23,12 +23,14 @@ export function TripsScreen({
 	successListerName,
 	successPhotoVariant,
 	onDismissSuccess,
+	onReorder,
 }: {
 	requests: SentRequest[];
 	showSuccessSheet: boolean;
 	successListerName: string;
 	successPhotoVariant: string;
 	onDismissSuccess: () => void;
+	onReorder?: () => void;
 }) {
 	return (
 		<div className="screen">
@@ -49,7 +51,7 @@ export function TripsScreen({
 			</div>
 
 			<div className="screen-scroll">
-				<button className="reorder-btn">
+				<button className="reorder-btn" onClick={onReorder}>
 					<IconReorderArrows size={22} /> Reorder
 				</button>
 				<div

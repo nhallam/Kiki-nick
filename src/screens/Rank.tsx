@@ -30,9 +30,12 @@ const ROW_HEIGHT = 118 + 12; // card min-height + gap, for drag math
 export function RankScreen({
 	requests,
 	onSubmit,
+	mode = 'new',
 }: {
 	requests: SentRequest[];
 	onSubmit: (ordered: SentRequest[]) => void;
+	/** 'new' = forced post-submit rank; 'reorder' = opened from Trips. */
+	mode?: 'new' | 'reorder';
 }) {
 	const [order, setOrder] = useState(requests.map((r) => r.id));
 	const [dragId, setDragId] = useState<number | null>(null);
@@ -73,17 +76,25 @@ export function RankScreen({
 	return (
 		<div className="screen">
 			<StatusBar />
-			<div className="progress-container" style={{ paddingBottom: 4 }}>
-				<div className="progress-track">
-					<div className="progress-fill" style={{ width: '90%' }} />
+			{mode === 'new' && (
+				<div className="progress-container" style={{ paddingBottom: 4 }}>
+					<div className="progress-track">
+						<div className="progress-fill" style={{ width: '90%' }} />
+					</div>
 				</div>
-			</div>
+			)}
 
 			<div className="screen-scroll" style={{ padding: '24px 24px 32px' }}>
-				<div className="rank-title">Rank this Booking Request</div>
+				<div className="rank-title">
+					{mode === 'new'
+						? 'Rank this Booking Request'
+						: 'Reorder Booking Requests'}
+				</div>
 				<div className="instruction-row">
 					<span className="instruction">
-						Hold and drag to rank it against your other requests
+						{mode === 'new'
+							? 'Hold and drag to rank it against your other requests'
+							: 'Hold and drag to rank your booking requests. Higher requests will be prioritised first.'}
 					</span>
 					<IconInfo size={22} color="#9CA3AF" />
 				</div>
@@ -122,7 +133,7 @@ export function RankScreen({
 					className="btn-primary square"
 					onClick={() => onSubmit(order.map(byId))}
 				>
-					Submit
+					{mode === 'new' ? 'Submit' : 'Save Order'}
 				</button>
 			</div>
 		</div>
