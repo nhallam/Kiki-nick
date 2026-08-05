@@ -838,8 +838,69 @@ input {
 	border-color: var(--primary);
 }
 
+/* Compact single-line who's-staying selector */
+.option-list {
+	border: 1px solid var(--border-light);
+	border-radius: 12px;
+	overflow: hidden;
+}
+.option-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	width: 100%;
+	padding: 13px 14px;
+	text-align: left;
+	background: var(--white);
+	border-top: 1px solid var(--border-light);
+}
+.option-row.first {
+	border-top: none;
+}
+.option-row.disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+.option-row-text {
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+	min-width: 0;
+	flex-wrap: wrap;
+}
+.option-row-label {
+	font-size: 15px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+.option-row-desc {
+	font-size: 13px;
+	color: var(--gray);
+}
+
+.you-badge {
+	background: var(--primary-tint);
+	color: var(--primary-dark);
+	font-size: 11px;
+	font-weight: 700;
+	border-radius: 8px;
+	padding: 2px 8px;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+}
+
+.slot-helper {
+	font-size: 13px;
+	color: var(--gray);
+	margin-top: -6px;
+}
+
 .profile-section {
 	margin-top: 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
 }
 .booking-info-card {
 	display: flex;

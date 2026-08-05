@@ -528,7 +528,13 @@ const BOOKING_TYPE_TITLE: Record<WhoIsStaying, string> = {
 	group: 'Group',
 };
 
-function ProfileCard({ profile }: { profile: UserProfile }) {
+function ProfileCard({
+	profile,
+	youBadge = false,
+}: {
+	profile: UserProfile;
+	youBadge?: boolean;
+}) {
 	return (
 		<button className="profile-card">
 			<Avatar
@@ -540,6 +546,7 @@ function ProfileCard({ profile }: { profile: UserProfile }) {
 			<span className="info">
 				<span className="name-row">
 					{profile.name} <span>{profile.nationalityFlag}</span>
+					{youBadge && <span className="you-badge">You</span>}
 				</span>
 				<span className="subtitle">
 					{profile.occupation}, {profile.age}
@@ -572,28 +579,32 @@ function GuestInfoStep({
 		onChange({ whoIsStaying: value, guestProfiles });
 	};
 
+	const hasEmptySlot = formData.guestProfiles.some((p) => !p);
+
 	return (
 		<>
 			<div className="page-title">Guests</div>
 			<div className="section-label">Who'll be staying?</div>
-			<div className="options">
-				{GUEST_TYPE_OPTIONS.map((option) => {
+			{/* Compact single-line rows instead of full-height cards — this is a
+			    quick pick, not the screen's main content. */}
+			<div className="option-list">
+				{GUEST_TYPE_OPTIONS.map((option, i) => {
 					const isSelected = formData.whoIsStaying === option.value;
 					const isDisabled = option.value === 'couple' && isCoupleDisabled;
 					return (
 						<button
 							key={option.value}
-							className={`option-card${isDisabled ? ' disabled' : ''}`}
+							className={`option-row${isDisabled ? ' disabled' : ''}${i === 0 ? ' first' : ''}`}
 							disabled={isDisabled}
 							onClick={() => setType(option.value)}
 						>
-							<span>
-								<div className="option-label">{option.label}</div>
-								<div className="option-desc">
+							<span className="option-row-text">
+								<span className="option-row-label">{option.label}</span>
+								<span className="option-row-desc">
 									{isDisabled
 										? `${listing.listerName}'s place isn't open to couples`
 										: option.description}
-								</div>
+								</span>
 							</span>
 							<span className={`check-circle${isSelected ? ' selected' : ''}`}>
 								{isSelected && <IconCheck size={15} color="#fff" />}
@@ -603,49 +614,29 @@ function GuestInfoStep({
 				})}
 			</div>
 
+			{/* Only what's actionable: your (prefilled) profile, plus extra slots
+			    when the party needs them. */}
 			<div className="profile-section">
-				<div className="booking-info-card">
-					<IconPersonCircle size={24} color="#9CA3AF" />
-					<span>
-						<div className="booking-info-title">
-							{BOOKING_TYPE_TITLE[formData.whoIsStaying]} Booking
+				{formData.guestProfiles.map((profile, i) => (
+					<div key={i} className="slot-row">
+						<div className="slot-title">
+							{i === 0
+								? 'Your profile'
+								: isGroup
+									? `Guest ${i + 1}`
+									: "Your partner's profile"}
 						</div>
-						<div className="booking-info-subtitle">
-							A profile is required for each person staying
-						</div>
-					</span>
-				</div>
-
-				{!isGroup ? (
-					formData.guestProfiles.map((profile, i) => (
-						<div key={i} className="slot-row">
-							<div className="slot-title">
-								{i === 0 ? 'Your profile' : "Your partner's profile"}
-							</div>
-							{profile ? (
-								<ProfileCard profile={profile} />
-							) : (
-								<button className="choose-slot">
-									Choose or create profile
-								</button>
-							)}
-						</div>
-					))
-				) : (
-					<>
-						{formData.guestProfiles.map((profile, i) => (
-							<div key={i} className="slot-row">
-								<div className="guest-row-header">Guest {i + 1}</div>
-								{profile ? (
-									<ProfileCard profile={profile} />
-								) : (
-									<button className="choose-slot">
-										Choose or create profile
-									</button>
-								)}
-							</div>
-						))}
-					</>
+						{profile ? (
+							<ProfileCard profile={profile} youBadge={i === 0} />
+						) : (
+							<button className="choose-slot">Choose or create profile</button>
+						)}
+					</div>
+				))}
+				{hasEmptySlot && (
+					<div className="slot-helper">
+						A profile is required for each person staying.
+					</div>
 				)}
 			</div>
 		</>
