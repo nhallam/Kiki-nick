@@ -1,18 +1,36 @@
 import React from 'react';
 
-import { Listing } from '../data';
+import { Listing, availabilityNights, availabilityRange } from '../data';
 import {
 	Avatar,
 	IconArrowLeft,
 	IconDotsVertical,
 	IconHeart,
-	IconHome,
-	IconPerson,
 	IconShare,
 	RoomPhoto,
 	StatusBar,
 } from '../ui';
 
+const InstaIcon = () => (
+	<svg
+		width="18"
+		height="18"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		strokeWidth="2"
+		strokeLinecap="round"
+	>
+		<rect x="3" y="3" width="18" height="18" rx="5" />
+		<circle cx="12" cy="12" r="4" />
+		<circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" stroke="none" />
+	</svg>
+);
+
+/**
+ * Listing page as one scroll: photos, description, availability, then the
+ * host's profile as its own section at the bottom — no Room/Profile tabs.
+ */
 export function ListingDetailScreen({
 	listing,
 	onBack,
@@ -52,16 +70,14 @@ export function ListingDetailScreen({
 				</div>
 			</div>
 
-			<div className="detail-tabs">
-				<span className="detail-tab active">
-					<IconHome size={20} /> Room
-				</span>
-				<span className="detail-tab">
-					<IconPerson size={20} /> Profile
-				</span>
-			</div>
-
-			<div className="screen-scroll" style={{ paddingBottom: 92 }}>
+			<div
+				className="screen-scroll"
+				style={{
+					paddingBottom: 92,
+					marginTop: 14,
+					borderTop: '1px solid var(--border-light)',
+				}}
+			>
 				<div className="detail-photo">
 					<RoomPhoto variant={listing.photoVariant} />
 					<span className="carousel-dots">
@@ -73,18 +89,59 @@ export function ListingDetailScreen({
 
 				<div className="detail-section">
 					<h2>Description</h2>
-					<p className="body-text">
-						{listing.description.slice(0, 208)}...
-					</p>
+					<p className="body-text">{listing.description.slice(0, 208)}...</p>
 					<span className="read-more">Read more</span>
 				</div>
 
 				<div className="detail-section" style={{ paddingTop: 0 }}>
 					<h2>Available Dates</h2>
 					<div className="avail-chip">
-						<span>21 Aug 2026 → 26 Aug 2026</span>
-						<span style={{ color: 'var(--primary)' }}>5 nights</span>
+						<span>{availabilityRange(listing).replace(' - ', ' → ')} 2026</span>
+						<span style={{ color: 'var(--primary)' }}>
+							{availabilityNights(listing)} nights
+						</span>
 					</div>
+				</div>
+
+				{/* Host profile — its own section instead of a separate tab. */}
+				<div className="detail-section" style={{ paddingTop: 0 }}>
+					<h2>About {listing.listerName}</h2>
+					<div className="vouch-banner">
+						<Avatar
+							variant={listing.vouchedForBy === 'Sara' ? 'sara' : 'generic'}
+							initial={listing.vouchedForBy[0]}
+							size={34}
+						/>
+						Vouched for by {listing.vouchedForBy}
+					</div>
+					<div className="profile-grid">
+						<div>
+							<div className="profile-label">Age</div>
+							<div className="profile-value">{listing.hostAge}</div>
+						</div>
+						<div>
+							<div className="profile-label">Gender</div>
+							<div className="profile-value">{listing.hostGender}</div>
+						</div>
+						<div>
+							<div className="profile-label">Nationality</div>
+							<div className="profile-value">
+								{listing.nationalityFlag} {listing.hostNationality}
+							</div>
+						</div>
+						<div>
+							<div className="profile-label">Home town</div>
+							<div className="profile-value">{listing.hostHometown}</div>
+						</div>
+						<div>
+							<div className="profile-label">Job</div>
+							<div className="profile-value">{listing.hostJob}</div>
+						</div>
+					</div>
+					<div className="insta-heading">Instagram</div>
+					<span className="insta-pill">
+						<InstaIcon /> {listing.instagram}
+					</span>
 				</div>
 			</div>
 

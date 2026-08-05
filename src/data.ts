@@ -21,6 +21,13 @@ export interface Listing {
 	favouritedBy: number;
 	vouchedForBy: string;
 	photoVariant: PhotoVariant;
+	/** Host profile shown at the bottom of the listing page */
+	hostAge: number;
+	hostGender: string;
+	hostNationality: string;
+	hostHometown: string;
+	hostJob: string;
+	instagram: string;
 }
 
 export type PhotoVariant = 'ieva' | 'tash' | 'jake';
@@ -44,6 +51,12 @@ export const LISTINGS: Listing[] = [
 		favouritedBy: 1,
 		vouchedForBy: 'Sara',
 		photoVariant: 'ieva',
+		hostAge: 27,
+		hostGender: 'Female',
+		hostNationality: 'Lithuanian',
+		hostHometown: 'Vilnius, Lithuania',
+		hostJob: 'Product designer',
+		instagram: 'ieva.kas',
 	},
 	{
 		id: 2,
@@ -62,6 +75,12 @@ export const LISTINGS: Listing[] = [
 		favouritedBy: 3,
 		vouchedForBy: 'Ana',
 		photoVariant: 'jake',
+		hostAge: 29,
+		hostGender: 'Male',
+		hostNationality: 'British',
+		hostHometown: 'London, England, GB',
+		hostJob: 'Musician',
+		instagram: 'jake_lf',
 	},
 ];
 
@@ -119,3 +138,27 @@ export const EXISTING_REQUESTS: SentRequest[] = [
 ];
 
 export const MIN_PEOPLE_INTRO_LENGTH = 100;
+
+const SHORT_MONTHS = [
+	'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+	'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+
+export const parseISODate = (s: string) => {
+	const [y, m, d] = s.split('-').map(Number);
+	return new Date(y, m - 1, d);
+};
+
+export const shortDate = (d: Date) =>
+	`${d.getDate()} ${SHORT_MONTHS[d.getMonth()]}`;
+
+/** "16 Aug - 13 Sep" for listing cards / chips. */
+export const availabilityRange = (listing: Listing) =>
+	`${shortDate(parseISODate(listing.availableStart))} - ${shortDate(parseISODate(listing.availableEnd))}`;
+
+export const availabilityNights = (listing: Listing) =>
+	Math.round(
+		(parseISODate(listing.availableEnd).getTime() -
+			parseISODate(listing.availableStart).getTime()) /
+			86400000,
+	);
