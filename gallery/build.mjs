@@ -107,9 +107,9 @@ ${VERSIONS.filter((v) => v.section === s.title)
 		</div>`,
 ).join('\n');
 
-const roundOptions = SECTIONS.map(
+const roundTabs = SECTIONS.map(
 	(s, i) =>
-		`<option value="${s.title}"${i === 0 ? ' selected' : ''}>${s.title}</option>`,
+		`<button class="round-tab${i === 0 ? ' active' : ''}" data-round="${s.title}">${s.title}</button>`,
 ).join('\n');
 
 const chips = VERSIONS.filter((v) => v.branch)
@@ -194,15 +194,24 @@ body {
 	font-size: 15px; color: var(--muted); margin-bottom: 28px; text-align: center;
 	max-width: 420px; line-height: 22px;
 }
-.round-select {
-	font-family: inherit; font-size: 15px; font-weight: 700;
-	color: var(--ink); background: var(--card);
-	border: 1.5px solid var(--line); border-radius: 12px;
-	padding: 10px 14px; cursor: pointer;
+.round-tabs {
+	display: inline-flex;
+	background: var(--card);
+	border: 1.5px solid var(--line);
+	border-radius: 24px;
+	padding: 4px;
+	gap: 4px;
 	margin-bottom: 20px;
 }
-.round-select:hover { border-color: var(--primary); }
-.round-select:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.round-tab {
+	font-family: inherit; font-size: 14.5px; font-weight: 700;
+	color: var(--muted); background: none; border: none;
+	border-radius: 19px; padding: 9px 20px; cursor: pointer;
+	transition: background 0.15s, color 0.15s;
+}
+.round-tab:hover { color: var(--ink); }
+.round-tab.active { background: var(--primary); color: #fff; }
+.round-tab:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
 .cards { display: flex; flex-direction: column; gap: 26px; width: min(440px, 100%); }
 .section-block { display: flex; flex-direction: column; gap: 12px; }
 .section-block[hidden] { display: none; }
@@ -274,9 +283,9 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 	<div class="launcher" id="launcher">
 		<div class="brand"><span class="brand-dot">K</span><h1>Kiki booking flow</h1></div>
 		<p class="sub">Prototype versions of the booking request flow. Pick one to walk through it — everything is clickable.</p>
-		<select class="round-select" id="roundSelect" aria-label="Round">
-${roundOptions}
-		</select>
+		<div class="round-tabs" role="tablist" aria-label="Round">
+${roundTabs}
+		</div>
 		<div class="cards">
 ${cards}
 		</div>
@@ -307,10 +316,14 @@ ${cards}
 		return new TextDecoder().decode(bytes);
 	}
 
-	var roundSelect = document.getElementById('roundSelect');
-	roundSelect.addEventListener('change', function () {
-		document.querySelectorAll('.section-block').forEach(function (block) {
-			block.hidden = block.dataset.section !== roundSelect.value;
+	document.querySelectorAll('.round-tab').forEach(function (tab) {
+		tab.addEventListener('click', function () {
+			document.querySelectorAll('.round-tab').forEach(function (t) {
+				t.classList.toggle('active', t === tab);
+			});
+			document.querySelectorAll('.section-block').forEach(function (block) {
+				block.hidden = block.dataset.section !== tab.dataset.round;
+			});
 		});
 	});
 
