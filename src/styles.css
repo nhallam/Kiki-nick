@@ -1437,7 +1437,9 @@ input {
 
 /* editor sheets (dates / guests) */
 .editor-sheet {
-	height: 88%;
+	/* Hug the content — short sheets (guests) stay short, tall ones
+	   (dates calendar) cap at 88% and scroll inside. */
+	max-height: 88%;
 	background: var(--white);
 	border-top-left-radius: 20px;
 	border-top-right-radius: 20px;
