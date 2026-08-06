@@ -469,8 +469,17 @@ export function ReviewRequestScreen({
 		else setConfirmLeave(true);
 	};
 
+	// Native-style push: slide in from the right on mount, slide back out
+	// (revealing the listing behind) before unmounting on leave.
+	const [closing, setClosing] = useState(false);
+	const handleLeave = () => {
+		setConfirmLeave(false);
+		setClosing(true);
+		setTimeout(onClose, 260);
+	};
+
 	return (
-		<div className="screen">
+		<div className={`screen booking-page${closing ? ' closing' : ''}`}>
 			<StatusBar />
 			<div className="form-header review-head with-back">
 				<button
@@ -872,7 +881,7 @@ export function ReviewRequestScreen({
 							>
 								Stay
 							</button>
-							<button className="dialog-btn destructive" onClick={onClose}>
+							<button className="dialog-btn destructive" onClick={handleLeave}>
 								Leave
 							</button>
 						</div>

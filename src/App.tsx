@@ -62,14 +62,21 @@ export default function App() {
 				/>
 			);
 		case 'booking':
-			// The flow is its own page (no listing peeking behind); dates and
-			// guests editors are sheets that open over the top of it.
+			// The flow is its own page; the listing stays mounted underneath
+			// purely so the push/pop slide reveals it during the transition.
 			return (
-				<ReviewRequestScreen
-					listing={route.listing}
-					onClose={() => setRoute({ name: 'listing', listing: route.listing })}
-					onSubmitted={(formData) => handleSubmitted(route.listing, formData)}
-				/>
+				<>
+					<ListingDetailScreen
+						listing={route.listing}
+						onBack={() => {}}
+						onRequestToBook={() => {}}
+					/>
+					<ReviewRequestScreen
+						listing={route.listing}
+						onClose={() => setRoute({ name: 'listing', listing: route.listing })}
+						onSubmitted={(formData) => handleSubmitted(route.listing, formData)}
+					/>
+				</>
 			);
 		case 'rank':
 			return (
