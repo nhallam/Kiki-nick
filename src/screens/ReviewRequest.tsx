@@ -159,9 +159,7 @@ function DatesSheet({
 						<div className="ws-top">
 							<span className="ws-eyebrow">
 								<IconCalendar size={15} />
-								{windows.length > 1
-									? `${winIndex + 1} of ${windows.length}`
-									: 'Available dates'}
+								Available Dates
 							</span>
 							{windows.length > 1 && (
 								<span className="ws-arrows">
