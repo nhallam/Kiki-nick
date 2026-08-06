@@ -91,7 +91,8 @@ body {
 }
 .round-tab:hover { color: var(--ink); }
 .round-tab.active { background: var(--primary); color: #fff; }
-.round-tab:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.round-tab:focus { outline: none; }
+.round-tab:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 .cards { display: flex; flex-direction: column; gap: 26px; width: min(440px, 100%); }
 .section-block { display: flex; flex-direction: column; gap: 12px; }
 .section-block[hidden] { display: none; }
@@ -164,19 +165,11 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 		<div class="brand"><span class="brand-dot">K</span><h1>Kiki booking flow</h1></div>
 		<p class="sub">Prototype versions of the booking request flow. Pick one to walk through it — everything is clickable.</p>
 		<div class="round-tabs" role="tablist" aria-label="Round">
+<button class="round-tab" data-round="Round 1">Round 1</button>
 <button class="round-tab active" data-round="Round 2">Round 2</button>
-<button class="round-tab" data-round="Round One">Round One</button>
 		</div>
 		<div class="cards">
-<div class="section-block" data-section="Round 2">
-			<div class="section-note">The active direction — client feedback gets applied here.</div>
-<button class="card" data-version="round2">
-				<span class="card-head"><span class="card-label">Round 2 — Working version</span><span class="card-go">Open →</span></span>
-				<span class="card-blurb">Moving forward with Option 3 after client review. All Round 2 changes land here.</span>
-				<span class="card-branch">round2</span>
-			</button>
-		</div>
-<div class="section-block" data-section="Round One" hidden>
+<div class="section-block" data-section="Round 1" hidden>
 			<div class="section-note">The exploration that led to the decision, kept for reference.</div>
 <button class="card" data-version="current">
 				<span class="card-head"><span class="card-label">Current flow</span><span class="card-go">Open →</span></span>
@@ -197,6 +190,14 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 				<span class="card-head"><span class="card-label">Option 3</span><span class="card-go">Open →</span></span>
 				<span class="card-blurb">Review-centric (Airbnb-style): one "Review and request" hub with Change buttons opening dates/guests editor sheets, price details expander, trust line — no wizard. Chosen by the client as the Round 2 direction.</span>
 				<span class="card-branch">booking-flow-airbnb-style</span>
+			</button>
+		</div>
+<div class="section-block" data-section="Round 2">
+			<div class="section-note">The active direction — client feedback gets applied here.</div>
+<button class="card" data-version="round2">
+				<span class="card-head"><span class="card-label">Round 2 — Working version</span><span class="card-go">Open →</span></span>
+				<span class="card-blurb">Moving forward with Option 3 after client review. All Round 2 changes land here.</span>
+				<span class="card-branch">round2</span>
 			</button>
 		</div>
 		</div>
@@ -229,6 +230,7 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 
 	document.querySelectorAll('.round-tab').forEach(function (tab) {
 		tab.addEventListener('click', function () {
+			tab.blur();
 			document.querySelectorAll('.round-tab').forEach(function (t) {
 				t.classList.toggle('active', t === tab);
 			});

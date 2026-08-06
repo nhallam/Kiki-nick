@@ -30,14 +30,14 @@ const VERSIONS = [
 	{
 		id: 'current',
 		label: 'Current flow',
-		section: 'Round One',
+		section: 'Round 1',
 		blurb: 'Faithful rebuild of the live app — 4 steps, exactly as shipped.',
 		branch: 'claude/kiki-booking-flow-redesign-e0rhj6',
 	},
 	{
 		id: 'option1',
 		label: 'Option 1',
-		section: 'Round One',
+		section: 'Round 1',
 		blurb:
 			'Best-practice polish: live price preview, "Select all" tip, character counter, pre-send recap, leave guard.',
 		branch: 'booking-flow-edits',
@@ -45,7 +45,7 @@ const VERSIONS = [
 	{
 		id: 'option2',
 		label: 'Option 2',
-		section: 'Round One',
+		section: 'Round 1',
 		blurb:
 			'Restructured: dates & payments merged into one step (3-step flow), availability chip, intro prompt chips, 45+ day split payments.',
 		branch: 'booking-flow-bigger-ideas',
@@ -53,7 +53,7 @@ const VERSIONS = [
 	{
 		id: 'option3',
 		label: 'Option 3',
-		section: 'Round One',
+		section: 'Round 1',
 		blurb:
 			'Review-centric (Airbnb-style): one "Review and request" hub with Change buttons opening dates/guests editor sheets, price details expander, trust line — no wizard. Chosen by the client as the Round 2 direction.',
 		branch: 'booking-flow-airbnb-style',
@@ -62,12 +62,13 @@ const VERSIONS = [
 
 const SECTIONS = [
 	{
-		title: 'Round 2',
-		note: 'The active direction — client feedback gets applied here.',
+		title: 'Round 1',
+		note: 'The exploration that led to the decision, kept for reference.',
 	},
 	{
-		title: 'Round One',
-		note: 'The exploration that led to the decision, kept for reference.',
+		title: 'Round 2',
+		note: 'The active direction — client feedback gets applied here.',
+		default: true,
 	},
 ];
 
@@ -99,7 +100,7 @@ const cardFor = (v) =>
 
 // One block per round; the round dropdown toggles which block is visible.
 const cards = SECTIONS.map(
-	(s, i) => `<div class="section-block" data-section="${s.title}"${i === 0 ? '' : ' hidden'}>
+	(s) => `<div class="section-block" data-section="${s.title}"${s.default ? '' : ' hidden'}>
 			<div class="section-note">${s.note}</div>
 ${VERSIONS.filter((v) => v.section === s.title)
 	.map(cardFor)
@@ -108,8 +109,8 @@ ${VERSIONS.filter((v) => v.section === s.title)
 ).join('\n');
 
 const roundTabs = SECTIONS.map(
-	(s, i) =>
-		`<button class="round-tab${i === 0 ? ' active' : ''}" data-round="${s.title}">${s.title}</button>`,
+	(s) =>
+		`<button class="round-tab${s.default ? ' active' : ''}" data-round="${s.title}">${s.title}</button>`,
 ).join('\n');
 
 const chips = VERSIONS.filter((v) => v.branch)
@@ -211,7 +212,8 @@ body {
 }
 .round-tab:hover { color: var(--ink); }
 .round-tab.active { background: var(--primary); color: #fff; }
-.round-tab:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.round-tab:focus { outline: none; }
+.round-tab:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 .cards { display: flex; flex-direction: column; gap: 26px; width: min(440px, 100%); }
 .section-block { display: flex; flex-direction: column; gap: 12px; }
 .section-block[hidden] { display: none; }
@@ -318,6 +320,7 @@ ${cards}
 
 	document.querySelectorAll('.round-tab').forEach(function (tab) {
 		tab.addEventListener('click', function () {
+			tab.blur();
 			document.querySelectorAll('.round-tab').forEach(function (t) {
 				t.classList.toggle('active', t === tab);
 			});
