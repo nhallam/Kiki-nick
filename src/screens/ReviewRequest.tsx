@@ -21,6 +21,7 @@ import {
 import {
 	Avatar,
 	IconCheck,
+	IconCalendar,
 	IconChevronLeft,
 	IconChevronRight,
 	IconClose,
@@ -109,9 +110,15 @@ function DatesSheet({
 		!!end &&
 		start.getTime() === currentWin.start.getTime() &&
 		end.getTime() === currentWin.end.getTime();
+	// Toggle: taking the window again clears the selection.
 	const selectWindow = () => {
-		setStart(currentWin.start);
-		setEnd(currentWin.end);
+		if (winSelected) {
+			setStart(null);
+			setEnd(null);
+		} else {
+			setStart(currentWin.start);
+			setEnd(currentWin.end);
+		}
 	};
 	const fmtShort = (d: Date) =>
 		`${d.getDate()} ${MONTHS[d.getMonth()].slice(0, 3)}`;
@@ -151,8 +158,9 @@ function DatesSheet({
 					<div className="window-stepper">
 						<div className="ws-top">
 							<span className="ws-eyebrow">
+								<IconCalendar size={15} />
 								{windows.length > 1
-									? `Window ${winIndex + 1} of ${windows.length}`
+									? `${winIndex + 1} of ${windows.length}`
 									: 'Available dates'}
 							</span>
 							{windows.length > 1 && (
