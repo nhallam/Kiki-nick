@@ -20,14 +20,24 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 const VERSIONS = [
 	{
+		id: 'round2',
+		label: 'Round 2 — Working version',
+		section: 'Round 2',
+		blurb:
+			'Moving forward with Option 3 after client review. All Round 2 changes land here.',
+		branch: 'round2',
+	},
+	{
 		id: 'current',
 		label: 'Current flow',
+		section: 'Round One',
 		blurb: 'Faithful rebuild of the live app — 4 steps, exactly as shipped.',
 		branch: 'claude/kiki-booking-flow-redesign-e0rhj6',
 	},
 	{
 		id: 'option1',
 		label: 'Option 1',
+		section: 'Round One',
 		blurb:
 			'Best-practice polish: live price preview, "Select all" tip, character counter, pre-send recap, leave guard.',
 		branch: 'booking-flow-edits',
@@ -35,6 +45,7 @@ const VERSIONS = [
 	{
 		id: 'option2',
 		label: 'Option 2',
+		section: 'Round One',
 		blurb:
 			'Restructured: dates & payments merged into one step (3-step flow), availability chip, intro prompt chips, 45+ day split payments.',
 		branch: 'booking-flow-bigger-ideas',
@@ -42,9 +53,21 @@ const VERSIONS = [
 	{
 		id: 'option3',
 		label: 'Option 3',
+		section: 'Round One',
 		blurb:
-			'Review-centric (Airbnb-style): one "Review and request" hub with Change buttons opening dates/guests editor sheets, price details expander, trust line — no wizard.',
+			'Review-centric (Airbnb-style): one "Review and request" hub with Change buttons opening dates/guests editor sheets, price details expander, trust line — no wizard. Chosen by the client as the Round 2 direction.',
 		branch: 'booking-flow-airbnb-style',
+	},
+];
+
+const SECTIONS = [
+	{
+		title: 'Round 2',
+		note: 'The active direction — client feedback gets applied here.',
+	},
+	{
+		title: 'Round One',
+		note: 'The exploration that led to the decision, kept for reference.',
 	},
 ];
 
@@ -62,7 +85,7 @@ for (const v of VERSIONS) {
 	console.log(`${v.id}: ${v.branch} (${(html.length / 1024).toFixed(0)} kB)`);
 }
 
-const cards = VERSIONS.map((v) =>
+const cardFor = (v) =>
 	v.branch
 		? `<button class="card" data-version="${v.id}">
 				<span class="card-head"><span class="card-label">${v.label}</span><span class="card-go">Open →</span></span>
@@ -72,13 +95,24 @@ const cards = VERSIONS.map((v) =>
 		: `<div class="card placeholder">
 				<span class="card-head"><span class="card-label">${v.label}</span><span class="card-soon">Coming soon</span></span>
 				<span class="card-blurb">${v.blurb}</span>
-			</div>`,
+			</div>`;
+
+const cards = SECTIONS.map(
+	(s) => `<div class="section-block">
+			<div class="section-title">${s.title}</div>
+			<div class="section-note">${s.note}</div>
+${VERSIONS.filter((v) => v.section === s.title)
+	.map(cardFor)
+	.join('\n')}
+		</div>`,
 ).join('\n');
 
 const chips = VERSIONS.filter((v) => v.branch)
 	.map(
 		(v) =>
-			`<button class="bar-chip" data-version="${v.id}">${v.label}</button>`,
+			`<button class="bar-chip" data-version="${v.id}">${
+				v.id === 'round2' ? 'Round 2' : v.label
+			}</button>`,
 	)
 	.join('');
 
@@ -155,7 +189,13 @@ body {
 	font-size: 15px; color: var(--muted); margin-bottom: 28px; text-align: center;
 	max-width: 420px; line-height: 22px;
 }
-.cards { display: flex; flex-direction: column; gap: 12px; width: min(440px, 100%); }
+.cards { display: flex; flex-direction: column; gap: 26px; width: min(440px, 100%); }
+.section-block { display: flex; flex-direction: column; gap: 12px; }
+.section-title {
+	font-size: 13px; font-weight: 800; letter-spacing: 0.08em;
+	text-transform: uppercase; color: var(--primary-dark);
+}
+.section-note { font-size: 13px; color: var(--muted); margin: -8px 0 2px; }
 .card {
 	display: flex; flex-direction: column; gap: 6px; text-align: left;
 	background: var(--card); border: 1px solid var(--line); border-radius: 14px;
