@@ -2001,6 +2001,65 @@ input {
 	margin-top: 8px;
 }
 
+/* Availability window cards (nights | dates | price), as in the live app */
+.avail-window-card {
+	display: flex;
+	align-items: center;
+	border: 1px solid var(--border-medium);
+	border-radius: 16px;
+	padding: 16px 18px;
+	box-shadow: 0 1px 4px rgba(163, 163, 163, 0.12);
+}
+.avail-window-card + .avail-window-card {
+	margin-top: 12px;
+}
+.avail-window-card .nights-block {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-width: 52px;
+	flex-shrink: 0;
+}
+.avail-window-card .nights-block .num {
+	font-size: 24px;
+	font-weight: 700;
+	line-height: 26px;
+}
+.avail-window-card .nights-block .unit,
+.avail-window-card .price-block .unit {
+	font-size: 13px;
+	color: var(--gray);
+}
+.avail-window-card .divider {
+	width: 1px;
+	align-self: stretch;
+	background: var(--border-light);
+	margin: -2px 0 -2px 14px;
+}
+.avail-window-card .dates {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	font-size: 17px;
+	font-weight: 600;
+}
+.avail-window-card .dates .dash {
+	color: var(--gray);
+}
+.avail-window-card .price-block {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	flex-shrink: 0;
+}
+.avail-window-card .price-block .amount {
+	font-size: 22px;
+	font-weight: 700;
+	line-height: 24px;
+}
+
 /* Multi-window availability list in the dates sheet */
 .avail-context.multi {
 	align-items: flex-start;

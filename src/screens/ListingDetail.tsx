@@ -102,13 +102,20 @@ export function ListingDetailScreen({
 				<div className="detail-section" style={{ paddingTop: 0 }}>
 					<h2>Available Dates</h2>
 					{listingWindows(listing).map((w, i) => (
-						<div className="avail-chip" key={i}>
-							<span>
-								{shortDate(parseISODate(w.start))} →{' '}
-								{shortDate(parseISODate(w.end))} 2026
+						<div className="avail-window-card" key={i}>
+							<span className="nights-block">
+								<span className="num">{windowNights(w)}</span>
+								<span className="unit">nights</span>
 							</span>
-							<span style={{ color: 'var(--primary)' }}>
-								{windowNights(w)} nights
+							<span className="divider" />
+							<span className="dates">
+								{shortDate(parseISODate(w.start))}
+								<span className="dash">–</span>
+								{shortDate(parseISODate(w.end))}
+							</span>
+							<span className="price-block">
+								<span className="amount">£{listing.nightlyRate}</span>
+								<span className="unit">/night</span>
 							</span>
 						</div>
 					))}
