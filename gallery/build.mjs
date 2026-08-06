@@ -177,8 +177,8 @@ body {
 /* launcher */
 .launcher {
 	flex: 1; display: flex; flex-direction: column;
-	align-items: center; justify-content: center;
-	padding: 32px 20px; gap: 0;
+	align-items: center; justify-content: flex-start;
+	padding: 48px 20px 32px; gap: 0;
 	overflow-y: auto;
 }
 .brand {
