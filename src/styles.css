@@ -1997,6 +1997,23 @@ input {
 	font-size: 15px;
 	font-weight: 600;
 }
+.avail-chip + .avail-chip {
+	margin-top: 8px;
+}
+
+/* Multi-window availability list in the dates sheet */
+.avail-context.multi {
+	align-items: flex-start;
+}
+.avail-context.multi svg {
+	margin-top: 2px;
+	flex-shrink: 0;
+}
+.avail-context .windows {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
 
 .listing-cta-bar {
 	position: absolute;
