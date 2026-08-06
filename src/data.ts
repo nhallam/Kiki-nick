@@ -12,8 +12,13 @@ export interface Listing {
 	city: string;
 	nightlyRate: number;
 	roomType: 'Room' | 'Whole place';
-	availableStart: string; // yyyy-mm-dd inclusive
-	availableEnd: string;
+	availableStart: string; // yyyy-mm-dd inclusive (overall span start)
+	availableEnd: string; // overall span end
+	/**
+	 * Distinct availability windows within the span. Most listings have one;
+	 * omitted = the whole start–end range. Requests can't cross windows.
+	 */
+	availabilityWindows?: { start: string; end: string }[];
 	openToCouples: boolean;
 	securityDeposit: number;
 	nationalityFlag: string; // emoji flag
@@ -42,7 +47,12 @@ export const LISTINGS: Listing[] = [
 		nightlyRate: 35,
 		roomType: 'Room',
 		availableStart: '2026-08-21',
-		availableEnd: '2026-08-26',
+		availableEnd: '2026-10-09',
+		availabilityWindows: [
+			{ start: '2026-08-21', end: '2026-08-26' },
+			{ start: '2026-09-04', end: '2026-09-11' },
+			{ start: '2026-10-02', end: '2026-10-09' },
+		],
 		openToCouples: false,
 		securityDeposit: 160,
 		nationalityFlag: '🇱🇹',
@@ -100,16 +110,27 @@ export const parseISODate = (s: string) => {
 export const shortDate = (d: Date) =>
 	`${d.getDate()} ${SHORT_MONTHS[d.getMonth()]}`;
 
-/** "16 Aug - 31 Oct" for listing cards / chips. */
-export const availabilityRange = (listing: Listing) =>
-	`${shortDate(parseISODate(listing.availableStart))} - ${shortDate(parseISODate(listing.availableEnd))}`;
+/** The listing's availability windows (falls back to the overall span). */
+export const listingWindows = (listing: Listing) =>
+	listing.availabilityWindows ?? [
+		{ start: listing.availableStart, end: listing.availableEnd },
+	];
 
-export const availabilityNights = (listing: Listing) =>
+/** "16 Aug - 31 Oct" for listing cards / chips ("+2 more" when windowed). */
+export const availabilityRange = (listing: Listing) => {
+	const windows = listingWindows(listing);
+	const first = `${shortDate(parseISODate(windows[0].start))} - ${shortDate(parseISODate(windows[0].end))}`;
+	return windows.length > 1 ? `${first} +${windows.length - 1} more` : first;
+};
+
+export const windowNights = (w: { start: string; end: string }) =>
 	Math.round(
-		(parseISODate(listing.availableEnd).getTime() -
-			parseISODate(listing.availableStart).getTime()) /
+		(parseISODate(w.end).getTime() - parseISODate(w.start).getTime()) /
 			86400000,
 	);
+
+export const availabilityNights = (listing: Listing) =>
+	listingWindows(listing).reduce((sum, w) => sum + windowNights(w), 0);
 
 export interface UserProfile {
 	id: number;

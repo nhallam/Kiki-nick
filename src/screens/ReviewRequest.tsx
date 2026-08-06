@@ -14,6 +14,7 @@ import React, { useMemo, useState } from 'react';
 import {
 	Listing,
 	MIN_PEOPLE_INTRO_LENGTH,
+	listingWindows,
 	MY_PROFILE,
 	UserProfile,
 } from '../data';
@@ -55,8 +56,21 @@ function DatesSheet({
 	onSave: (moveIn: Date, moveOut: Date) => void;
 	onClose: () => void;
 }) {
-	const availStart = parseISO(listing.availableStart);
-	const availEnd = parseISO(listing.availableEnd);
+	// A request lives inside one availability window; the calendar disables
+	// the gaps and starting a range in another window restarts the selection.
+	const windows = useMemo(
+		() =>
+			listingWindows(listing).map((w) => ({
+				start: parseISO(w.start),
+				end: parseISO(w.end),
+			})),
+		[listing],
+	);
+	const availStart = windows[0].start;
+	const availEnd = windows[windows.length - 1].end;
+	const windowOf = (d: Date) =>
+		windows.find((w) => d >= w.start && d <= w.end) ?? null;
+
 	const [start, setStart] = useState<Date | null>(moveInDate);
 	const [end, setEnd] = useState<Date | null>(moveOutDate);
 
@@ -74,10 +88,9 @@ function DatesSheet({
 	const month = months[Math.min(monthIndex, months.length - 1)];
 
 	const handleSelect = (date: Date) => {
-		if (!start || end) {
-			setStart(date);
-			setEnd(null);
-		} else if (date <= start) {
+		const win = windowOf(date);
+		if (!win) return;
+		if (!start || end || date <= start || windowOf(start) !== win) {
 			setStart(date);
 			setEnd(null);
 		} else {
@@ -86,14 +99,14 @@ function DatesSheet({
 	};
 
 	const nights = start && end ? diffDays(end, start) : 0;
-	const minNights = minNightsForAvailability(availStart, availEnd);
+	// Min-stay applies to the window the selection is in, not the whole span.
+	const selectedWindow = start ? windowOf(start) : null;
+	const minNights = selectedWindow
+		? minNightsForAvailability(selectedWindow.start, selectedWindow.end)
+		: 0;
 	const daysShort = start && end ? Math.max(0, minNights - nights) : 0;
 	const isShort = daysShort > 0;
 	const canSave = !!start && !!end && !isShort;
-
-	// One window today; listings with several availability windows would
-	// simply add more rows here (and the calendar disables the gaps).
-	const availWindows = [{ start: availStart, end: availEnd }];
 
 	return (
 		<div className="sheet-overlay" onClick={onClose}>
@@ -105,13 +118,17 @@ function DatesSheet({
 					</button>
 				</div>
 				<div className="editor-body">
-					<div className="avail-context">
+					<div className={`avail-context${windows.length > 1 ? ' multi' : ''}`}>
 						<IconCalendar size={15} />
-						<span>
-							Available dates:{' '}
-							{availWindows
-								.map((w) => `${formatDoMMM(w.start)} – ${formatDoMMM(w.end)}`)
-								.join(' · ')}
+						<span className="windows">
+							<span className="windows-label">
+								Available dates{windows.length > 1 ? ` (${windows.length} windows)` : ''}:
+							</span>
+							{windows.map((w, i) => (
+								<span key={i}>
+									{formatDoMMM(w.start)} – {formatDoMMM(w.end)}
+								</span>
+							))}
 						</span>
 					</div>
 					{start && end && (
@@ -134,6 +151,7 @@ function DatesSheet({
 						minDate={availStart}
 						maxDate={availEnd}
 						onSelectDate={handleSelect}
+						isDateDisabled={(d) => !windowOf(d)}
 						onPrevMonth={() => setMonthIndex((i) => Math.max(0, i - 1))}
 						onNextMonth={() =>
 							setMonthIndex((i) => Math.min(months.length - 1, i + 1))
@@ -380,9 +398,11 @@ export function ReviewRequestScreen({
 }) {
 	const availStart = parseISO(listing.availableStart);
 	const availEnd = parseISO(listing.availableEnd);
-	// Short windows start with the full duration prefilled (the recommended
-	// choice); long windows start empty so the user picks deliberately.
-	const prefill = diffDays(availEnd, availStart) <= 14;
+	// A single short window starts with the full duration prefilled (the
+	// recommended choice); long spans and multi-window listings start empty
+	// so the user picks a window deliberately.
+	const prefill =
+		listingWindows(listing).length === 1 && diffDays(availEnd, availStart) <= 14;
 
 	const [formData, setFormData] = useState<BookingFormData>({
 		moveInDate: prefill ? availStart : null,

@@ -99,6 +99,7 @@ export function DateRangeCalendar({
 	onNextMonth,
 	prevMonthLabel,
 	nextMonthLabel,
+	isDateDisabled,
 }: {
 	month: Date;
 	selectedStart: Date | null;
@@ -111,6 +112,8 @@ export function DateRangeCalendar({
 	/** Short label of the adjacent available month ("Sep"), null at bounds. */
 	prevMonthLabel: string | null;
 	nextMonthLabel: string | null;
+	/** Extra per-day disabling (e.g. gaps between availability windows). */
+	isDateDisabled?: (d: Date) => boolean;
 }) {
 	const first = new Date(month.getFullYear(), month.getMonth(), 1);
 	const daysInMonth = new Date(
@@ -127,7 +130,8 @@ export function DateRangeCalendar({
 		),
 	];
 
-	const disabled = (d: Date) => d < minDate || d > maxDate;
+	const disabled = (d: Date) =>
+		d < minDate || d > maxDate || (isDateDisabled?.(d) ?? false);
 	const inRange = (d: Date) =>
 		!!selectedStart && !!selectedEnd && d > selectedStart && d < selectedEnd;
 

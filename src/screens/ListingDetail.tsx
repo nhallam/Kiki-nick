@@ -1,6 +1,12 @@
 import React from 'react';
 
-import { Listing, availabilityNights, availabilityRange } from '../data';
+import {
+	Listing,
+	listingWindows,
+	parseISODate,
+	shortDate,
+	windowNights,
+} from '../data';
 import {
 	Avatar,
 	IconArrowLeft,
@@ -95,12 +101,17 @@ export function ListingDetailScreen({
 
 				<div className="detail-section" style={{ paddingTop: 0 }}>
 					<h2>Available Dates</h2>
-					<div className="avail-chip">
-						<span>{availabilityRange(listing).replace(' - ', ' → ')} 2026</span>
-						<span style={{ color: 'var(--primary)' }}>
-							{availabilityNights(listing)} nights
-						</span>
-					</div>
+					{listingWindows(listing).map((w, i) => (
+						<div className="avail-chip" key={i}>
+							<span>
+								{shortDate(parseISODate(w.start))} →{' '}
+								{shortDate(parseISODate(w.end))} 2026
+							</span>
+							<span style={{ color: 'var(--primary)' }}>
+								{windowNights(w)} nights
+							</span>
+						</div>
+					))}
 				</div>
 
 				{/* Host profile — its own section instead of a separate tab. */}
