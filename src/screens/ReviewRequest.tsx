@@ -23,7 +23,6 @@ import {
 	IconCheck,
 	IconChevronLeft,
 	IconClose,
-	IconStar,
 	RoomPhoto,
 	StatusBar,
 } from '../ui';
@@ -90,12 +89,11 @@ function DatesSheet({
 	const minNights = minNightsForAvailability(availStart, availEnd);
 	const daysShort = start && end ? Math.max(0, minNights - nights) : 0;
 	const isShort = daysShort > 0;
-	const isFullDuration =
-		!!start &&
-		!!end &&
-		start.getTime() === availStart.getTime() &&
-		end.getTime() === availEnd.getTime();
 	const canSave = !!start && !!end && !isShort;
+
+	// One window today; listings with several availability windows would
+	// simply add more rows here (and the calendar disables the gaps).
+	const availWindows = [{ start: availStart, end: availEnd }];
 
 	return (
 		<div className="sheet-overlay" onClick={onClose}>
@@ -109,30 +107,13 @@ function DatesSheet({
 				<div className="editor-body">
 					<div className="avail-context">
 						<IconCalendar size={15} />
-						{listing.listerName}'s dates: {formatDoMMM(availStart)} –{' '}
-						{formatDoMMM(availEnd)}
+						<span>
+							Available dates:{' '}
+							{availWindows
+								.map((w) => `${formatDoMMM(w.start)} – ${formatDoMMM(w.end)}`)
+								.join(' · ')}
+						</span>
 					</div>
-					<button
-						className={`tip-card actionable${isFullDuration ? ' done' : ''}`}
-						onClick={() => {
-							setStart(availStart);
-							setEnd(availEnd);
-						}}
-					>
-						<span className="tip-text">
-							<IconStar size={16} />
-							book for the full duration to be top pick
-						</span>
-						<span className="tip-action">
-							{isFullDuration ? (
-								<>
-									<IconCheck size={14} /> Selected
-								</>
-							) : (
-								'Select all'
-							)}
-						</span>
-					</button>
 					{start && end && (
 						<div className={`selected-card${isShort ? ' short' : ''}`}>
 							<div className="header">
