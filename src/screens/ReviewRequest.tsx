@@ -262,70 +262,63 @@ function GuestsSheet({
 					</button>
 				</div>
 				<div className="editor-body">
-					<div className="section-label">Who's coming?</div>
+					<div className="section-label centered">Who's coming?</div>
 
-					<div className="slot-row">
-						<div className="profile-card">
-							<Avatar
-								variant="me"
-								initial={MY_PROFILE.name[0]}
-								size={48}
-								flag={MY_PROFILE.nationalityFlag}
-							/>
-							<span className="info">
-								<span className="name-row">
-									{MY_PROFILE.name} <span>{MY_PROFILE.nationalityFlag}</span>
-									<span className="you-badge">You</span>
-								</span>
-								<span className="subtitle">
-									{MY_PROFILE.occupation}, {MY_PROFILE.age}
-								</span>
-							</span>
+					<div className="guest-hero">
+						<Avatar
+							variant="me"
+							initial={MY_PROFILE.name[0]}
+							size={84}
+							flag={MY_PROFILE.nationalityFlag}
+						/>
+						<div className="guest-hero-name">
+							{MY_PROFILE.name} <span>{MY_PROFILE.nationalityFlag}</span>
+							<span className="you-badge">You</span>
+						</div>
+						<div className="guest-hero-sub">
+							{MY_PROFILE.occupation}, {MY_PROFILE.age}
 						</div>
 					</div>
 
 					{soloOnly ? (
-						<div className="slot-helper">
+						<div className="slot-helper centered">
 							This place is only open for one person.
 						</div>
 					) : (
 						<>
 							{extras.map((guest, i) => (
-								<div key={i} className="slot-row">
-									<div className="guest-row-header">
-										<span>
-											{guest.relation === 'partner'
-												? 'Your partner'
-												: `Guest ${i + 2}`}{' '}
-											<span className="relation-tag">
-												{guest.relation === 'partner' ? 'Partner' : 'Friend'}
-											</span>
-										</span>
-										<button
-											className="guest-remove"
-											onClick={() => removeGuest(i)}
-											aria-label="Remove guest"
-										>
-											<IconClose size={16} />
-										</button>
-									</div>
+								<div key={i} className="guest-hero">
 									{guest.profile ? (
-										<div className="profile-card">
-											<Avatar initial={guest.profile.name[0]} size={48} />
-											<span className="info">
-												<span className="name-row">{guest.profile.name}</span>
-											</span>
-										</div>
+										<Avatar initial={guest.profile.name[0]} size={84} />
 									) : (
-										<button className="choose-slot">
+										<div className="guest-hero-placeholder">?</div>
+									)}
+									<div className="guest-hero-name">
+										{guest.profile
+											? guest.profile.name
+											: guest.relation === 'partner'
+												? 'Your partner'
+												: `Guest ${i + 2}`}
+										<span className="relation-tag">
+											{guest.relation === 'partner' ? 'Partner' : 'Friend'}
+										</span>
+									</div>
+									{!guest.profile && (
+										<button className="choose-slot hero">
 											Choose or create profile
 										</button>
 									)}
+									<button
+										className="guest-hero-remove"
+										onClick={() => removeGuest(i)}
+									>
+										Remove
+									</button>
 								</div>
 							))}
 
 							{choosingRelation ? (
-								<div className="relation-chooser">
+								<div className="relation-chooser centered">
 									<div className="slot-title">Who are they?</div>
 									<div className="relation-chips">
 										<button
@@ -351,15 +344,15 @@ function GuestsSheet({
 								</div>
 							) : (
 								<button
-									className="choose-slot"
+									className="add-guest-btn"
 									onClick={() => setChoosingRelation(true)}
 								>
-									+ Add another guest
+									+ Add guest
 								</button>
 							)}
 
 							{hasEmptySlot && (
-								<div className="slot-helper" style={{ marginTop: 10 }}>
+								<div className="slot-helper centered" style={{ marginTop: 10 }}>
 									A profile is required for each person staying.
 								</div>
 							)}
