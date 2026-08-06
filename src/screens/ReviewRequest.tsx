@@ -16,6 +16,7 @@ import {
 	MIN_PEOPLE_INTRO_LENGTH,
 	listingWindows,
 	MY_PROFILE,
+	OTHER_PROFILES,
 	UserProfile,
 } from '../data';
 import {
@@ -263,25 +264,18 @@ function DatesSheet({
 
 /* ---------- Guests editor sheet (guest-list-first) ---------- */
 
-interface ExtraGuest {
-	relation: 'partner' | 'friend';
-	profile: UserProfile | null;
-}
-
 /**
- * No "who's staying" type question: the sheet is just the list of who's
- * coming, starting with you. Adding a guest asks "partner or friend?" inline,
- * and Individual / Couple / Group is derived from the list.
+ * No "who's staying" or relation questions: the sheet is just the list of
+ * who's coming, starting with you. Adding a guest goes straight to a
+ * profile slot; the booking type is derived from the head count.
  */
 function GuestsSheet({
 	listing,
-	whoIsStaying,
 	guestProfiles,
 	onSave,
 	onClose,
 }: {
 	listing: Listing;
-	whoIsStaying: BookingFormData['whoIsStaying'];
 	guestProfiles: (UserProfile | null)[];
 	onSave: (
 		who: BookingFormData['whoIsStaying'],
@@ -289,40 +283,25 @@ function GuestsSheet({
 	) => void;
 	onClose: () => void;
 }) {
-	const [extras, setExtras] = useState<ExtraGuest[]>(() =>
-		guestProfiles.slice(1).map((profile, i) => ({
-			relation:
-				whoIsStaying === 'couple' && i === 0 ? 'partner' : 'friend',
-			profile,
-		})),
+	const [extras, setExtras] = useState<(UserProfile | null)[]>(() =>
+		guestProfiles.slice(1),
 	);
-	const [choosingRelation, setChoosingRelation] = useState(false);
 
 	// Not open to couples ⇒ single-occupancy: no adding guests at all.
 	const soloOnly = !listing.openToCouples;
-	const partnerTaken = extras.some((g) => g.relation === 'partner');
-	const partnerDisabled = partnerTaken;
 
 	const derivedWho: BookingFormData['whoIsStaying'] =
-		extras.length === 0
-			? 'individual'
-			: extras.length === 1 && extras[0].relation === 'partner'
-				? 'couple'
-				: 'group';
-	const DERIVED_LABEL: Record<BookingFormData['whoIsStaying'], string> = {
-		individual: 'an Individual',
-		couple: 'a Couple',
-		group: 'a Group',
-	};
+		extras.length === 0 ? 'individual' : 'group';
 
-	const addGuest = (relation: ExtraGuest['relation']) => {
-		setExtras((prev) => [...prev, { relation, profile: null }]);
-		setChoosingRelation(false);
-	};
+	const addGuest = () => setExtras((prev) => [...prev, null]);
+	const fillGuest = (index: number) =>
+		setExtras((prev) =>
+			prev.map((p, i) => (i === index ? OTHER_PROFILES[0] : p)),
+		);
 	const removeGuest = (index: number) =>
 		setExtras((prev) => prev.filter((_, i) => i !== index));
 
-	const hasEmptySlot = extras.some((g) => !g.profile);
+	const hasEmptySlot = extras.some((g) => !g);
 
 	return (
 		<div className="sheet-overlay" onClick={onClose}>
@@ -358,25 +337,26 @@ function GuestsSheet({
 						</div>
 					) : (
 						<>
-							{extras.map((guest, i) => (
+							{extras.map((profile, i) => (
 								<div key={i} className="guest-hero">
-									{guest.profile ? (
-										<Avatar initial={guest.profile.name[0]} size={84} />
+									{profile ? (
+										<Avatar initial={profile.name[0]} size={84} />
 									) : (
 										<div className="guest-hero-placeholder">?</div>
 									)}
 									<div className="guest-hero-name">
-										{guest.profile
-											? guest.profile.name
-											: guest.relation === 'partner'
-												? 'Your partner'
-												: `Guest ${i + 2}`}
-										<span className="relation-tag">
-											{guest.relation === 'partner' ? 'Partner' : 'Friend'}
-										</span>
+										{profile ? profile.name : `Guest ${i + 2}`}
 									</div>
-									{!guest.profile && (
-										<button className="choose-slot hero">
+									{profile && (
+										<div className="guest-hero-sub">
+											{profile.occupation}, {profile.age}
+										</div>
+									)}
+									{!profile && (
+										<button
+											className="choose-slot hero"
+											onClick={() => fillGuest(i)}
+										>
 											Choose or create profile
 										</button>
 									)}
@@ -389,39 +369,9 @@ function GuestsSheet({
 								</div>
 							))}
 
-							{choosingRelation ? (
-								<div className="relation-chooser centered">
-									<div className="slot-title">Who are they?</div>
-									<div className="relation-chips">
-										<button
-											className="relation-chip"
-											disabled={partnerDisabled}
-											onClick={() => addGuest('partner')}
-										>
-											My partner
-										</button>
-										<button
-											className="relation-chip"
-											onClick={() => addGuest('friend')}
-										>
-											A friend
-										</button>
-										<button
-											className="relation-chip cancel"
-											onClick={() => setChoosingRelation(false)}
-										>
-											Cancel
-										</button>
-									</div>
-								</div>
-							) : (
-								<button
-									className="add-guest-btn"
-									onClick={() => setChoosingRelation(true)}
-								>
-									+ Add guest
-								</button>
-							)}
+							<button className="add-guest-btn" onClick={addGuest}>
+								+ Add guest
+							</button>
 
 							{hasEmptySlot && (
 								<div className="slot-helper centered" style={{ marginTop: 10 }}>
@@ -430,7 +380,9 @@ function GuestsSheet({
 							)}
 
 							<div className="derived-note">
-								This will be sent as {DERIVED_LABEL[derivedWho]} booking.
+								{derivedWho === 'individual'
+									? 'This will be sent as an Individual booking.'
+									: `This will be sent as a booking for ${extras.length + 1} people.`}
 							</div>
 						</>
 					)}
@@ -438,9 +390,7 @@ function GuestsSheet({
 				<div className="editor-footer">
 					<button
 						className="btn-primary square"
-						onClick={() =>
-							onSave(derivedWho, [MY_PROFILE, ...extras.map((g) => g.profile)])
-						}
+						onClick={() => onSave(derivedWho, [MY_PROFILE, ...extras])}
 					>
 						Save guests
 					</button>
@@ -852,11 +802,7 @@ export function ReviewRequestScreen({
 										<Avatar initial={p.name[0]} size={44} />
 										<span className="info">
 											<span className="name-row">{p.name}</span>
-											<span className="subtitle">
-												{formData.whoIsStaying === 'couple' && i === 0
-													? 'Partner'
-													: 'Friend'}
-											</span>
+											<span className="subtitle">Guest</span>
 										</span>
 									</div>
 								))}
@@ -951,7 +897,6 @@ export function ReviewRequestScreen({
 			{editing === 'guests' && (
 				<GuestsSheet
 					listing={listing}
-					whoIsStaying={formData.whoIsStaying}
 					guestProfiles={formData.guestProfiles}
 					onSave={(who, profiles) => {
 						onChange({ whoIsStaying: who, guestProfiles: profiles });
