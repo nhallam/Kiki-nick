@@ -2060,18 +2060,94 @@ input {
 	line-height: 24px;
 }
 
-/* Multi-window availability list in the dates sheet */
-.avail-context.multi {
-	align-items: flex-start;
+/* Window stepper card in the dates sheet */
+.window-stepper {
+	background: var(--primary-tint);
+	border-radius: 16px;
+	padding: 16px;
+	margin-bottom: 14px;
 }
-.avail-context.multi svg {
-	margin-top: 2px;
-	flex-shrink: 0;
-}
-.avail-context .windows {
+.ws-top {
 	display: flex;
-	flex-direction: column;
-	gap: 2px;
+	align-items: center;
+	justify-content: space-between;
+	min-height: 34px;
+}
+.ws-eyebrow {
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--primary-dark);
+}
+.ws-arrows {
+	display: flex;
+	gap: 8px;
+}
+.ws-arrow {
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: var(--white);
+	border: 1px solid var(--border-light);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--dark);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.ws-arrow:disabled {
+	opacity: 0.35;
+	cursor: default;
+}
+.ws-main {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	margin-top: 8px;
+}
+.ws-range {
+	font-size: 22px;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+.ws-sub {
+	font-size: 14px;
+	color: var(--gray);
+	margin-top: 2px;
+}
+.ws-select {
+	background: var(--white);
+	border: 1px solid var(--border-light);
+	border-radius: 22px;
+	padding: 10px 24px;
+	font-size: 15px;
+	font-weight: 600;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+.ws-select.done {
+	background: var(--primary);
+	border-color: var(--primary);
+	color: var(--white);
+}
+.ws-segments {
+	display: flex;
+	gap: 8px;
+	margin-top: 14px;
+}
+.ws-segments span {
+	flex: 1;
+	height: 4px;
+	border-radius: 2px;
+	background: rgba(0, 0, 0, 0.08);
+}
+.ws-segments span.active {
+	background: var(--primary);
 }
 
 .listing-cta-bar {

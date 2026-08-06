@@ -20,9 +20,9 @@ import {
 } from '../data';
 import {
 	Avatar,
-	IconCalendar,
 	IconCheck,
 	IconChevronLeft,
+	IconChevronRight,
 	IconClose,
 	RoomPhoto,
 	StatusBar,
@@ -87,9 +87,39 @@ function DatesSheet({
 	const [monthIndex, setMonthIndex] = useState(0);
 	const month = months[Math.min(monthIndex, months.length - 1)];
 
+	// Window stepper: browse windows with the arrows (the calendar follows),
+	// or take a whole window with Select.
+	const [winIndex, setWinIndex] = useState(() => {
+		const i = moveInDate ? windows.findIndex((w) => windowOf(moveInDate) === w) : -1;
+		return Math.max(0, i);
+	});
+	const currentWin = windows[winIndex];
+	const gotoWindow = (i: number) => {
+		setWinIndex(i);
+		const target = windows[i].start;
+		const mi = months.findIndex(
+			(m) =>
+				m.getFullYear() === target.getFullYear() &&
+				m.getMonth() === target.getMonth(),
+		);
+		if (mi >= 0) setMonthIndex(mi);
+	};
+	const winSelected =
+		!!start &&
+		!!end &&
+		start.getTime() === currentWin.start.getTime() &&
+		end.getTime() === currentWin.end.getTime();
+	const selectWindow = () => {
+		setStart(currentWin.start);
+		setEnd(currentWin.end);
+	};
+	const fmtShort = (d: Date) =>
+		`${d.getDate()} ${MONTHS[d.getMonth()].slice(0, 3)}`;
+
 	const handleSelect = (date: Date) => {
 		const win = windowOf(date);
 		if (!win) return;
+		setWinIndex(windows.indexOf(win));
 		if (!start || end || date <= start || windowOf(start) !== win) {
 			setStart(date);
 			setEnd(null);
@@ -118,32 +148,67 @@ function DatesSheet({
 					</button>
 				</div>
 				<div className="editor-body">
-					<div className={`avail-context${windows.length > 1 ? ' multi' : ''}`}>
-						<IconCalendar size={15} />
-						<span className="windows">
-							<span className="windows-label">
-								Available dates{windows.length > 1 ? ` (${windows.length} windows)` : ''}:
+					<div className="window-stepper">
+						<div className="ws-top">
+							<span className="ws-eyebrow">
+								{windows.length > 1
+									? `Window ${winIndex + 1} of ${windows.length}`
+									: 'Available dates'}
 							</span>
-							{windows.map((w, i) => (
-								<span key={i}>
-									{formatDoMMM(w.start)} – {formatDoMMM(w.end)}
+							{windows.length > 1 && (
+								<span className="ws-arrows">
+									<button
+										className="ws-arrow"
+										disabled={winIndex === 0}
+										onClick={() => gotoWindow(winIndex - 1)}
+										aria-label="Previous window"
+									>
+										<IconChevronLeft size={18} />
+									</button>
+									<button
+										className="ws-arrow"
+										disabled={winIndex === windows.length - 1}
+										onClick={() => gotoWindow(winIndex + 1)}
+										aria-label="Next window"
+									>
+										<IconChevronRight size={18} />
+									</button>
 								</span>
-							))}
-						</span>
-					</div>
-					{start && end && (
-						<div className={`selected-card${isShort ? ' short' : ''}`}>
-							<div className="header">
-								<IconCalendar size={18} />
-								Selected Dates:
-							</div>
-							<div className="value">
-								{formatDoMMM(start)} → {formatDoMMM(end)} · {nights}{' '}
-								{nightsWord(nights)}
-								{isShort ? ` (${daysShort} ${nightsWord(daysShort)} short)` : ''}
-							</div>
+							)}
 						</div>
-					)}
+						<div className="ws-main">
+							<span>
+								<div className="ws-range">
+									{fmtShort(currentWin.start)} – {fmtShort(currentWin.end)}
+								</div>
+								<div className="ws-sub">
+									{diffDays(currentWin.end, currentWin.start)}{' '}
+									{nightsWord(diffDays(currentWin.end, currentWin.start))} ·{' '}
+									{MONTHS[currentWin.start.getMonth()]}{' '}
+									{currentWin.start.getFullYear()}
+								</div>
+							</span>
+							<button
+								className={`ws-select${winSelected ? ' done' : ''}`}
+								onClick={selectWindow}
+							>
+								{winSelected ? (
+									<>
+										<IconCheck size={14} /> Selected
+									</>
+								) : (
+									'Select'
+								)}
+							</button>
+						</div>
+						{windows.length > 1 && (
+							<div className="ws-segments">
+								{windows.map((_, i) => (
+									<span key={i} className={i === winIndex ? 'active' : ''} />
+								))}
+							</div>
+						)}
+					</div>
 					<DateRangeCalendar
 						month={month}
 						selectedStart={start}
@@ -180,7 +245,9 @@ function DatesSheet({
 						disabled={!canSave}
 						onClick={() => canSave && onSave(start!, end!)}
 					>
-						Save dates
+						{start && end
+							? `Save dates · ${nights} ${nightsWord(nights)}`
+							: 'Save dates'}
 					</button>
 				</div>
 			</div>
