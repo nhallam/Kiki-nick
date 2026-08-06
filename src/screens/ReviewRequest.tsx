@@ -29,7 +29,6 @@ import {
 import {
 	BookingFormData,
 	DateRangeCalendar,
-	INTRO_PROMPTS,
 	MONTHS,
 	PaymentScheduleGraphic,
 	computeRentPayments,
@@ -662,28 +661,6 @@ export function ReviewRequestScreen({
 								placeholder="Tip: 93% of people who get accepted write 4-6 sentences"
 								onChange={(e) => onChange({ peopleIntro: e.target.value })}
 							/>
-							<div className="prompt-chips">
-								{INTRO_PROMPTS.map((prompt) => {
-									const used = formData.peopleIntro.includes(prompt.starter.trim());
-									return (
-										<button
-											key={prompt.label}
-											className={`prompt-chip${used ? ' used' : ''}`}
-											disabled={used}
-											onClick={() =>
-												onChange({
-													peopleIntro:
-														formData.peopleIntro.replace(/\s+$/, '') +
-														'\n' +
-														prompt.starter,
-												})
-											}
-										>
-											{used ? <IconCheck size={12} /> : '+'} {prompt.label}
-										</button>
-									);
-								})}
-							</div>
 							<div className={`char-counter${counterMet ? ' met' : ''}`}>
 								{counterMet ? (
 									<>
