@@ -62,19 +62,14 @@ export default function App() {
 				/>
 			);
 		case 'booking':
+			// The flow is its own page (no listing peeking behind); dates and
+			// guests editors are sheets that open over the top of it.
 			return (
-				<>
-					<ListingDetailScreen
-						listing={route.listing}
-						onBack={() => {}}
-						onRequestToBook={() => {}}
-					/>
-					<ReviewRequestScreen
-						listing={route.listing}
-						onClose={() => setRoute({ name: 'listing', listing: route.listing })}
-						onSubmitted={(formData) => handleSubmitted(route.listing, formData)}
-					/>
-				</>
+				<ReviewRequestScreen
+					listing={route.listing}
+					onClose={() => setRoute({ name: 'listing', listing: route.listing })}
+					onSubmitted={(formData) => handleSubmitted(route.listing, formData)}
+				/>
 			);
 		case 'rank':
 			return (

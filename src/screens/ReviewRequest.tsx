@@ -25,6 +25,7 @@ import {
 	IconClose,
 	IconStar,
 	RoomPhoto,
+	StatusBar,
 } from '../ui';
 import {
 	BookingFormData,
@@ -487,427 +488,423 @@ export function ReviewRequestScreen({
 		? `${formatDoMMM(moveInDate!)} – ${formatDoMMM(moveOutDate!)} 2026 · ${nights} ${nightsWord(nights)}`
 		: null;
 
+	// Back is contextual: pages 2–3 step back through the flow, page 1
+	// leaves the flow (guarded — form state would be lost).
+	const handleBack = () => {
+		if (page > 1) setPage((p) => (p - 1) as 1 | 2);
+		else setConfirmLeave(true);
+	};
+
 	return (
-		<>
-			<div className="modal-backdrop" />
-			<div className="modal-screen">
-				<div className={`form-header review-head${page > 1 ? ' with-back' : ''}`}>
-					{page > 1 && (
-						<button
-							className="icon-btn review-back"
-							onClick={() => setPage((p) => (p - 1) as 1 | 2)}
-							aria-label="Back"
-						>
-							<IconChevronLeft size={26} />
-						</button>
-					)}
-					<span className="review-head-titles">
-						<span className="review-head-title">{PAGE_TITLES[page]}</span>
-						<span className="review-head-step">Step {page} of 3</span>
-					</span>
-					<button
-						className="icon-btn review-close"
-						onClick={() => setConfirmLeave(true)}
-						aria-label="Close"
-					>
-						<IconClose size={26} />
-					</button>
-				</div>
+		<div className="screen">
+			<StatusBar />
+			<div className="form-header review-head with-back">
+				<button
+					className="icon-btn review-back"
+					onClick={handleBack}
+					aria-label="Back"
+				>
+					<IconChevronLeft size={26} />
+				</button>
+				<span className="review-head-titles">
+					<span className="review-head-title">{PAGE_TITLES[page]}</span>
+					<span className="review-head-step">Step {page} of 3</span>
+				</span>
+			</div>
 
-				<div className="form-content" style={{ paddingTop: 16 }} key={page}>
-					{page === 1 && (
-						<>
-							{/* Summary card */}
-							<div className="review-card">
-								<div className="review-listing">
-									<div className="review-thumb">
-										<RoomPhoto variant={listing.photoVariant} />
+			<div className="form-content" style={{ paddingTop: 16 }} key={page}>
+				{page === 1 && (
+					<>
+						{/* Summary card */}
+						<div className="review-card">
+							<div className="review-listing">
+								<div className="review-thumb">
+									<RoomPhoto variant={listing.photoVariant} />
+								</div>
+								<div className="review-listing-info">
+									<div className="review-listing-title">{listing.title}</div>
+									<div className="review-listing-sub">
+										Hosted by {listing.listerName} {listing.nationalityFlag}
 									</div>
-									<div className="review-listing-info">
-										<div className="review-listing-title">{listing.title}</div>
-										<div className="review-listing-sub">
-											Hosted by {listing.listerName} {listing.nationalityFlag}
-										</div>
-										<div className="review-listing-sub">
-											£{listing.nightlyRate} / night ·{' '}
-											<span className="vouch-inline">
-												Vouched for by {listing.vouchedForBy}
-											</span>
-										</div>
+									<div className="review-listing-sub">
+										£{listing.nightlyRate} / night ·{' '}
+										<span className="vouch-inline">
+											Vouched for by {listing.vouchedForBy}
+										</span>
 									</div>
 								</div>
+							</div>
 
-								<div className="review-row">
-									<span>
-										<div className="review-row-label">Dates</div>
-										<div className="review-row-value">
-											{hasDates ? (
-												datesValue
-											) : (
-												<span className="review-row-empty">Add your dates</span>
-											)}
-										</div>
-									</span>
-									<button
-										className="review-change"
-										onClick={() => setEditing('dates')}
-									>
-										{hasDates ? 'Change' : 'Add'}
-									</button>
-								</div>
-
-								<div className="review-row">
-									<span>
-										<div className="review-row-label">Guests</div>
-										<div className="review-row-value">{guestsLabel}</div>
-									</span>
-									<button
-										className="review-change"
-										onClick={() => setEditing('guests')}
-									>
-										Change
-									</button>
-								</div>
-
-								<div className="review-row">
-									<span>
-										<div className="review-row-label">Total price</div>
-										<div className="review-row-value">
-											{hasDates ? (
-												<>
-													£{total}{' '}
-													<span className="review-row-note">
-														incl. £{listing.securityDeposit} refundable deposit
-													</span>
-												</>
-											) : (
-												<span className="review-row-empty">
-													Add dates to see the price
-												</span>
-											)}
-										</div>
-									</span>
-									{hasDates && (
-										<button
-											className="review-change"
-											onClick={() => setShowPriceDetails((v) => !v)}
-										>
-											{showPriceDetails ? 'Hide' : 'Details'}
-										</button>
-									)}
-								</div>
-
-								{showPriceDetails && hasDates && (
-									<div className="price-details">
-										<div className="summary-row">
-											<span>
-												Rent{' '}
-												<span className="summary-sub">
-													({nights} {nightsWord(nights)} × £{listing.nightlyRate})
-												</span>
-											</span>
-											<span>£{rentTotal}</span>
-										</div>
-										<div className="summary-row">
-											<span>
-												Security deposit{' '}
-												<span className="summary-sub">(refunded after your stay)</span>
-											</span>
-											<span>£{listing.securityDeposit}</span>
-										</div>
-										<div className="summary-row total">
-											<span>Total</span>
-											<span>£{total}</span>
-										</div>
-										<div className="price-details-when">
-											<div className="price-details-when-title">When you'd pay</div>
-											<PaymentScheduleGraphic
-												payments={payments}
-												moveIn={moveInDate!}
-												moveOut={moveOutDate!}
-											/>
-											{nights >= 45 && (
-												<div className="info-card" style={{ marginTop: 10 }}>
-													With matches 45 days or longer, you can request to split
-													your payment across the length of your stay. Both Kiki and{' '}
-													{listing.listerName} must approve the new payment schedule.
-												</div>
-											)}
-										</div>
+							<div className="review-row">
+								<span>
+									<div className="review-row-label">Dates</div>
+									<div className="review-row-value">
+										{hasDates ? (
+											datesValue
+										) : (
+											<span className="review-row-empty">Add your dates</span>
+										)}
 									</div>
-								)}
-							</div>
-
-							<div className="trust-line">
-								Sending a request is free — you only pay once{' '}
-								{listing.listerName} accepts, and you can withdraw anytime before
-								then.
-							</div>
-						</>
-					)}
-
-					{page === 2 && (
-						<>
-							<div className="section-label">
-								Intro yourself to {listing.listerName}
-							</div>
-							<p className="msg-description">
-								This shows above your instagram profile so think about what you'd
-								like to read if you were having someone stay in your home
-							</p>
-							<textarea
-								className={`text-area${attemptedContinue && introError ? ' error' : ''}`}
-								value={formData.peopleIntro}
-								placeholder="Tip: 93% of people who get accepted write 4-6 sentences"
-								onChange={(e) => onChange({ peopleIntro: e.target.value })}
-							/>
-							<div className={`char-counter${counterMet ? ' met' : ''}`}>
-								{counterMet ? (
-									<>
-										<IconCheck size={13} /> Looks good
-									</>
-								) : (
-									`${trimmed} / ${MIN_PEOPLE_INTRO_LENGTH} characters minimum`
-								)}
-							</div>
-							{attemptedContinue && introError && (
-								<div className="helper-error">{introError}</div>
-							)}
-
-							<div className="questions-section" style={{ marginBottom: 8 }}>
-								<div className="section-label">
-									Any questions for {listing.listerName}?
-								</div>
-								<p className="msg-description">
-									Anything you'd like to know about the place or the stay —
-									optional.
-								</p>
-								<textarea
-									className="text-area small"
-									value={formData.extraQuestions}
-									placeholder="Optional"
-									onChange={(e) => onChange({ extraQuestions: e.target.value })}
-								/>
-							</div>
-						</>
-					)}
-
-					{page === 3 && (
-						<>
-							{/* Final recap */}
-							<div className="review-card">
-								<div className="review-listing">
-									<div className="review-thumb">
-										<RoomPhoto variant={listing.photoVariant} />
-									</div>
-									<div className="review-listing-info">
-										<div className="review-listing-title">{listing.title}</div>
-										<div className="review-listing-sub">
-											Hosted by {listing.listerName} {listing.nationalityFlag}
-										</div>
-									</div>
-								</div>
-								<div className="review-row">
-									<span>
-										<div className="review-row-label">Dates</div>
-										<div className="review-row-value">{datesValue}</div>
-									</span>
-									<button className="review-change" onClick={() => setPage(1)}>
-										Edit
-									</button>
-								</div>
-								<div className="review-row">
-									<span>
-										<div className="review-row-label">Guests</div>
-										<div className="review-row-value">{guestsLabel}</div>
-									</span>
-									<button className="review-change" onClick={() => setPage(1)}>
-										Edit
-									</button>
-								</div>
-								<div className="review-row">
-									<span>
-										<div className="review-row-label">Total price</div>
-										<div className="review-row-value">
-											£{total}{' '}
-											<span className="review-row-note">
-												incl. £{listing.securityDeposit} refundable deposit
-											</span>
-										</div>
-									</span>
-								</div>
-							</div>
-
-							{/* Host's-eye preview */}
-							<div className="preview-section-head">
-								<div className="section-label">
-									How {listing.listerName} will see it
-								</div>
-								<button className="review-change" onClick={() => setPage(2)}>
-									Edit note
+								</span>
+								<button
+									className="review-change"
+									onClick={() => setEditing('dates')}
+								>
+									{hasDates ? 'Change' : 'Add'}
 								</button>
 							</div>
-							<p className="msg-description">
-								A preview of your booking request, exactly as it appears in{' '}
-								{listing.listerName}'s inbox.
-							</p>
-							<div className="preview-frame">
-								<div className="host-card">
-									<div className="host-card-eyebrow">
-										<span className="label">Booking request</span>
-										<span className="new-chip">New</span>
-									</div>
-									<div className="profile-card">
-										<Avatar
-											variant="me"
-											initial={MY_PROFILE.name[0]}
-											size={44}
-											flag={MY_PROFILE.nationalityFlag}
-										/>
-										<span className="info">
-											<span className="name-row">
-												{MY_PROFILE.name} <span>{MY_PROFILE.nationalityFlag}</span>
+
+							<div className="review-row">
+								<span>
+									<div className="review-row-label">Guests</div>
+									<div className="review-row-value">{guestsLabel}</div>
+								</span>
+								<button
+									className="review-change"
+									onClick={() => setEditing('guests')}
+								>
+									Change
+								</button>
+							</div>
+
+							<div className="review-row">
+								<span>
+									<div className="review-row-label">Total price</div>
+									<div className="review-row-value">
+										{hasDates ? (
+											<>
+												£{total}{' '}
+												<span className="review-row-note">
+													incl. £{listing.securityDeposit} refundable deposit
+												</span>
+											</>
+										) : (
+											<span className="review-row-empty">
+												Add dates to see the price
 											</span>
+										)}
+									</div>
+								</span>
+								{hasDates && (
+									<button
+										className="review-change"
+										onClick={() => setShowPriceDetails((v) => !v)}
+									>
+										{showPriceDetails ? 'Hide' : 'Details'}
+									</button>
+								)}
+							</div>
+
+							{showPriceDetails && hasDates && (
+								<div className="price-details">
+									<div className="summary-row">
+										<span>
+											Rent{' '}
+											<span className="summary-sub">
+												({nights} {nightsWord(nights)} × £{listing.nightlyRate})
+											</span>
+										</span>
+										<span>£{rentTotal}</span>
+									</div>
+									<div className="summary-row">
+										<span>
+											Security deposit{' '}
+											<span className="summary-sub">(refunded after your stay)</span>
+										</span>
+										<span>£{listing.securityDeposit}</span>
+									</div>
+									<div className="summary-row total">
+										<span>Total</span>
+										<span>£{total}</span>
+									</div>
+									<div className="price-details-when">
+										<div className="price-details-when-title">When you'd pay</div>
+										<PaymentScheduleGraphic
+											payments={payments}
+											moveIn={moveInDate!}
+											moveOut={moveOutDate!}
+										/>
+										{nights >= 45 && (
+											<div className="info-card" style={{ marginTop: 10 }}>
+												With matches 45 days or longer, you can request to split
+												your payment across the length of your stay. Both Kiki and{' '}
+												{listing.listerName} must approve the new payment schedule.
+											</div>
+										)}
+									</div>
+								</div>
+							)}
+						</div>
+
+						<div className="trust-line">
+							Sending a request is free — you only pay once{' '}
+							{listing.listerName} accepts, and you can withdraw anytime before
+							then.
+						</div>
+					</>
+				)}
+
+				{page === 2 && (
+					<>
+						<div className="section-label">
+							Intro yourself to {listing.listerName}
+						</div>
+						<p className="msg-description">
+							This shows above your instagram profile so think about what you'd
+							like to read if you were having someone stay in your home
+						</p>
+						<textarea
+							className={`text-area${attemptedContinue && introError ? ' error' : ''}`}
+							value={formData.peopleIntro}
+							placeholder="Tip: 93% of people who get accepted write 4-6 sentences"
+							onChange={(e) => onChange({ peopleIntro: e.target.value })}
+						/>
+						<div className={`char-counter${counterMet ? ' met' : ''}`}>
+							{counterMet ? (
+								<>
+									<IconCheck size={13} /> Looks good
+								</>
+							) : (
+								`${trimmed} / ${MIN_PEOPLE_INTRO_LENGTH} characters minimum`
+							)}
+						</div>
+						{attemptedContinue && introError && (
+							<div className="helper-error">{introError}</div>
+						)}
+
+						<div className="questions-section" style={{ marginBottom: 8 }}>
+							<div className="section-label">
+								Any questions for {listing.listerName}?
+							</div>
+							<p className="msg-description">
+								Anything you'd like to know about the place or the stay —
+								optional.
+							</p>
+							<textarea
+								className="text-area small"
+								value={formData.extraQuestions}
+								placeholder="Optional"
+								onChange={(e) => onChange({ extraQuestions: e.target.value })}
+							/>
+						</div>
+					</>
+				)}
+
+				{page === 3 && (
+					<>
+						{/* Final recap */}
+						<div className="review-card">
+							<div className="review-listing">
+								<div className="review-thumb">
+									<RoomPhoto variant={listing.photoVariant} />
+								</div>
+								<div className="review-listing-info">
+									<div className="review-listing-title">{listing.title}</div>
+									<div className="review-listing-sub">
+										Hosted by {listing.listerName} {listing.nationalityFlag}
+									</div>
+								</div>
+							</div>
+							<div className="review-row">
+								<span>
+									<div className="review-row-label">Dates</div>
+									<div className="review-row-value">{datesValue}</div>
+								</span>
+								<button className="review-change" onClick={() => setPage(1)}>
+									Edit
+								</button>
+							</div>
+							<div className="review-row">
+								<span>
+									<div className="review-row-label">Guests</div>
+									<div className="review-row-value">{guestsLabel}</div>
+								</span>
+								<button className="review-change" onClick={() => setPage(1)}>
+									Edit
+								</button>
+							</div>
+							<div className="review-row">
+								<span>
+									<div className="review-row-label">Total price</div>
+									<div className="review-row-value">
+										£{total}{' '}
+										<span className="review-row-note">
+											incl. £{listing.securityDeposit} refundable deposit
+										</span>
+									</div>
+								</span>
+							</div>
+						</div>
+
+						{/* Host's-eye preview */}
+						<div className="preview-section-head">
+							<div className="section-label">
+								How {listing.listerName} will see it
+							</div>
+							<button className="review-change" onClick={() => setPage(2)}>
+								Edit note
+							</button>
+						</div>
+						<p className="msg-description">
+							A preview of your booking request, exactly as it appears in{' '}
+							{listing.listerName}'s inbox.
+						</p>
+						<div className="preview-frame">
+							<div className="host-card">
+								<div className="host-card-eyebrow">
+									<span className="label">Booking request</span>
+									<span className="new-chip">New</span>
+								</div>
+								<div className="profile-card">
+									<Avatar
+										variant="me"
+										initial={MY_PROFILE.name[0]}
+										size={44}
+										flag={MY_PROFILE.nationalityFlag}
+									/>
+									<span className="info">
+										<span className="name-row">
+											{MY_PROFILE.name} <span>{MY_PROFILE.nationalityFlag}</span>
+										</span>
+										<span className="subtitle">
+											{MY_PROFILE.occupation}, {MY_PROFILE.age}
+										</span>
+									</span>
+								</div>
+								{extraGuests.map((p, i) => (
+									<div key={i} className="profile-card" style={{ marginTop: 8 }}>
+										<Avatar initial={p.name[0]} size={44} />
+										<span className="info">
+											<span className="name-row">{p.name}</span>
 											<span className="subtitle">
-												{MY_PROFILE.occupation}, {MY_PROFILE.age}
+												{formData.whoIsStaying === 'couple' && i === 0
+													? 'Partner'
+													: 'Friend'}
 											</span>
 										</span>
 									</div>
-									{extraGuests.map((p, i) => (
-										<div key={i} className="profile-card" style={{ marginTop: 8 }}>
-											<Avatar initial={p.name[0]} size={44} />
-											<span className="info">
-												<span className="name-row">{p.name}</span>
-												<span className="subtitle">
-													{formData.whoIsStaying === 'couple' && i === 0
-														? 'Partner'
-														: 'Friend'}
-												</span>
-											</span>
-										</div>
-									))}
-									<div className="host-detail-rows">
-										<div className="host-detail-row">
-											<span className="k">Dates</span>
-											<span className="v">{datesValue}</span>
-										</div>
-										<div className="host-detail-row">
-											<span className="k">Staying as</span>
-											<span className="v">{partyLabel}</span>
-										</div>
-										<div className="host-detail-row">
-											<span className="k">Rent</span>
-											<span className="v">
-												£{rentTotal} ({nights} {nightsWord(nights)})
-											</span>
-										</div>
+								))}
+								<div className="host-detail-rows">
+									<div className="host-detail-row">
+										<span className="k">Dates</span>
+										<span className="v">{datesValue}</span>
 									</div>
-									<div className="host-msg">
-										<div className="k">Intro</div>
-										<div className="body">{formData.peopleIntro.trim()}</div>
+									<div className="host-detail-row">
+										<span className="k">Staying as</span>
+										<span className="v">{partyLabel}</span>
 									</div>
-									{formData.extraQuestions.trim().length > 0 && (
-										<div className="host-msg">
-											<div className="k">Questions</div>
-											<div className="body">{formData.extraQuestions.trim()}</div>
-										</div>
-									)}
+									<div className="host-detail-row">
+										<span className="k">Rent</span>
+										<span className="v">
+											£{rentTotal} ({nights} {nightsWord(nights)})
+										</span>
+									</div>
 								</div>
-							</div>
-
-							<div className="trust-line" style={{ marginTop: 18 }}>
-								Sending a request is free — you only pay once{' '}
-								{listing.listerName} accepts, and you can withdraw anytime before
-								then.
-							</div>
-						</>
-					)}
-				</div>
-
-				<div className="form-footer">
-					{page === 1 && (
-						<>
-							<button className="btn-primary" onClick={handleContinueFromReview}>
-								Continue
-							</button>
-							<div className="footer-caption">
-								{hasDates
-									? `Next: a short note to ${listing.listerName}.`
-									: 'Add your dates to continue.'}
-							</div>
-						</>
-					)}
-					{page === 2 && (
-						<>
-							<button className="btn-primary" onClick={handleContinueFromNote}>
-								Continue
-							</button>
-							<div className="footer-caption">
-								Next: preview your request before it's sent.
-							</div>
-						</>
-					)}
-					{page === 3 && (
-						<>
-							<button
-								className="btn-primary"
-								onClick={() => onSubmitted(formData)}
-							>
-								Send booking request
-							</button>
-							<div className="footer-caption">
-								{listing.listerName} only sees your request once you send it.
-							</div>
-						</>
-					)}
-				</div>
-
-				{editing === 'dates' && (
-					<DatesSheet
-						listing={listing}
-						moveInDate={formData.moveInDate}
-						moveOutDate={formData.moveOutDate}
-						onSave={(mi, mo) => {
-							onChange({ moveInDate: mi, moveOutDate: mo });
-							setEditing(null);
-						}}
-						onClose={() => setEditing(null)}
-					/>
-				)}
-				{editing === 'guests' && (
-					<GuestsSheet
-						listing={listing}
-						whoIsStaying={formData.whoIsStaying}
-						guestProfiles={formData.guestProfiles}
-						onSave={(who, profiles) => {
-							onChange({ whoIsStaying: who, guestProfiles: profiles });
-							setEditing(null);
-						}}
-						onClose={() => setEditing(null)}
-					/>
-				)}
-				{confirmLeave && (
-					<div className="dialog-overlay" onClick={() => setConfirmLeave(false)}>
-						<div className="dialog" onClick={(e) => e.stopPropagation()}>
-							<div className="dialog-title">Leave booking?</div>
-							<div className="dialog-body">
-								Are you sure you want to leave? Your progress will be lost.
-							</div>
-							<div className="dialog-actions">
-								<button
-									className="dialog-btn"
-									onClick={() => setConfirmLeave(false)}
-								>
-									Stay
-								</button>
-								<button className="dialog-btn destructive" onClick={onClose}>
-									Leave
-								</button>
+								<div className="host-msg">
+									<div className="k">Intro</div>
+									<div className="body">{formData.peopleIntro.trim()}</div>
+								</div>
+								{formData.extraQuestions.trim().length > 0 && (
+									<div className="host-msg">
+										<div className="k">Questions</div>
+										<div className="body">{formData.extraQuestions.trim()}</div>
+									</div>
+								)}
 							</div>
 						</div>
-					</div>
+
+						<div className="trust-line" style={{ marginTop: 18 }}>
+							Sending a request is free — you only pay once{' '}
+							{listing.listerName} accepts, and you can withdraw anytime before
+							then.
+						</div>
+					</>
 				)}
 			</div>
-		</>
+
+			<div className="form-footer">
+				{page === 1 && (
+					<>
+						<button className="btn-primary" onClick={handleContinueFromReview}>
+							Continue
+						</button>
+						<div className="footer-caption">
+							{hasDates
+								? `Next: a short note to ${listing.listerName}.`
+								: 'Add your dates to continue.'}
+						</div>
+					</>
+				)}
+				{page === 2 && (
+					<>
+						<button className="btn-primary" onClick={handleContinueFromNote}>
+							Continue
+						</button>
+						<div className="footer-caption">
+							Next: preview your request before it's sent.
+						</div>
+					</>
+				)}
+				{page === 3 && (
+					<>
+						<button
+							className="btn-primary"
+							onClick={() => onSubmitted(formData)}
+						>
+							Send booking request
+						</button>
+						<div className="footer-caption">
+							{listing.listerName} only sees your request once you send it.
+						</div>
+					</>
+				)}
+			</div>
+
+			{editing === 'dates' && (
+				<DatesSheet
+					listing={listing}
+					moveInDate={formData.moveInDate}
+					moveOutDate={formData.moveOutDate}
+					onSave={(mi, mo) => {
+						onChange({ moveInDate: mi, moveOutDate: mo });
+						setEditing(null);
+					}}
+					onClose={() => setEditing(null)}
+				/>
+			)}
+			{editing === 'guests' && (
+				<GuestsSheet
+					listing={listing}
+					whoIsStaying={formData.whoIsStaying}
+					guestProfiles={formData.guestProfiles}
+					onSave={(who, profiles) => {
+						onChange({ whoIsStaying: who, guestProfiles: profiles });
+						setEditing(null);
+					}}
+					onClose={() => setEditing(null)}
+				/>
+			)}
+			{confirmLeave && (
+				<div className="dialog-overlay" onClick={() => setConfirmLeave(false)}>
+					<div className="dialog" onClick={(e) => e.stopPropagation()}>
+						<div className="dialog-title">Leave booking?</div>
+						<div className="dialog-body">
+							Are you sure you want to leave? Your progress will be lost.
+						</div>
+						<div className="dialog-actions">
+							<button
+								className="dialog-btn"
+								onClick={() => setConfirmLeave(false)}
+							>
+								Stay
+							</button>
+							<button className="dialog-btn destructive" onClick={onClose}>
+								Leave
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+		</div>
 	);
 }
