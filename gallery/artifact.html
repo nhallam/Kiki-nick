@@ -201,7 +201,7 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 		<div class="bar">
 			<button class="bar-back" id="backBtn">← All versions</button>
 			<span class="bar-title" id="barTitle"></span>
-			<span class="bar-chips"><button class="bar-chip" data-version="round2">Round 2</button><button class="bar-chip" data-version="current">Current flow</button><button class="bar-chip" data-version="option1">Option 1</button><button class="bar-chip" data-version="option2">Option 2</button><button class="bar-chip" data-version="option3">Option 3</button></span>
+			<span class="bar-chips"><button class="bar-chip" data-version="round2" data-section="Round 2">Round 2</button><button class="bar-chip" data-version="current" data-section="Round 1">Current flow</button><button class="bar-chip" data-version="option1" data-section="Round 1">Option 1</button><button class="bar-chip" data-version="option2" data-section="Round 1">Option 2</button><button class="bar-chip" data-version="option3" data-section="Round 1">Option 3</button></span>
 		</div>
 		<div class="frame-wrap"><iframe id="frame" title="Prototype"></iframe></div>
 	</div>
@@ -212,6 +212,7 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 (function () {
 	var data = JSON.parse(document.getElementById('v-data').textContent);
 	var labels = {"round2":"Round 2 — Working version","current":"Current flow","option1":"Option 1","option2":"Option 2","option3":"Option 3"};
+	var sections = {"round2":"Round 2","current":"Round 1","option1":"Round 1","option2":"Round 1","option3":"Round 1"};
 	var launcher = document.getElementById('launcher');
 	var viewer = document.getElementById('viewer');
 	var frame = document.getElementById('frame');
@@ -240,9 +241,21 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 		barTitle.textContent = labels[id];
 		launcher.classList.add('hidden');
 		viewer.classList.add('active');
+		// Only sibling versions from the same round belong in the bar; a
+		// round with a single version needs no chips at all.
+		var section = sections[id];
+		var siblings = 0;
 		document.querySelectorAll('.bar-chip').forEach(function (c) {
+			var inSection = c.dataset.section === section;
+			if (inSection) siblings++;
+			c.hidden = !inSection;
 			c.classList.toggle('active', c.dataset.version === id);
 		});
+		if (siblings < 2) {
+			document.querySelectorAll('.bar-chip').forEach(function (c) {
+				c.hidden = true;
+			});
+		}
 	}
 
 	function close() {

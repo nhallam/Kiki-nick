@@ -116,11 +116,15 @@ const roundTabs = SECTIONS.map(
 const chips = VERSIONS.filter((v) => v.branch)
 	.map(
 		(v) =>
-			`<button class="bar-chip" data-version="${v.id}">${
+			`<button class="bar-chip" data-version="${v.id}" data-section="${v.section}">${
 				v.id === 'round2' ? 'Round 2' : v.label
 			}</button>`,
 	)
 	.join('');
+
+const sectionsById = JSON.stringify(
+	Object.fromEntries(VERSIONS.map((v) => [v.id, v.section])),
+);
 
 const labels = JSON.stringify(
 	Object.fromEntries(VERSIONS.map((v) => [v.id, v.label])),
@@ -308,6 +312,7 @@ ${cards}
 (function () {
 	var data = JSON.parse(document.getElementById('v-data').textContent);
 	var labels = ${labels};
+	var sections = ${sectionsById};
 	var launcher = document.getElementById('launcher');
 	var viewer = document.getElementById('viewer');
 	var frame = document.getElementById('frame');
@@ -336,9 +341,21 @@ ${cards}
 		barTitle.textContent = labels[id];
 		launcher.classList.add('hidden');
 		viewer.classList.add('active');
+		// Only sibling versions from the same round belong in the bar; a
+		// round with a single version needs no chips at all.
+		var section = sections[id];
+		var siblings = 0;
 		document.querySelectorAll('.bar-chip').forEach(function (c) {
+			var inSection = c.dataset.section === section;
+			if (inSection) siblings++;
+			c.hidden = !inSection;
 			c.classList.toggle('active', c.dataset.version === id);
 		});
+		if (siblings < 2) {
+			document.querySelectorAll('.bar-chip').forEach(function (c) {
+				c.hidden = true;
+			});
+		}
 	}
 
 	function close() {
