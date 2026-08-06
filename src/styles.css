@@ -98,8 +98,10 @@ input {
 	background: var(--white);
 }
 
-/* Native-style push for the booking flow page */
+/* Native-style push for the booking flow page (z above the listing's
+   sticky CTA bar, which sits at z-index 5) */
 .screen.booking-page {
+	z-index: 10;
 	animation: page-push-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 	box-shadow: -12px 0 28px rgba(0, 0, 0, 0.12);
 }
