@@ -550,13 +550,7 @@ export function ReviewRequestScreen({
 								<div className="review-listing-info">
 									<div className="review-listing-title">{listing.title}</div>
 									<div className="review-listing-sub">
-										Hosted by {listing.listerName} {listing.nationalityFlag}
-									</div>
-									<div className="review-listing-sub">
-										£{listing.nightlyRate} / night ·{' '}
-										<span className="vouch-inline">
-											Vouched for by {listing.vouchedForBy}
-										</span>
+										£{listing.nightlyRate} / night
 									</div>
 								</div>
 							</div>
@@ -727,7 +721,7 @@ export function ReviewRequestScreen({
 								<div className="review-listing-info">
 									<div className="review-listing-title">{listing.title}</div>
 									<div className="review-listing-sub">
-										Hosted by {listing.listerName} {listing.nationalityFlag}
+										£{listing.nightlyRate} / night
 									</div>
 								</div>
 							</div>
