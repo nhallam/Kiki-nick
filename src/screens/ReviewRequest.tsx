@@ -148,7 +148,7 @@ function DatesSheet({
 
 	return (
 		<div className="sheet-overlay" onClick={onClose}>
-			<div className="editor-sheet" onClick={(e) => e.stopPropagation()}>
+			<div className="editor-sheet tall" onClick={(e) => e.stopPropagation()}>
 				<div className="editor-head">
 					<span className="editor-title">Dates</span>
 					<button className="icon-btn" onClick={onClose} aria-label="Close">
