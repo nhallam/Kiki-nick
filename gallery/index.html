@@ -423,26 +423,34 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 	function lsSave() {
 		try { localStorage.setItem('kiki-comments', JSON.stringify(comments)); } catch (e) {}
 	}
-	function setSync(shared) {
+	function setSync(shared, reason) {
 		isShared = shared;
-		cpSync.textContent = shared ? 'Shared' : 'Local only';
+		cpSync.textContent = shared ? 'Shared' : 'Local only' + (reason ? ' · ' + reason : '');
 		cpSync.className = 'cp-sync ' + (shared ? 'shared' : 'local');
 		cpSync.title = shared
 			? 'Comments are saved for everyone who opens this site.'
-			: 'Comments are saved in this browser only — the shared store is not connected here.';
+			: 'Comments are saved in this browser only — the shared store is not reachable here' +
+				(reason ? ' (' + reason + ')' : '') + '.';
 	}
 	function fetchComments() {
 		fetch(API).then(function (r) {
-			if (!r.ok) throw new Error('unavailable');
-			return r.json();
-		}).then(function (list) {
-			if (!Array.isArray(list)) throw new Error('bad');
-			comments = list;
-			setSync(true);
-			renderComments();
-		}).catch(function () {
+			if (!r.ok) {
+				// Surface WHY sharing is off: 404 = API not deployed,
+				// 503 = store not configured, 500 = store erroring.
+				var reason = r.status === 503 ? 'store not set up'
+					: r.status === 404 ? 'no API'
+					: 'HTTP ' + r.status;
+				throw new Error(reason);
+			}
+			return r.json().then(function (list) {
+				if (!Array.isArray(list)) throw new Error('bad data');
+				comments = list;
+				setSync(true);
+				renderComments();
+			});
+		}).catch(function (e) {
 			if (!isShared) { comments = lsLoad(); }
-			setSync(false);
+			setSync(false, e && e.message === 'Failed to fetch' ? 'offline' : e && e.message);
 			renderComments();
 		});
 	}
