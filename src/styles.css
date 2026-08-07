@@ -1285,6 +1285,50 @@ input {
 	color: var(--dark);
 }
 
+/* ---------- Sent confirmation ---------- */
+
+.sent-body {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	padding: 0 44px;
+}
+.sent-check {
+	width: 84px;
+	height: 84px;
+	border-radius: 50%;
+	background: var(--primary);
+	color: var(--white);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 20px;
+	animation: sent-pop 0.4s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+.sent-title {
+	font-size: 24px;
+	font-weight: 800;
+	margin-bottom: 8px;
+}
+.sent-sub {
+	font-size: 15px;
+	line-height: 22px;
+	color: var(--gray);
+}
+@keyframes sent-pop {
+	from {
+		transform: scale(0.4);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
 /* guest-list-first guests sheet */
 .you-badge {
 	background: var(--primary-tint);
