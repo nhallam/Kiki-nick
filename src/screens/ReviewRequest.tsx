@@ -184,16 +184,12 @@ function DatesSheet({
 							)}
 						</div>
 						<div className="ws-main">
-							<span>
-								<div className="ws-range">
-									{fmtShort(currentWin.start)} – {fmtShort(currentWin.end)}
-								</div>
-								<div className="ws-sub">
-									{diffDays(currentWin.end, currentWin.start)}{' '}
-									{nightsWord(diffDays(currentWin.end, currentWin.start))} ·{' '}
-									{MONTHS[currentWin.start.getMonth()]}{' '}
-									{currentWin.start.getFullYear()}
-								</div>
+							<span className="ws-range">
+								{fmtShort(currentWin.start)} – {fmtShort(currentWin.end)}
+								<span className="ws-nights">
+									· {diffDays(currentWin.end, currentWin.start)}{' '}
+									{nightsWord(diffDays(currentWin.end, currentWin.start))}
+								</span>
 							</span>
 							<button
 								className={`ws-select${winSelected ? ' done' : ''}`}
@@ -204,7 +200,7 @@ function DatesSheet({
 										<IconCheck size={14} /> Selected
 									</>
 								) : (
-									'Select'
+									'Select all'
 								)}
 							</button>
 						</div>
