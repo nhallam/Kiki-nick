@@ -126,13 +126,6 @@ export default function App() {
 					onDismissSuccess={() =>
 						setRoute({ ...route, showSuccess: false })
 					}
-					onReorder={() =>
-						setRoute({
-							name: 'rank',
-							requests: route.requests,
-							newRequest: route.newRequest,
-						})
-					}
 				/>
 			);
 	}

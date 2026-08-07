@@ -51,9 +51,11 @@ export function TripsScreen({
 			</div>
 
 			<div className="screen-scroll">
-				<button className="reorder-btn" onClick={onReorder}>
-					<IconReorderArrows size={22} /> Reorder
-				</button>
+				{onReorder && (
+					<button className="reorder-btn" onClick={onReorder}>
+						<IconReorderArrows size={22} /> Reorder
+					</button>
+				)}
 				<div
 					className="rank-list"
 					style={{ padding: '0 20px 24px' }}
