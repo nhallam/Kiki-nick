@@ -1440,12 +1440,6 @@ input {
 	/* Hug the content — short sheets (guests) stay short, tall ones
 	   (dates calendar) cap at 88% and scroll inside. */
 	max-height: 88%;
-}
-.editor-sheet.tall {
-	/* Dates: near-full height so the stepper card, whole calendar and the
-	   contextual copy under it are visible without scrolling. */
-	height: calc(100% - 16px);
-	max-height: calc(100% - 16px);
 	background: var(--white);
 	border-top-left-radius: 20px;
 	border-top-right-radius: 20px;
@@ -1453,6 +1447,12 @@ input {
 	flex-direction: column;
 	animation: slide-up 0.3s ease;
 	overflow: hidden;
+}
+.editor-sheet.tall {
+	/* Dates: near-full height so the stepper card, whole calendar and the
+	   contextual copy under it are visible without scrolling. */
+	height: calc(100% - 16px);
+	max-height: calc(100% - 16px);
 }
 .editor-head {
 	display: flex;
