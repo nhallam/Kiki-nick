@@ -21,11 +21,19 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const VERSIONS = [
 	{
 		id: 'round2',
-		label: 'Round 2 — Working version',
+		label: 'Option 1',
 		section: 'Round 2',
 		blurb:
-			'Moving forward with Option 3 after client review. All Round 2 changes land here.',
+			'The Round 2 working version — Option 3 from Round 1 evolved through client feedback: 3-page flow, window stepper, centred guests, host preview.',
 		branch: 'round2',
+	},
+	{
+		id: 'round2b',
+		label: 'Option 2',
+		section: 'Round 2',
+		blurb:
+			'Duplicate of Option 1 — the next batch of changes lands here so the two can be compared.',
+		branch: 'round2-option2',
 	},
 	{
 		id: 'current',
@@ -116,9 +124,7 @@ const roundTabs = SECTIONS.map(
 const chips = VERSIONS.filter((v) => v.branch)
 	.map(
 		(v) =>
-			`<button class="bar-chip" data-version="${v.id}" data-section="${v.section}">${
-				v.id === 'round2' ? 'Round 2' : v.label
-			}</button>`,
+			`<button class="bar-chip" data-version="${v.id}" data-section="${v.section}">${v.label}</button>`,
 	)
 	.join('');
 
