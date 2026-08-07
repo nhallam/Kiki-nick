@@ -33,7 +33,7 @@ async function redis(cmd) {
 const load = async () => JSON.parse((await redis(['GET', KEY])) || '[]');
 const save = (list) => redis(['SET', KEY, JSON.stringify(list)]);
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
 	if (!kvConfig()) {
 		res.status(503).json({ error: 'store-not-configured' });
 		return;
@@ -105,4 +105,4 @@ module.exports = async (req, res) => {
 	} catch (e) {
 		res.status(500).json({ error: 'kv-error', detail: String(e.message).slice(0, 250) });
 	}
-};
+}
