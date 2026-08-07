@@ -25,8 +25,9 @@ async function redis(cmd) {
 		},
 		body: JSON.stringify(cmd),
 	});
-	if (!r.ok) throw new Error('kv ' + r.status);
-	return (await r.json()).result;
+	const bodyText = await r.text();
+	if (!r.ok) throw new Error('kv HTTP ' + r.status + ': ' + bodyText.slice(0, 180));
+	return JSON.parse(bodyText).result;
 }
 
 const load = async () => JSON.parse((await redis(['GET', KEY])) || '[]');
@@ -35,6 +36,29 @@ const save = (list) => redis(['SET', KEY, JSON.stringify(list)]);
 module.exports = async (req, res) => {
 	if (!kvConfig()) {
 		res.status(503).json({ error: 'store-not-configured' });
+		return;
+	}
+	// GET /api/comments?debug=1 — reports which env vars are present, the
+	// store host, and the result of a PING, so misconfig is visible without
+	// dashboard access. No secrets in the output.
+	if (req.method === 'GET' && req.query && req.query.debug) {
+		const info = {
+			env: {
+				KV_REST_API_URL: !!process.env.KV_REST_API_URL,
+				KV_REST_API_TOKEN: !!process.env.KV_REST_API_TOKEN,
+				UPSTASH_REDIS_REST_URL: !!process.env.UPSTASH_REDIS_REST_URL,
+				UPSTASH_REDIS_REST_TOKEN: !!process.env.UPSTASH_REDIS_REST_TOKEN,
+			},
+			host: (() => {
+				try { return new URL(kvConfig().url).host; } catch (e) { return 'unparseable: ' + kvConfig().url.slice(0, 30); }
+			})(),
+		};
+		try {
+			info.ping = await redis(['PING']);
+		} catch (e) {
+			info.pingError = String(e.message).slice(0, 250);
+		}
+		res.status(200).json(info);
 		return;
 	}
 	try {
@@ -79,6 +103,6 @@ module.exports = async (req, res) => {
 		}
 		res.status(405).json({ error: 'method-not-allowed' });
 	} catch (e) {
-		res.status(500).json({ error: 'kv-error' });
+		res.status(500).json({ error: 'kv-error', detail: String(e.message).slice(0, 250) });
 	}
 };
