@@ -152,6 +152,23 @@ export const MY_PROFILE: UserProfile = {
 	type: 'user',
 };
 
+/**
+ * The user's saved profiles — Change profile in the guests sheet cycles
+ * through these. Same person, different presentation.
+ */
+export const MY_PROFILES: UserProfile[] = [
+	MY_PROFILE,
+	{
+		id: 103,
+		name: 'Reviewer 1 Tester',
+		shortName: 'Reviewer',
+		occupation: 'Product Designer',
+		age: 26,
+		nationalityFlag: '🇬🇧',
+		type: 'user',
+	},
+];
+
 export const OTHER_PROFILES: UserProfile[] = [
 	{
 		id: 102,

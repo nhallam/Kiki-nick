@@ -16,6 +16,7 @@ import {
 	MIN_PEOPLE_INTRO_LENGTH,
 	listingWindows,
 	MY_PROFILE,
+	MY_PROFILES,
 	OTHER_PROFILES,
 	UserProfile,
 } from '../data';
@@ -279,9 +280,18 @@ function GuestsSheet({
 	) => void;
 	onClose: () => void;
 }) {
+	const [me, setMe] = useState<UserProfile>(
+		() => guestProfiles[0] ?? MY_PROFILE,
+	);
 	const [extras, setExtras] = useState<(UserProfile | null)[]>(() =>
 		guestProfiles.slice(1),
 	);
+
+	// Cycle through the user's saved profiles.
+	const changeProfile = () => {
+		const i = MY_PROFILES.findIndex((p) => p.id === me.id);
+		setMe(MY_PROFILES[(i + 1) % MY_PROFILES.length]);
+	};
 
 	// Not open to couples ⇒ single-occupancy: no adding guests at all.
 	const soloOnly = !listing.openToCouples;
@@ -314,17 +324,20 @@ function GuestsSheet({
 					<div className="guest-hero">
 						<Avatar
 							variant="me"
-							initial={MY_PROFILE.name[0]}
+							initial={me.name[0]}
 							size={84}
-							flag={MY_PROFILE.nationalityFlag}
+							flag={me.nationalityFlag}
 						/>
 						<div className="guest-hero-name">
-							{MY_PROFILE.name} <span>{MY_PROFILE.nationalityFlag}</span>
+							{me.name} <span>{me.nationalityFlag}</span>
 							<span className="you-badge">You</span>
 						</div>
 						<div className="guest-hero-sub">
-							{MY_PROFILE.occupation}, {MY_PROFILE.age}
+							{me.occupation}, {me.age}
 						</div>
+						<button className="add-guest-btn small" onClick={changeProfile}>
+							Change profile
+						</button>
 					</div>
 
 					{soloOnly ? (
@@ -386,7 +399,7 @@ function GuestsSheet({
 				<div className="editor-footer">
 					<button
 						className="btn-primary square"
-						onClick={() => onSave(derivedWho, [MY_PROFILE, ...extras])}
+						onClick={() => onSave(derivedWho, [me, ...extras])}
 					>
 						Save guests
 					</button>
@@ -459,6 +472,7 @@ export function ReviewRequestScreen({
 				? 'Add a little more detail...'
 				: undefined;
 	const guests = formData.guestProfiles.filter(Boolean).length;
+	const me = formData.guestProfiles[0] ?? MY_PROFILE;
 	const extraGuests = formData.guestProfiles.slice(1).filter(Boolean) as UserProfile[];
 
 	const guestsLabel =
@@ -774,16 +788,16 @@ export function ReviewRequestScreen({
 								<div className="profile-card">
 									<Avatar
 										variant="me"
-										initial={MY_PROFILE.name[0]}
+										initial={me.name[0]}
 										size={44}
-										flag={MY_PROFILE.nationalityFlag}
+										flag={me.nationalityFlag}
 									/>
 									<span className="info">
 										<span className="name-row">
-											{MY_PROFILE.name} <span>{MY_PROFILE.nationalityFlag}</span>
+											{me.name} <span>{me.nationalityFlag}</span>
 										</span>
 										<span className="subtitle">
-											{MY_PROFILE.occupation}, {MY_PROFILE.age}
+											{me.occupation}, {me.age}
 										</span>
 									</span>
 								</div>

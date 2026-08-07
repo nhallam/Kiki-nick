@@ -1460,6 +1460,11 @@ input {
 .add-guest-btn:active {
 	background: var(--primary-tint);
 }
+.add-guest-btn.small {
+	margin-top: 12px;
+	padding: 7px 18px;
+	font-size: 13px;
+}
 .relation-chooser.centered {
 	margin-top: 16px;
 }
