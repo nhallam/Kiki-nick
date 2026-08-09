@@ -1198,27 +1198,39 @@ input {
 	margin-top: 1px;
 }
 
-/* Step indicator in the header's top right */
+/* Step indicator in the header's top right: label + dots as one unit */
 .head-stepper {
 	display: flex;
 	align-items: center;
-	gap: 5px;
+	gap: 9px;
 	margin-left: auto;
 	padding-right: 16px;
 	flex-shrink: 0;
 }
-.head-stepper span {
+.head-stepper-label {
+	font-size: 11.5px;
+	font-weight: 700;
+	color: var(--gray);
+	letter-spacing: 0.02em;
+	white-space: nowrap;
+}
+.head-stepper-dots {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+.head-stepper-dots span {
 	width: 8px;
 	height: 8px;
 	border-radius: 4px;
 	background: var(--border-medium);
 	transition: width 0.25s ease, background 0.25s ease;
 }
-.head-stepper span.done {
+.head-stepper-dots span.done {
 	background: var(--primary);
 	opacity: 0.45;
 }
-.head-stepper span.active {
+.head-stepper-dots span.active {
 	width: 22px;
 	background: var(--primary);
 }

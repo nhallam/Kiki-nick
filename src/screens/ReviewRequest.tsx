@@ -542,7 +542,6 @@ export function ReviewRequestScreen({
 				</button>
 				<span className="review-head-titles">
 					<span className="review-head-title">{PAGE_TITLES[page]}</span>
-					<span className="review-head-step">Step {page} of 3</span>
 				</span>
 				<span
 					className="head-stepper"
@@ -552,12 +551,15 @@ export function ReviewRequestScreen({
 					aria-valuemax={3}
 					aria-label={`Step ${page} of 3`}
 				>
-					{[1, 2, 3].map((n) => (
-						<span
-							key={n}
-							className={n === page ? 'active' : n < page ? 'done' : ''}
-						/>
-					))}
+					<span className="head-stepper-label">Step {page} of 3</span>
+					<span className="head-stepper-dots">
+						{[1, 2, 3].map((n) => (
+							<span
+								key={n}
+								className={n === page ? 'active' : n < page ? 'done' : ''}
+							/>
+						))}
+					</span>
 				</span>
 			</div>
 
