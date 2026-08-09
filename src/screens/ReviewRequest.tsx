@@ -542,6 +542,7 @@ export function ReviewRequestScreen({
 				</button>
 				<span className="review-head-titles">
 					<span className="review-head-title">{PAGE_TITLES[page]}</span>
+					<span className="review-head-step">Step {page} of 3</span>
 				</span>
 				<span
 					className="head-stepper"
