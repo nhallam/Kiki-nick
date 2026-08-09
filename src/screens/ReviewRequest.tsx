@@ -387,12 +387,6 @@ function GuestsSheet({
 									A profile is required for each person staying.
 								</div>
 							)}
-
-							<div className="derived-note">
-								{derivedWho === 'individual'
-									? 'This will be sent as an Individual booking.'
-									: `This will be sent as a booking for ${extras.length + 1} people.`}
-							</div>
 						</>
 					)}
 				</div>
