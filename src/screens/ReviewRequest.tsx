@@ -335,9 +335,17 @@ function GuestsSheet({
 						<div className="guest-hero-sub">
 							{me.occupation}, {me.age}
 						</div>
-						<button className="add-guest-btn small" onClick={changeProfile}>
+					</div>
+
+					<div className="hero-actions">
+						<button className="add-guest-btn" onClick={changeProfile}>
 							Change profile
 						</button>
+						{!soloOnly && (
+							<button className="add-guest-btn" onClick={addGuest}>
+								+ Add guest
+							</button>
+						)}
 					</div>
 
 					{soloOnly ? (
@@ -377,10 +385,6 @@ function GuestsSheet({
 									</button>
 								</div>
 							))}
-
-							<button className="add-guest-btn" onClick={addGuest}>
-								+ Add guest
-							</button>
 
 							{hasEmptySlot && (
 								<div className="slot-helper centered" style={{ marginTop: 10 }}>

@@ -1460,10 +1460,21 @@ input {
 .add-guest-btn:active {
 	background: var(--primary-tint);
 }
-.add-guest-btn.small {
-	margin-top: 12px;
-	padding: 7px 18px;
-	font-size: 13px;
+
+/* Change profile + Add guest, equal width, side by side */
+.hero-actions {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin-top: 14px;
+}
+.hero-actions .add-guest-btn {
+	flex: 1 1 0;
+	max-width: 165px;
+	margin: 0;
+	padding: 10px 8px;
+	text-align: center;
+	white-space: nowrap;
 }
 .relation-chooser.centered {
 	margin-top: 16px;
