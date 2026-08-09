@@ -238,7 +238,7 @@ function DatesSheet({
 					/>
 					{isShort && (
 						<div className="min-stay-error">
-							Too short for {listing.listerName} 😭 — you'll need at least{' '}
+							Too short for {listing.listerName} 😭, you'll need at least{' '}
 							{minNights} nights of their dates.
 						</div>
 					)}
@@ -667,7 +667,7 @@ export function ReviewRequestScreen({
 						</div>
 
 						<div className="trust-line">
-							Sending a request is free — you only pay once{' '}
+							Sending a request is free. You only pay once{' '}
 							{listing.listerName} accepts, and you can withdraw anytime before
 							then.
 						</div>
@@ -707,8 +707,7 @@ export function ReviewRequestScreen({
 								Any questions for {listing.listerName}?
 							</div>
 							<p className="msg-description">
-								Anything you'd like to know about the place or the stay —
-								optional.
+								Anything you'd like to ask before you book. Optional.
 							</p>
 							<textarea
 								className="text-area small"
@@ -776,8 +775,7 @@ export function ReviewRequestScreen({
 							</button>
 						</div>
 						<p className="msg-description">
-							A preview of your booking request, exactly as it appears in{' '}
-							{listing.listerName}'s inbox.
+							This is what {listing.listerName} sees when your request arrives.
 						</p>
 						<div className="preview-frame">
 							<div className="host-card">
@@ -840,7 +838,7 @@ export function ReviewRequestScreen({
 						</div>
 
 						<div className="trust-line" style={{ marginTop: 18 }}>
-							Sending a request is free — you only pay once{' '}
+							Sending a request is free. You only pay once{' '}
 							{listing.listerName} accepts, and you can withdraw anytime before
 							then.
 						</div>
@@ -856,7 +854,7 @@ export function ReviewRequestScreen({
 						</button>
 						<div className="footer-caption">
 							{hasDates
-								? `Next: a short note to ${listing.listerName}.`
+								? `Next you'll write a short note to ${listing.listerName}.`
 								: 'Add your dates to continue.'}
 						</div>
 					</>
@@ -867,7 +865,7 @@ export function ReviewRequestScreen({
 							Continue
 						</button>
 						<div className="footer-caption">
-							Next: preview your request before it's sent.
+							Next you can check everything before it's sent.
 						</div>
 					</>
 				)}

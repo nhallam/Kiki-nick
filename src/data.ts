@@ -57,7 +57,7 @@ export const LISTINGS: Listing[] = [
 		securityDeposit: 160,
 		nationalityFlag: '🇱🇹',
 		description:
-			'A bright, spacious room with a king-size bed, large windows, and a private en-suite bathroom with a shower and toilet. The flat has a clean, minimal aesthetic and is designed to feel calm, comfortable and welcoming. You will have the whole place to yourself while I am away — perfect for exploring East London.',
+			'A bright, spacious room with a king-size bed, large windows, and a private en-suite bathroom with a shower and toilet. The flat is clean and minimal and feels really calm. You will have the whole place to yourself while I am away, perfect for exploring East London.',
 		favouritedBy: 1,
 		vouchedForBy: 'Sara',
 		photoVariant: 'ieva',

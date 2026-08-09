@@ -328,7 +328,7 @@ function DatesStep({
 			/>
 			{isShort && (
 				<div className="min-stay-error">
-					Too short for {listing.listerName} 😭 — you'll need at least{' '}
+					Too short for {listing.listerName} 😭, you'll need at least{' '}
 					{minNights} nights of their dates.
 				</div>
 			)}

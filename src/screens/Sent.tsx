@@ -22,7 +22,7 @@ export function SentScreen({
 				</div>
 				<div className="sent-title">Request sent</div>
 				<p className="sent-sub">
-					{listerName} has your request — we'll let you know as soon as they
+					{listerName} has your request. We'll let you know as soon as they
 					respond.
 				</p>
 			</div>
