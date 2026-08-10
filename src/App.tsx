@@ -116,17 +116,7 @@ export default function App() {
 			);
 		case 'trips':
 			return (
-				<TripsScreen
-					requests={route.requests}
-					showSuccessSheet={route.showSuccess}
-					successListerName={
-						route.newRequest.title.startsWith("Ieva") ? 'Ieva' : 'the host'
-					}
-					successPhotoVariant={route.newRequest.photoVariant}
-					onDismissSuccess={() =>
-						setRoute({ ...route, showSuccess: false })
-					}
-				/>
+				<TripsScreen requests={route.requests} />
 			);
 	}
 }

@@ -1719,6 +1719,107 @@ input {
 
 /* ---------- Trips screen ---------- */
 
+/* ---------- Trips tab panes ---------- */
+
+.trips-pane {
+	padding: 16px 20px 24px;
+}
+.trips-pane .rank-list {
+	padding: 0;
+}
+
+.away-card {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	border: 1px solid var(--border-light);
+	border-radius: 14px;
+	padding: 12px;
+	background: var(--white);
+	margin-bottom: 12px;
+}
+.away-thumb {
+	width: 64px;
+	height: 64px;
+	border-radius: 10px;
+	background: var(--light-gray);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 30px;
+	flex-shrink: 0;
+}
+.away-body {
+	flex: 1;
+	min-width: 0;
+}
+.away-title {
+	font-size: 16px;
+	font-weight: 700;
+}
+.away-meta {
+	font-size: 13.5px;
+	color: var(--dark);
+	margin-top: 2px;
+}
+.away-pending {
+	background: var(--primary);
+	color: var(--white);
+	font-size: 12.5px;
+	font-weight: 700;
+	border-radius: 14px;
+	padding: 5px 12px;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+.away-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	flex-shrink: 0;
+}
+.away-action {
+	width: 34px;
+	height: 34px;
+	border-radius: 17px;
+	border: 1px solid var(--border-light);
+	background: var(--white);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--dark);
+}
+.away-action:active {
+	background: var(--light-gray);
+}
+
+.add-trip-btn {
+	margin: 4px 0 20px;
+	border-radius: 14px;
+}
+.past-trips-title {
+	font-size: 20px;
+	font-weight: 800;
+	margin-bottom: 12px;
+}
+
+.empty-card {
+	background: var(--light-gray);
+	border-radius: 14px;
+	padding: 22px 20px;
+	text-align: center;
+}
+.empty-title {
+	font-size: 16px;
+	font-weight: 700;
+	margin-bottom: 6px;
+}
+.empty-sub {
+	font-size: 14px;
+	line-height: 20px;
+	color: var(--gray);
+}
+
 .trips-header {
 	padding: 4px 20px 0;
 }
