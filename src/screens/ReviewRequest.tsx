@@ -119,25 +119,6 @@ function DatesSheet({
 		);
 		if (mi >= 0) setMonthIndex(mi);
 	};
-	const winSelected =
-		!!start &&
-		!!end &&
-		start.getTime() === currentWin.start.getTime() &&
-		end.getTime() === currentWin.end.getTime();
-	// Toggle: taking the window again clears the selection.
-	const selectWindow = () => {
-		if (currentWin.requested) {
-			flashRequested();
-			return;
-		}
-		if (winSelected) {
-			setStart(null);
-			setEnd(null);
-		} else {
-			setStart(currentWin.start);
-			setEnd(currentWin.end);
-		}
-	};
 	const fmtShort = (d: Date) =>
 		`${d.getDate()} ${MONTHS[d.getMonth()].slice(0, 3)}`;
 
@@ -211,23 +192,8 @@ function DatesSheet({
 									</span>
 								</span>
 							)}
-							{currentWin.requested ? (
-								<button className="ws-select requested" onClick={selectWindow}>
-									Request sent
-								</button>
-							) : (
-								<button
-									className={`ws-select${winSelected ? ' done' : ''}`}
-									onClick={selectWindow}
-								>
-									{winSelected ? (
-										<>
-											<IconCheck size={14} /> Selected
-										</>
-									) : (
-										'Select all'
-									)}
-								</button>
+							{currentWin.requested && (
+								<span className="ws-status requested">Request sent</span>
 							)}
 						</div>
 						{currentWin.requested && (
