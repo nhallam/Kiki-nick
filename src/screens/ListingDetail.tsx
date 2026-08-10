@@ -128,8 +128,7 @@ export function ListingDetailScreen({
 								{requested && (
 									<div className="avail-requested">
 										<span className="requested-chip">Request sent</span>
-										{listing.listerName} is reviewing your request for these
-										dates.
+										<span>{listing.listerName} is reviewing these dates</span>
 									</div>
 								)}
 							</div>
