@@ -162,11 +162,8 @@ export function TripsScreen({
 							</button>
 						)}
 						<div className="rank-list">
-							{requests.map((r, index) => (
+							{requests.map((r) => (
 								<div key={r.id} className="rank-row">
-									<span className={`rank-num${index === 0 ? ' top' : ''}`}>
-										#{index + 1}
-									</span>
 									<TripRequestCard request={r} />
 								</div>
 							))}
