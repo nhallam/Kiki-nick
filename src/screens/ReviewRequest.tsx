@@ -214,6 +214,7 @@ function DatesSheet({
 											<button
 												className={`ws-option${i === winIndex ? ' active' : ''}`}
 												role="option"
+												aria-label={`${fmtShort(w.start)} to ${fmtShort(w.end)}, ${diffDays(w.end, w.start)} nights${w.requested ? ', request already sent' : ''}`}
 												aria-selected={i === winIndex}
 												onClick={() => gotoWindow(i)}
 											>
@@ -720,6 +721,7 @@ export function ReviewRequestScreen({
 						</p>
 						<textarea
 							className={`text-area${attemptedContinue && introError ? ' error' : ''}`}
+							aria-label={`Introduce yourself to ${listing.listerName}`}
 							value={formData.peopleIntro}
 							placeholder="Tip: 93% of people who get accepted write 4-6 sentences"
 							onChange={(e) => onChange({ peopleIntro: e.target.value })}
@@ -746,6 +748,7 @@ export function ReviewRequestScreen({
 							</p>
 							<textarea
 								className="text-area small"
+								aria-label={`Questions for ${listing.listerName} (optional)`}
 								value={formData.extraQuestions}
 								placeholder="Optional"
 								onChange={(e) => onChange({ extraQuestions: e.target.value })}

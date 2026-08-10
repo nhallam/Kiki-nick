@@ -183,10 +183,15 @@ export function DateRangeCalendar({
 					]
 						.filter(Boolean)
 						.join(' ');
+					const label = `${day.getDate()} ${MONTHS[day.getMonth()]} ${day.getFullYear()}`;
 					return (
 						<button
 							key={day.toISOString()}
 							className={cls}
+							aria-label={
+								isDateRequested?.(day) ? `${label}, request already sent` : label
+							}
+							aria-pressed={isSelected}
 							disabled={disabled(day)}
 							onClick={() => onSelectDate(day)}
 						>

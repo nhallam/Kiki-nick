@@ -21,7 +21,11 @@ function ListingCard({
 }) {
 	const dates = availabilityRange(listing);
 	return (
-		<button className="listing-card" onClick={onOpen}>
+		<button
+			className="listing-card"
+			onClick={onOpen}
+			aria-label={`${listing.title} in ${listing.area}, ${listing.city}, £${listing.nightlyRate} per night`}
+		>
 			<div className="top">
 				<Avatar
 					variant={listing.photoVariant === 'ieva' ? 'ieva' : 'jake'}

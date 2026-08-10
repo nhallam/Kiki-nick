@@ -13,18 +13,21 @@
 	--primary-dark: #0f6e56;
 	--primary-light: #e8f7f6;
 	--primary-tint: rgba(32, 165, 152, 0.1);
+	/* Brand teal only reaches 3.04:1 with white text, so solid fills that
+	   carry white text use this darker teal (5.26:1). */
+	--primary-strong: #12796f;
 	--dark: #1f2937;
-	--gray: #9ca3af;
+	--gray: #667080; /* 5.0:1 on white, 4.6:1 on the light-grey surfaces */
 	--light-gray: #f6f6f6;
 	--border-light: #eee;
 	--border-medium: #ddd;
-	--disabled: #ccc;
+	--disabled: #949494;
 	--disabled-bg: #e0e0e0;
-	--disabled-text: #9e9e9e;
+	--disabled-text: #6b6b6b; /* legible disabled label */
 	--white: #fff;
-	--error: #d32f2f;
+	--error: #c62828; /* 5.9:1 on white */
 	--star-gold: #ffb800;
-	--success: #16a34a;
+	--success: #12833c; /* 4.84:1 on white */
 }
 
 html,
@@ -176,7 +179,7 @@ input {
 }
 
 .tab-item.active {
-	color: var(--primary);
+	color: var(--primary-dark);
 }
 
 .tab-item .badge {
@@ -186,7 +189,7 @@ input {
 	min-width: 18px;
 	height: 18px;
 	border-radius: 9px;
-	background: #ef4444;
+	background: #dc2626; /* white text passes at 4.83:1 */
 	color: #fff;
 	font-size: 11px;
 	font-weight: 700;
@@ -204,7 +207,7 @@ input {
 	justify-content: center;
 	width: 100%;
 	padding: 15px;
-	background: var(--primary);
+	background: var(--primary-strong);
 	color: var(--white);
 	font-size: 16px;
 	font-weight: 600;
@@ -328,7 +331,7 @@ input {
 	display: flex;
 	align-items: center;
 	gap: 4px;
-	background: var(--primary);
+	background: var(--primary-strong);
 	color: var(--white);
 	font-size: 13px;
 	font-weight: 600;
@@ -423,7 +426,8 @@ input {
 	padding: 4px 0;
 	font-size: 14px;
 	font-weight: 600;
-	color: var(--primary);
+	color: var(--primary-dark);
+	min-height: 44px;
 }
 .month-nav.right {
 	justify-content: flex-end;
@@ -480,7 +484,7 @@ input {
 	color: var(--dark);
 }
 .day-content.selected {
-	background: var(--primary);
+	background: var(--primary-strong);
 	color: var(--white);
 	font-weight: 600;
 }
@@ -530,7 +534,7 @@ input {
 	flex-shrink: 0;
 }
 .pay-step-dot.pay {
-	background: var(--primary);
+	background: var(--primary-strong);
 	border-color: var(--primary);
 	color: var(--white);
 }
@@ -572,7 +576,7 @@ input {
 .pay-step-due {
 	font-size: 13.5px;
 	font-weight: 600;
-	color: var(--primary);
+	color: var(--primary-dark);
 	margin-top: 1px;
 }
 
@@ -733,7 +737,7 @@ input {
 .summary-row.total {
 	font-size: 16px;
 	font-weight: 700;
-	color: var(--primary);
+	color: var(--primary-dark);
 }
 .summary-sub {
 	font-size: 13px;
@@ -1133,7 +1137,7 @@ input {
 	font-size: 13px;
 }
 .review-row-empty {
-	color: var(--primary);
+	color: var(--primary-dark);
 	font-weight: 600;
 }
 .review-change {
@@ -1143,6 +1147,7 @@ input {
 	padding: 9px 16px;
 	font-size: 14px;
 	font-weight: 600;
+	min-height: 44px;
 }
 
 .price-details {
@@ -1271,7 +1276,7 @@ input {
 	color: var(--gray);
 }
 .new-chip {
-	background: var(--primary);
+	background: var(--primary-strong);
 	color: var(--white);
 	font-size: 11px;
 	font-weight: 700;
@@ -1337,7 +1342,7 @@ input {
 	width: 84px;
 	height: 84px;
 	border-radius: 50%;
-	background: var(--primary);
+	background: var(--primary-strong);
 	color: var(--white);
 	display: flex;
 	align-items: center;
@@ -1473,7 +1478,9 @@ input {
 	justify-content: center;
 }
 .guest-hero-remove {
-	margin-top: 8px;
+	margin-top: 4px;
+	padding: 12px 16px;
+	min-height: 44px;
 	font-size: 13px;
 	font-weight: 600;
 	color: var(--error);
@@ -1487,7 +1494,7 @@ input {
 	display: block;
 	margin: 20px auto 0;
 	border: 1.5px solid var(--primary);
-	color: var(--primary);
+	color: var(--primary-dark);
 	background: var(--white);
 	font-size: 14.5px;
 	font-weight: 700;
@@ -1509,6 +1516,7 @@ input {
 	flex: 1 1 0;
 	max-width: 165px;
 	margin: 0;
+	min-height: 44px;
 	padding: 10px 8px;
 	text-align: center;
 	white-space: nowrap;
@@ -1654,7 +1662,7 @@ input {
 	text-align: center;
 }
 .rank-num.top {
-	color: var(--primary);
+	color: var(--primary-dark);
 	font-weight: 800;
 }
 .drag-handle {
@@ -1706,11 +1714,11 @@ input {
 	white-space: nowrap;
 }
 .trip-card .meta .sep {
-	color: var(--border-medium);
+	color: var(--gray);
 }
 .status-chip {
 	align-self: flex-start;
-	background: var(--primary);
+	background: var(--primary-strong);
 	color: var(--white);
 	font-size: 13px;
 	font-weight: 600;
@@ -1764,7 +1772,7 @@ input {
 	margin-top: 2px;
 }
 .away-pending {
-	background: var(--primary);
+	background: var(--primary-strong);
 	color: var(--white);
 	font-size: 12.5px;
 	font-weight: 700;
@@ -1859,7 +1867,7 @@ input {
 	width: calc(100% - 40px);
 	margin: 20px auto 16px;
 	padding: 16px;
-	background: var(--primary);
+	background: var(--primary-strong);
 	color: var(--white);
 	font-size: 17px;
 	font-weight: 600;
@@ -2068,7 +2076,7 @@ input {
 	font-weight: 600;
 }
 .photo-tag .sep {
-	color: var(--border-medium);
+	color: var(--gray);
 }
 .fav-note {
 	position: absolute;
@@ -2106,7 +2114,7 @@ input {
 	margin-top: 10px;
 	font-size: 16px;
 	font-weight: 600;
-	color: var(--primary);
+	color: var(--primary-dark);
 }
 
 /* ---------- Listing detail ---------- */
@@ -2189,7 +2197,7 @@ input {
 .read-more {
 	display: inline-block;
 	margin-top: 8px;
-	color: var(--primary);
+	color: var(--primary-dark);
 	font-size: 17px;
 	font-weight: 600;
 }
@@ -2229,8 +2237,15 @@ input {
 	border-color: var(--primary);
 	box-shadow: none;
 }
+/* Muted but readable rather than a blanket opacity, which pushed the
+   grey text on the tinted card below 2:1. */
 .avail-window-card.requested .avail-window-main {
-	opacity: 0.55;
+	color: var(--primary-dark);
+}
+.avail-window-card.requested .nights-block .unit,
+.avail-window-card.requested .price-block .unit,
+.avail-window-card.requested .dates .dash {
+	color: var(--primary-dark);
 }
 .avail-window-card.requested .nights-block .num {
 	font-size: 20px;
@@ -2259,7 +2274,7 @@ input {
 	white-space: nowrap;
 }
 .requested-chip {
-	background: var(--primary);
+	background: var(--primary-strong);
 	color: var(--white);
 	font-size: 10.5px;
 	font-weight: 700;
@@ -2459,6 +2474,9 @@ input {
 	background: var(--primary-tint);
 	color: var(--primary-dark);
 }
+.ws-option.active .ws-option-nights {
+	color: var(--primary-dark);
+}
 .ws-option-main {
 	display: flex;
 	flex-direction: column;
@@ -2479,7 +2497,7 @@ input {
 	text-transform: uppercase;
 	letter-spacing: 0.03em;
 	color: var(--white);
-	background: var(--primary);
+	background: var(--primary-strong);
 	border-radius: 9px;
 	padding: 3px 8px;
 	white-space: nowrap;
@@ -2510,7 +2528,7 @@ input {
 }
 /* Status tag beside the picker (not an action) */
 .ws-status.requested {
-	background: var(--primary);
+	background: var(--primary-strong);
 	color: var(--white);
 	font-size: 11.5px;
 	font-weight: 700;
@@ -2593,7 +2611,7 @@ input {
 	color: var(--gray);
 }
 .cta-btn {
-	background: var(--primary);
+	background: var(--primary-strong);
 	color: var(--white);
 	font-size: 16px;
 	font-weight: 600;
