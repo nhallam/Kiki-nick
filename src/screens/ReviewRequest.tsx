@@ -9,7 +9,7 @@
  * Kiki rules preserved: seasonal min-stay, ≥100-char intro, no payment
  * until the host accepts, reorder from Trips after submit.
  */
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
 	Listing,
@@ -78,6 +78,15 @@ function DatesSheet({
 
 	const [start, setStart] = useState<Date | null>(moveInDate);
 	const [end, setEnd] = useState<Date | null>(moveOutDate);
+	// Brief message when the user taps dates they've already requested.
+	const [toast, setToast] = useState(false);
+	const toastTimer = useRef<number | undefined>(undefined);
+	const flashRequested = () => {
+		setToast(true);
+		window.clearTimeout(toastTimer.current);
+		toastTimer.current = window.setTimeout(() => setToast(false), 2400);
+	};
+	useEffect(() => () => window.clearTimeout(toastTimer.current), []);
 
 	const months = useMemo(() => {
 		const list: Date[] = [];
@@ -116,7 +125,10 @@ function DatesSheet({
 		end.getTime() === currentWin.end.getTime();
 	// Toggle: taking the window again clears the selection.
 	const selectWindow = () => {
-		if (currentWin.requested) return;
+		if (currentWin.requested) {
+			flashRequested();
+			return;
+		}
 		if (winSelected) {
 			setStart(null);
 			setEnd(null);
@@ -130,7 +142,12 @@ function DatesSheet({
 
 	const handleSelect = (date: Date) => {
 		const win = windowOf(date);
-		if (!win || win.requested) return;
+		if (!win) return;
+		if (win.requested) {
+			setWinIndex(windows.indexOf(win));
+			flashRequested();
+			return;
+		}
 		setWinIndex(windows.indexOf(win));
 		if (!start || end || date <= start || windowOf(start) !== win) {
 			setStart(date);
@@ -198,7 +215,9 @@ function DatesSheet({
 								</span>
 							</span>
 							{currentWin.requested ? (
-								<span className="ws-select requested">Request sent</span>
+								<button className="ws-select requested" onClick={selectWindow}>
+									Request sent
+								</button>
 							) : (
 								<button
 									className={`ws-select${winSelected ? ' done' : ''}`}
@@ -235,10 +254,7 @@ function DatesSheet({
 						minDate={availStart}
 						maxDate={availEnd}
 						onSelectDate={handleSelect}
-						isDateDisabled={(d) => {
-							const w = windowOf(d);
-							return !w || w.requested;
-						}}
+						isDateDisabled={(d) => !windowOf(d)}
 						isDateRequested={(d) => !!windowOf(d)?.requested}
 						onPrevMonth={() => setMonthIndex((i) => Math.max(0, i - 1))}
 						onNextMonth={() =>
@@ -262,6 +278,11 @@ function DatesSheet({
 						</div>
 					)}
 				</div>
+				{toast && (
+					<div className="sheet-toast" role="status">
+						You have sent a request for these dates
+					</div>
+				)}
 				<div className="editor-footer">
 					<button
 						className="btn-primary square"
