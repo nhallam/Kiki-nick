@@ -2407,7 +2407,18 @@ input {
 	border-radius: 14px;
 	padding: 6px;
 	box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
-	animation: toast-in 0.16s ease;
+	transform-origin: top center;
+	animation: menu-in 0.16s ease;
+}
+@keyframes menu-in {
+	from {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 .ws-option {
 	width: 100%;
