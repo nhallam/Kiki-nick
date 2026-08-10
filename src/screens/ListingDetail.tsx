@@ -2,6 +2,7 @@ import React from 'react';
 
 import {
 	Listing,
+	isWindowRequested,
 	listingWindows,
 	parseISODate,
 	shortDate,
@@ -101,24 +102,39 @@ export function ListingDetailScreen({
 
 				<div className="detail-section" style={{ paddingTop: 0 }}>
 					<h2>Available Dates</h2>
-					{listingWindows(listing).map((w, i) => (
-						<div className="avail-window-card" key={i}>
-							<span className="nights-block">
-								<span className="num">{windowNights(w)}</span>
-								<span className="unit">nights</span>
-							</span>
-							<span className="divider" />
-							<span className="dates">
-								{shortDate(parseISODate(w.start))}
-								<span className="dash">–</span>
-								{shortDate(parseISODate(w.end))}
-							</span>
-							<span className="price-block">
-								<span className="amount">£{listing.nightlyRate}</span>
-								<span className="unit">/night</span>
-							</span>
-						</div>
-					))}
+					{listingWindows(listing).map((w, i) => {
+						const requested = isWindowRequested(listing, w);
+						return (
+							<div
+								className={`avail-window-card${requested ? ' requested' : ''}`}
+								key={i}
+							>
+								<div className="avail-window-main">
+									<span className="nights-block">
+										<span className="num">{windowNights(w)}</span>
+										<span className="unit">nights</span>
+									</span>
+									<span className="divider" />
+									<span className="dates">
+										{shortDate(parseISODate(w.start))}
+										<span className="dash">–</span>
+										{shortDate(parseISODate(w.end))}
+									</span>
+									<span className="price-block">
+										<span className="amount">£{listing.nightlyRate}</span>
+										<span className="unit">/night</span>
+									</span>
+								</div>
+								{requested && (
+									<div className="avail-requested">
+										<span className="requested-chip">Request sent</span>
+										{listing.listerName} is reviewing your request for these
+										dates.
+									</div>
+								)}
+							</div>
+						);
+					})}
 				</div>
 
 				{/* Host profile — its own section instead of a separate tab. */}

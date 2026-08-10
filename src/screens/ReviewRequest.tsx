@@ -14,6 +14,7 @@ import React, { useMemo, useState } from 'react';
 import {
 	Listing,
 	MIN_PEOPLE_INTRO_LENGTH,
+	isWindowRequested,
 	listingWindows,
 	MY_PROFILE,
 	MY_PROFILES,
@@ -66,6 +67,7 @@ function DatesSheet({
 			listingWindows(listing).map((w) => ({
 				start: parseISO(w.start),
 				end: parseISO(w.end),
+				requested: isWindowRequested(listing, w),
 			})),
 		[listing],
 	);
@@ -114,6 +116,7 @@ function DatesSheet({
 		end.getTime() === currentWin.end.getTime();
 	// Toggle: taking the window again clears the selection.
 	const selectWindow = () => {
+		if (currentWin.requested) return;
 		if (winSelected) {
 			setStart(null);
 			setEnd(null);
@@ -127,7 +130,7 @@ function DatesSheet({
 
 	const handleSelect = (date: Date) => {
 		const win = windowOf(date);
-		if (!win) return;
+		if (!win || win.requested) return;
 		setWinIndex(windows.indexOf(win));
 		if (!start || end || date <= start || windowOf(start) !== win) {
 			setStart(date);
@@ -157,7 +160,9 @@ function DatesSheet({
 					</button>
 				</div>
 				<div className="editor-body">
-					<div className="window-stepper">
+					<div
+						className={`window-stepper${currentWin.requested ? ' requested' : ''}`}
+					>
 						<div className="ws-top">
 							<span className="ws-eyebrow">
 								<IconCalendar size={15} />
@@ -192,19 +197,29 @@ function DatesSheet({
 									{nightsWord(diffDays(currentWin.end, currentWin.start))}
 								</span>
 							</span>
-							<button
-								className={`ws-select${winSelected ? ' done' : ''}`}
-								onClick={selectWindow}
-							>
-								{winSelected ? (
-									<>
-										<IconCheck size={14} /> Selected
-									</>
-								) : (
-									'Select all'
-								)}
-							</button>
+							{currentWin.requested ? (
+								<span className="ws-select requested">Request sent</span>
+							) : (
+								<button
+									className={`ws-select${winSelected ? ' done' : ''}`}
+									onClick={selectWindow}
+								>
+									{winSelected ? (
+										<>
+											<IconCheck size={14} /> Selected
+										</>
+									) : (
+										'Select all'
+									)}
+								</button>
+							)}
 						</div>
+						{currentWin.requested && (
+							<div className="ws-requested-note">
+								You've already asked {listing.listerName} about these dates.
+								Pick another window if you'd like a second option.
+							</div>
+						)}
 						{windows.length > 1 && (
 							<div className="ws-segments">
 								{windows.map((_, i) => (
@@ -220,7 +235,11 @@ function DatesSheet({
 						minDate={availStart}
 						maxDate={availEnd}
 						onSelectDate={handleSelect}
-						isDateDisabled={(d) => !windowOf(d)}
+						isDateDisabled={(d) => {
+							const w = windowOf(d);
+							return !w || w.requested;
+						}}
+						isDateRequested={(d) => !!windowOf(d)?.requested}
 						onPrevMonth={() => setMonthIndex((i) => Math.max(0, i - 1))}
 						onNextMonth={() =>
 							setMonthIndex((i) => Math.min(months.length - 1, i + 1))

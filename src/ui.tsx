@@ -326,6 +326,23 @@ export function RoomPhoto({ variant, style }: { variant: string; style?: React.C
 			</svg>
 		);
 	}
+	if (variant === 'nina') {
+		return (
+			<svg className="ph-photo" style={style} viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+				<rect width="400" height="300" fill="#f3ece2" />
+				<rect y="225" width="400" height="75" fill="#c9b7a0" />
+				<rect x="235" y="35" width="130" height="150" rx="6" fill="#cfe0e8" />
+				<rect x="292" y="35" width="6" height="150" fill="#f3ece2" />
+				<rect x="30" y="120" width="150" height="70" rx="8" fill="#d98b6a" />
+				<rect x="46" y="96" width="118" height="26" rx="6" fill="#c47a5b" />
+				<circle cx="205" cy="150" r="26" fill="#8ba888" />
+				<rect x="198" y="172" width="14" height="22" fill="#a8886a" />
+				<rect x="60" y="40" width="70" height="52" rx="4" fill="#e2d3bd" />
+				<circle cx="95" cy="66" r="16" fill="#6f6a62" />
+				<circle cx="95" cy="66" r="4" fill="#f3ece2" />
+			</svg>
+		);
+	}
 	if (variant === 'jake') {
 		return (
 			<svg className="ph-photo" style={style} viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">

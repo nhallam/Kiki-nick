@@ -19,6 +19,11 @@ export interface Listing {
 	 * omitted = the whole start–end range. Requests can't cross windows.
 	 */
 	availabilityWindows?: { start: string; end: string }[];
+	/**
+	 * Start dates of windows the user has already sent a request for. Those
+	 * windows are locked in the UI; the rest stay requestable.
+	 */
+	requestedWindows?: string[];
 	openToCouples: boolean;
 	securityDeposit: number;
 	nationalityFlag: string; // emoji flag
@@ -35,7 +40,7 @@ export interface Listing {
 	instagram: string;
 }
 
-export type PhotoVariant = 'ieva' | 'tash' | 'jake';
+export type PhotoVariant = 'ieva' | 'tash' | 'jake' | 'nina';
 
 export const LISTINGS: Listing[] = [
 	{
@@ -95,6 +100,39 @@ export const LISTINGS: Listing[] = [
 		hostJob: 'Musician',
 		instagram: 'jake_lf',
 	},
+	{
+		// Three windows inside a two-month span, with a request already sent
+		// for the middle one.
+		id: 3,
+		listerName: 'Nina',
+		title: "Nina's Flat",
+		area: 'Peckham',
+		city: 'London',
+		nightlyRate: 48,
+		roomType: 'Whole place',
+		availableStart: '2026-09-05',
+		availableEnd: '2026-10-31',
+		availabilityWindows: [
+			{ start: '2026-09-05', end: '2026-09-12' },
+			{ start: '2026-09-26', end: '2026-10-03' },
+			{ start: '2026-10-24', end: '2026-10-31' },
+		],
+		requestedWindows: ['2026-09-26'],
+		openToCouples: true,
+		securityDeposit: 200,
+		nationalityFlag: '🇪🇸',
+		description:
+			'A one-bed flat two minutes from Peckham Rye station, with a sunny balcony, a proper kitchen and a record player. Quiet street, great bakeries, and the park is a five minute walk away.',
+		favouritedBy: 6,
+		vouchedForBy: 'Marco',
+		photoVariant: 'nina',
+		hostAge: 31,
+		hostGender: 'Female',
+		hostNationality: 'Spanish',
+		hostHometown: 'Valencia, Spain',
+		hostJob: 'Chef',
+		instagram: 'nina.cooks',
+	},
 ];
 
 const SHORT_MONTHS = [
@@ -128,6 +166,12 @@ export const windowNights = (w: { start: string; end: string }) =>
 		(parseISODate(w.end).getTime() - parseISODate(w.start).getTime()) /
 			86400000,
 	);
+
+/** True when the user already has a request in for this window. */
+export const isWindowRequested = (
+	listing: Listing,
+	w: { start: string; end: string },
+) => (listing.requestedWindows ?? []).includes(w.start);
 
 export const availabilityNights = (listing: Listing) =>
 	listingWindows(listing).reduce((sum, w) => sum + windowNights(w), 0);
@@ -192,6 +236,14 @@ export interface SentRequest {
 
 /** Pre-existing active request the new one gets ranked against. */
 export const EXISTING_REQUESTS: SentRequest[] = [
+	{
+		id: 901,
+		title: "Nina's Flat in Peckham, London",
+		dates: '26 Sep - 3 Oct',
+		nightlyRate: 48,
+		status: 'In review by host',
+		photoVariant: 'nina',
+	},
 	{
 		id: 900,
 		title: "Tash's Room in Clapham common, London",

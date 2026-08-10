@@ -100,6 +100,7 @@ export function DateRangeCalendar({
 	prevMonthLabel,
 	nextMonthLabel,
 	isDateDisabled,
+	isDateRequested,
 }: {
 	month: Date;
 	selectedStart: Date | null;
@@ -114,6 +115,8 @@ export function DateRangeCalendar({
 	nextMonthLabel: string | null;
 	/** Extra per-day disabling (e.g. gaps between availability windows). */
 	isDateDisabled?: (d: Date) => boolean;
+	/** Days inside a window the user has already sent a request for. */
+	isDateRequested?: (d: Date) => boolean;
 }) {
 	const first = new Date(month.getFullYear(), month.getMonth(), 1);
 	const daysInMonth = new Date(
@@ -173,6 +176,7 @@ export function DateRangeCalendar({
 					const isSelected = isStart || isEnd;
 					const cls = [
 						'day-cell',
+						isDateRequested?.(day) && 'requested',
 						inRange(day) && 'in-range',
 						isStart && selectedEnd && 'range-start',
 						isEnd && 'range-end',
