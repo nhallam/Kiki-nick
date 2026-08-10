@@ -36,6 +36,14 @@ const VERSIONS = [
 		branch: 'round2-option2',
 	},
 	{
+		id: 'round2c',
+		label: '2.2',
+		section: 'Round 2',
+		blurb:
+			"Adds Nina's Flat: three date windows in a two-month span, one of which the user has already requested. That window is marked on the listing and locked in the calendar.",
+		branch: 'round2-v22',
+	},
+	{
 		id: 'current',
 		label: '1.0',
 		section: 'Round 1',
