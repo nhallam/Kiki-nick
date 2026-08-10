@@ -1,5 +1,5 @@
 /**
- * Kiki Trips, matching the live app: three working tabs (Dates away,
+ * Trips, matching the live app: three working tabs (Dates away,
  * Matches, Sent requests). Dates away lists the user's own away-trips with
  * edit/delete actions and a past-trips section; Matches is an empty state
  * until a request is accepted; Sent requests is the ranked request list.
@@ -104,7 +104,7 @@ export function TripsScreen({
 		<div className="screen">
 			<StatusBar time="12:13" />
 			<div className="trips-header">
-				<div className="trips-title">Kiki Trips</div>
+				<div className="trips-title">Trips</div>
 				<div className="trips-tabs">
 					<button
 						className={`trips-tab${tab === 'dates' ? ' active' : ''}`}
