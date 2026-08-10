@@ -21,30 +21,30 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const VERSIONS = [
 	{
 		id: 'round2',
-		label: 'Option 1',
+		label: '2.0',
 		section: 'Round 2',
 		blurb:
-			'The Round 2 working version — Option 3 from Round 1 evolved through client feedback: 3-page flow, window stepper, centred guests, host preview.',
+			'The first Round 2 build. 1.3 evolved through client feedback into a 3-page flow with a window stepper, centred guests and a host preview.',
 		branch: 'round2',
 	},
 	{
 		id: 'round2b',
-		label: 'Option 2',
+		label: '2.1',
 		section: 'Round 2',
 		blurb:
-			'Duplicate of Option 1 — the next batch of changes lands here so the two can be compared.',
+			'The current working version. Trimmed review card, compact window stepper, paired guest actions, simplified sent screen and the live Trips tabs.',
 		branch: 'round2-option2',
 	},
 	{
 		id: 'current',
-		label: 'Current flow',
+		label: '1.0',
 		section: 'Round 1',
-		blurb: 'Faithful rebuild of the live app — 4 steps, exactly as shipped.',
+		blurb: 'Faithful rebuild of the live app: 4 steps, exactly as shipped.',
 		branch: 'claude/kiki-booking-flow-redesign-e0rhj6',
 	},
 	{
 		id: 'option1',
-		label: 'Option 1',
+		label: '1.1',
 		section: 'Round 1',
 		blurb:
 			'Best-practice polish: live price preview, "Select all" tip, character counter, pre-send recap, leave guard.',
@@ -52,7 +52,7 @@ const VERSIONS = [
 	},
 	{
 		id: 'option2',
-		label: 'Option 2',
+		label: '1.2',
 		section: 'Round 1',
 		blurb:
 			'Restructured: dates & payments merged into one step (3-step flow), availability chip, intro prompt chips, 45+ day split payments.',
@@ -60,10 +60,10 @@ const VERSIONS = [
 	},
 	{
 		id: 'option3',
-		label: 'Option 3',
+		label: '1.3',
 		section: 'Round 1',
 		blurb:
-			'Review-centric (Airbnb-style): one "Review and request" hub with Change buttons opening dates/guests editor sheets, price details expander, trust line — no wizard. Chosen by the client as the Round 2 direction.',
+			'Review-centric (Airbnb-style): one "Review and request" hub with Change buttons opening dates/guests editor sheets, price details expander and trust line, no wizard. Chosen by the client as the Round 2 direction.',
 		branch: 'booking-flow-airbnb-style',
 	},
 ];
@@ -75,7 +75,7 @@ const SECTIONS = [
 	},
 	{
 		title: 'Round 2',
-		note: 'The active direction — client feedback gets applied here.',
+		note: 'The active direction. Client feedback gets applied here.',
 		default: true,
 	},
 ];
@@ -384,7 +384,7 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 <div id="gallery-root">
 	<div class="launcher" id="launcher">
 		<div class="brand"><span class="brand-dot">K</span><h1>Kiki booking flow</h1></div>
-		<p class="sub">Prototype versions of the booking request flow. Pick one to walk through it — everything is clickable.</p>
+		<p class="sub">Prototype versions of the booking request flow. Pick one to walk through it, everything is clickable.</p>
 		<div class="round-tabs" role="tablist" aria-label="Round">
 ${roundTabs}
 		</div>
