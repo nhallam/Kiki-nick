@@ -2223,10 +2223,7 @@ input {
 	padding: 16px 18px;
 	box-shadow: 0 1px 4px rgba(163, 163, 163, 0.12);
 }
-/* Requested cards sit tighter: the status line replaces the extra padding */
-.avail-window-card.requested {
-	padding: 12px 16px;
-}
+
 .avail-window-main {
 	display: flex;
 	align-items: center;
@@ -2246,44 +2243,6 @@ input {
 .avail-window-card.requested .price-block .unit,
 .avail-window-card.requested .dates .dash {
 	color: var(--primary-dark);
-}
-.avail-window-card.requested .nights-block .num {
-	font-size: 20px;
-	line-height: 22px;
-}
-.avail-window-card.requested .dates {
-	font-size: 15.5px;
-}
-.avail-window-card.requested .price-block .amount {
-	font-size: 18px;
-	line-height: 20px;
-}
-.avail-requested {
-	display: flex;
-	align-items: center;
-	gap: 7px;
-	margin-top: 8px;
-	font-size: 12.5px;
-	line-height: 16px;
-	color: var(--primary-dark);
-	min-width: 0;
-}
-.avail-requested span:last-child {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-.requested-chip {
-	background: var(--primary-strong);
-	color: var(--white);
-	font-size: 10.5px;
-	font-weight: 700;
-	letter-spacing: 0.03em;
-	text-transform: uppercase;
-	border-radius: 8px;
-	padding: 3px 7px;
-	white-space: nowrap;
-	flex-shrink: 0;
 }
 .avail-window-card + .avail-window-card {
 	margin-top: 12px;
@@ -2311,14 +2270,30 @@ input {
 	background: var(--border-light);
 	margin: -2px 0 -2px 14px;
 }
-.avail-window-card .dates {
+.avail-window-card .dates-block {
 	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-width: 0;
+}
+.avail-window-card .dates {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	gap: 10px;
 	font-size: 17px;
 	font-weight: 600;
+}
+/* Sits under the range on a window the user has already requested */
+.avail-window-card .dates-note {
+	margin-top: 3px;
+	font-size: 12px;
+	line-height: 15px;
+	font-weight: 600;
+	color: var(--primary-dark);
+	text-align: center;
 }
 .avail-window-card .dates .dash {
 	color: var(--gray);

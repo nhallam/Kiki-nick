@@ -115,22 +115,23 @@ export function ListingDetailScreen({
 										<span className="unit">nights</span>
 									</span>
 									<span className="divider" />
-									<span className="dates">
-										{shortDate(parseISODate(w.start))}
-										<span className="dash">–</span>
-										{shortDate(parseISODate(w.end))}
+									<span className="dates-block">
+										<span className="dates">
+											{shortDate(parseISODate(w.start))}
+											<span className="dash">–</span>
+											{shortDate(parseISODate(w.end))}
+										</span>
+										{requested && (
+											<span className="dates-note">
+												You have requested these dates
+											</span>
+										)}
 									</span>
 									<span className="price-block">
 										<span className="amount">£{listing.nightlyRate}</span>
 										<span className="unit">/night</span>
 									</span>
 								</div>
-								{requested && (
-									<div className="avail-requested">
-										<span className="requested-chip">Request sent</span>
-										<span>{listing.listerName} is reviewing these dates</span>
-									</div>
-								)}
 							</div>
 						);
 					})}
