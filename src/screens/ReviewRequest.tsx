@@ -17,7 +17,6 @@ import {
 	isWindowRequested,
 	listingWindows,
 	MY_PROFILE,
-	MY_PROFILES,
 	OTHER_PROFILES,
 	UserProfile,
 } from '../data';
@@ -346,18 +345,10 @@ function GuestsSheet({
 	) => void;
 	onClose: () => void;
 }) {
-	const [me, setMe] = useState<UserProfile>(
-		() => guestProfiles[0] ?? MY_PROFILE,
-	);
+	const me = guestProfiles[0] ?? MY_PROFILE;
 	const [extras, setExtras] = useState<(UserProfile | null)[]>(() =>
 		guestProfiles.slice(1),
 	);
-
-	// Cycle through the user's saved profiles.
-	const changeProfile = () => {
-		const i = MY_PROFILES.findIndex((p) => p.id === me.id);
-		setMe(MY_PROFILES[(i + 1) % MY_PROFILES.length]);
-	};
 
 	// Not open to couples ⇒ single-occupancy: no adding guests at all.
 	const soloOnly = !listing.openToCouples;
@@ -403,16 +394,13 @@ function GuestsSheet({
 						</div>
 					</div>
 
-					<div className="hero-actions">
-						<button className="add-guest-btn" onClick={changeProfile}>
-							Change profile
-						</button>
-						{!soloOnly && (
+					{!soloOnly && (
+						<div className="hero-actions">
 							<button className="add-guest-btn" onClick={addGuest}>
 								+ Add guest
 							</button>
-						)}
-					</div>
+						</div>
+					)}
 
 					{soloOnly ? (
 						<div className="slot-helper centered">
