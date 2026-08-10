@@ -83,6 +83,11 @@ export const IconChevronLeft = (p: IconProps) => (
 	</Svg>
 );
 
+export const IconChevronDown = (p: IconProps) => (
+	<Svg {...p}>
+		<path d="M6 9l6 6 6-6" />
+	</Svg>
+);
 export const IconChevronRight = (p: IconProps) => (
 	<Svg {...p}>
 		<polyline points="9 18 15 12 9 6" />

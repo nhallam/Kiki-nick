@@ -25,8 +25,8 @@ import {
 	Avatar,
 	IconCheck,
 	IconCalendar,
+	IconChevronDown,
 	IconChevronLeft,
-	IconChevronRight,
 	IconClose,
 	RoomPhoto,
 	StatusBar,
@@ -103,6 +103,7 @@ function DatesSheet({
 
 	// Window stepper: browse windows with the arrows (the calendar follows),
 	// or take a whole window with Select.
+	const [menuOpen, setMenuOpen] = useState(false);
 	const [winIndex, setWinIndex] = useState(() => {
 		const i = moveInDate ? windows.findIndex((w) => windowOf(moveInDate) === w) : -1;
 		return Math.max(0, i);
@@ -110,6 +111,7 @@ function DatesSheet({
 	const currentWin = windows[winIndex];
 	const gotoWindow = (i: number) => {
 		setWinIndex(i);
+		setMenuOpen(false);
 		const target = windows[i].start;
 		const mi = months.findIndex(
 			(m) =>
@@ -185,35 +187,31 @@ function DatesSheet({
 								<IconCalendar size={15} />
 								Available Dates
 							</span>
-							{windows.length > 1 && (
-								<span className="ws-arrows">
-									<button
-										className="ws-arrow"
-										disabled={winIndex === 0}
-										onClick={() => gotoWindow(winIndex - 1)}
-										aria-label="Previous window"
-									>
-										<IconChevronLeft size={18} />
-									</button>
-									<button
-										className="ws-arrow"
-										disabled={winIndex === windows.length - 1}
-										onClick={() => gotoWindow(winIndex + 1)}
-										aria-label="Next window"
-									>
-										<IconChevronRight size={18} />
-									</button>
-								</span>
-							)}
 						</div>
 						<div className="ws-main">
-							<span className="ws-range">
-								{fmtShort(currentWin.start)} – {fmtShort(currentWin.end)}
-								<span className="ws-nights">
-									· {diffDays(currentWin.end, currentWin.start)}{' '}
-									{nightsWord(diffDays(currentWin.end, currentWin.start))}
+							{windows.length > 1 ? (
+								<button
+									className={`ws-range ws-picker${menuOpen ? ' open' : ''}`}
+									onClick={() => setMenuOpen((v) => !v)}
+									aria-haspopup="listbox"
+									aria-expanded={menuOpen}
+								>
+									{fmtShort(currentWin.start)} – {fmtShort(currentWin.end)}
+									<span className="ws-nights">
+										· {diffDays(currentWin.end, currentWin.start)}{' '}
+										{nightsWord(diffDays(currentWin.end, currentWin.start))}
+									</span>
+									<IconChevronDown size={18} />
+								</button>
+							) : (
+								<span className="ws-range">
+									{fmtShort(currentWin.start)} – {fmtShort(currentWin.end)}
+									<span className="ws-nights">
+										· {diffDays(currentWin.end, currentWin.start)}{' '}
+										{nightsWord(diffDays(currentWin.end, currentWin.start))}
+									</span>
 								</span>
-							</span>
+							)}
 							{currentWin.requested ? (
 								<button className="ws-select requested" onClick={selectWindow}>
 									Request sent
@@ -239,12 +237,40 @@ function DatesSheet({
 								Pick another window if you'd like a second option.
 							</div>
 						)}
-						{windows.length > 1 && (
-							<div className="ws-segments">
-								{windows.map((_, i) => (
-									<span key={i} className={i === winIndex ? 'active' : ''} />
-								))}
-							</div>
+						{menuOpen && (
+							<>
+								<div
+									className="ws-menu-catch"
+									onClick={() => setMenuOpen(false)}
+								/>
+								<ul className="ws-menu" role="listbox">
+									{windows.map((w, i) => (
+										<li key={i}>
+											<button
+												className={`ws-option${i === winIndex ? ' active' : ''}`}
+												role="option"
+												aria-selected={i === winIndex}
+												onClick={() => gotoWindow(i)}
+											>
+												<span className="ws-option-main">
+													<span className="ws-option-range">
+														{fmtShort(w.start)} – {fmtShort(w.end)}
+													</span>
+													<span className="ws-option-nights">
+														{diffDays(w.end, w.start)}{' '}
+														{nightsWord(diffDays(w.end, w.start))}
+													</span>
+												</span>
+												{w.requested ? (
+													<span className="ws-option-tag">Request sent</span>
+												) : (
+													i === winIndex && <IconCheck size={16} />
+												)}
+											</button>
+										</li>
+									))}
+								</ul>
+							</>
 						)}
 					</div>
 					<DateRangeCalendar

@@ -2344,25 +2344,90 @@ input {
 	text-transform: uppercase;
 	color: var(--primary-dark);
 }
-.ws-arrows {
-	display: flex;
-	gap: 8px;
+/* Window picker dropdown */
+.window-stepper {
+	position: relative;
 }
-.ws-arrow {
-	width: 28px;
-	height: 28px;
-	border-radius: 50%;
+.ws-picker {
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	color: inherit;
+	text-align: left;
+}
+.ws-picker svg {
+	color: var(--gray);
+	transition: transform 0.2s ease;
+	flex-shrink: 0;
+}
+.ws-picker.open svg {
+	transform: rotate(180deg);
+}
+.ws-menu-catch {
+	position: fixed;
+	inset: 0;
+	z-index: 4;
+}
+.ws-menu {
+	position: absolute;
+	z-index: 5;
+	top: calc(100% - 6px);
+	left: 10px;
+	right: 10px;
+	list-style: none;
 	background: var(--white);
 	border: 1px solid var(--border-light);
+	border-radius: 14px;
+	padding: 6px;
+	box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+	animation: toast-in 0.16s ease;
+}
+.ws-option {
+	width: 100%;
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: space-between;
+	gap: 10px;
+	padding: 11px 12px;
+	border-radius: 10px;
+	background: none;
+	border: none;
+	text-align: left;
 	color: var(--dark);
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
-.ws-arrow:disabled {
-	opacity: 0.35;
-	cursor: default;
+.ws-option:active {
+	background: var(--light-gray);
+}
+.ws-option.active {
+	background: var(--primary-tint);
+	color: var(--primary-dark);
+}
+.ws-option-main {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+.ws-option-range {
+	font-size: 15px;
+	font-weight: 700;
+}
+.ws-option-nights {
+	font-size: 12.5px;
+	color: var(--gray);
+	margin-top: 1px;
+}
+.ws-option-tag {
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+	color: var(--white);
+	background: var(--primary);
+	border-radius: 9px;
+	padding: 3px 8px;
+	white-space: nowrap;
+	flex-shrink: 0;
 }
 .ws-main {
 	display: flex;
@@ -2376,9 +2441,10 @@ input {
 	font-weight: 700;
 	letter-spacing: -0.01em;
 	display: flex;
-	align-items: baseline;
+	align-items: center;
 	gap: 6px;
 	flex-wrap: wrap;
+	font-family: inherit;
 }
 .ws-nights {
 	font-size: 13px;
@@ -2448,20 +2514,7 @@ input {
 	line-height: 17px;
 	color: var(--gray);
 }
-.ws-segments {
-	display: flex;
-	gap: 8px;
-	margin-top: 10px;
-}
-.ws-segments span {
-	flex: 1;
-	height: 4px;
-	border-radius: 2px;
-	background: rgba(0, 0, 0, 0.08);
-}
-.ws-segments span.active {
-	background: var(--primary);
-}
+
 
 .listing-cta-bar {
 	position: absolute;
