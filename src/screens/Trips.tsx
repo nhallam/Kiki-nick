@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 
 import { SentRequest } from '../data';
-import { IconAddCircle, IconHome, IconSend, StatusBar } from '../ui';
+import { IconAddCircle, StatusBar } from '../ui';
 import { TripRequestCard } from './Rank';
 import { TabBar } from './TabBar';
 
@@ -103,13 +103,13 @@ export function TripsScreen({
 						className={`trips-tab${tab === 'staying' ? ' active' : ''}`}
 						onClick={() => setTab('staying')}
 					>
-						<IconSend size={19} /> Staying
+						Staying
 					</button>
 					<button
 						className={`trips-tab${tab === 'hosting' ? ' active' : ''}`}
 						onClick={() => setTab('hosting')}
 					>
-						<IconHome size={19} /> Hosting
+						Hosting
 					</button>
 				</div>
 			</div>
