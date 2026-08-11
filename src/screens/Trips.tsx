@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 
 import { SentRequest } from '../data';
-import { IconHome, IconSend, StatusBar } from '../ui';
+import { IconAddCircle, IconHome, IconSend, StatusBar } from '../ui';
 import { TripRequestCard } from './Rank';
 import { TabBar } from './TabBar';
 
@@ -163,13 +163,13 @@ export function TripsScreen({
 						<div className="trips-section">
 							<div className="trips-section-head">
 								<h2 className="trips-section-title">Available dates</h2>
+								<button className="trips-section-add">
+									<IconAddCircle size={16} /> Add a new trip
+								</button>
 							</div>
 							{UPCOMING_TRIPS.map((t) => (
 								<AwayTripCard key={t.id} trip={t} />
 							))}
-							<button className="btn-primary square add-trip-btn">
-								Add a new trip
-							</button>
 							<div className="trips-subsection-title">Past trips</div>
 							{PAST_TRIPS.map((t) => (
 								<AwayTripCard key={t.id} trip={t} />

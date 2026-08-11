@@ -1802,10 +1802,6 @@ input {
 	background: var(--light-gray);
 }
 
-.add-trip-btn {
-	margin: 4px 0 20px;
-	border-radius: 14px;
-}
 
 /* Sections stacked inside a tab pane (Matches + Available dates) */
 .trips-section + .trips-section {
@@ -1813,10 +1809,25 @@ input {
 }
 .trips-section-head {
 	display: flex;
-	align-items: baseline;
+	align-items: center;
 	justify-content: space-between;
 	gap: 12px;
 	margin-bottom: 12px;
+}
+/* Compact action pill that sits on the section heading's line */
+.trips-section-add {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	min-height: 40px;
+	padding: 0 15px;
+	border-radius: 20px;
+	background: var(--primary-strong);
+	color: var(--white);
+	font-size: 14px;
+	font-weight: 600;
+	white-space: nowrap;
+	flex-shrink: 0;
 }
 .trips-section-title {
 	font-size: 20px;
@@ -1831,7 +1842,7 @@ input {
 .trips-subsection-title {
 	font-size: 17px;
 	font-weight: 700;
-	margin-bottom: 12px;
+	margin: 22px 0 12px;
 }
 
 .empty-card {
