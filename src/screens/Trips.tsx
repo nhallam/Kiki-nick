@@ -1,23 +1,16 @@
 /**
- * Trips, matching the live app: three working tabs (Dates away,
- * Matches, Sent requests). Dates away lists the user's own away-trips with
- * edit/delete actions and a past-trips section; Matches is an empty state
- * until a request is accepted; Sent requests is the ranked request list.
+ * Trips, split by which side of the swap you're on: Staying (the requests
+ * you've sent for other people's places) and Hosting (your matches and the
+ * dates your own place is free).
  */
 import React, { useState } from 'react';
 
 import { SentRequest } from '../data';
-import {
-	IconCalendar,
-	IconPeople,
-	IconReorderArrows,
-	IconSend,
-	StatusBar,
-} from '../ui';
+import { IconHome, IconSend, StatusBar } from '../ui';
 import { TripRequestCard } from './Rank';
 import { TabBar } from './TabBar';
 
-type TripsTab = 'dates' | 'matches' | 'sent';
+type TripsTab = 'staying' | 'hosting';
 
 interface AwayTrip {
 	id: number;
@@ -98,7 +91,7 @@ export function TripsScreen({
 	requests: SentRequest[];
 	onReorder?: () => void;
 }) {
-	const [tab, setTab] = useState<TripsTab>('sent');
+	const [tab, setTab] = useState<TripsTab>('staying');
 
 	return (
 		<div className="screen">
@@ -107,65 +100,79 @@ export function TripsScreen({
 				<div className="trips-title">Trips</div>
 				<div className="trips-tabs">
 					<button
-						className={`trips-tab${tab === 'dates' ? ' active' : ''}`}
-						onClick={() => setTab('dates')}
+						className={`trips-tab${tab === 'staying' ? ' active' : ''}`}
+						onClick={() => setTab('staying')}
 					>
-						<IconCalendar size={19} /> Dates away
+						<IconSend size={19} /> Staying
 					</button>
 					<button
-						className={`trips-tab${tab === 'matches' ? ' active' : ''}`}
-						onClick={() => setTab('matches')}
+						className={`trips-tab${tab === 'hosting' ? ' active' : ''}`}
+						onClick={() => setTab('hosting')}
 					>
-						<IconPeople size={19} /> Matches
-					</button>
-					<button
-						className={`trips-tab${tab === 'sent' ? ' active' : ''}`}
-						onClick={() => setTab('sent')}
-					>
-						<IconSend size={19} /> Sent requests
+						<IconHome size={19} /> Hosting
 					</button>
 				</div>
 			</div>
 
 			<div className="screen-scroll">
-				{tab === 'dates' && (
+				{tab === 'staying' && (
 					<div className="trips-pane">
-						{UPCOMING_TRIPS.map((t) => (
-							<AwayTripCard key={t.id} trip={t} />
-						))}
-						<button className="btn-primary square add-trip-btn">
-							Add a new trip
-						</button>
-						<div className="past-trips-title">Past trips</div>
-						{PAST_TRIPS.map((t) => (
-							<AwayTripCard key={t.id} trip={t} />
-						))}
-					</div>
-				)}
-
-				{tab === 'matches' && (
-					<div className="trips-pane">
-						<div className="empty-card">
-							<div className="empty-title">You don't have any matches yet.</div>
-							<div className="empty-sub">
-								When you have a match, you'll be able to see it here.
+						<div className="trips-section">
+							<div className="trips-section-head">
+								<h2 className="trips-section-title">Booking requests</h2>
+								{onReorder && (
+									<button className="trips-section-action" onClick={onReorder}>
+										Reorder
+									</button>
+								)}
 							</div>
+							{requests.length > 0 ? (
+								<div className="rank-list">
+									{requests.map((r) => (
+										<div key={r.id} className="rank-row">
+											<TripRequestCard request={r} />
+										</div>
+									))}
+								</div>
+							) : (
+								<div className="empty-card">
+									<div className="empty-title">No booking requests yet.</div>
+									<div className="empty-sub">
+										Requests you send to hosts will show up here.
+									</div>
+								</div>
+							)}
 						</div>
 					</div>
 				)}
 
-				{tab === 'sent' && (
+				{tab === 'hosting' && (
 					<div className="trips-pane">
-						{onReorder && (
-							<button className="reorder-btn" onClick={onReorder}>
-								<IconReorderArrows size={22} /> Reorder
-							</button>
-						)}
-						<div className="rank-list">
-							{requests.map((r) => (
-								<div key={r.id} className="rank-row">
-									<TripRequestCard request={r} />
+						<div className="trips-section">
+							<div className="trips-section-head">
+								<h2 className="trips-section-title">Matches</h2>
+							</div>
+							<div className="empty-card">
+								<div className="empty-title">You don't have any matches yet.</div>
+								<div className="empty-sub">
+									When you have a match, you'll be able to see it here.
 								</div>
+							</div>
+						</div>
+
+						<div className="trips-section">
+							<div className="trips-section-head">
+								<h2 className="trips-section-title">Available dates</h2>
+							</div>
+							{UPCOMING_TRIPS.map((t) => (
+								<AwayTripCard key={t.id} trip={t} />
+							))}
+							<button className="btn-primary square add-trip-btn">
+								Add a new trip
+							</button>
+							<div className="trips-subsection-title">Past trips</div>
+							{PAST_TRIPS.map((t) => (
+								<AwayTripCard key={t.id} trip={t} />
 							))}
 						</div>
 					</div>

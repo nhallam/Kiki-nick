@@ -1806,9 +1806,31 @@ input {
 	margin: 4px 0 20px;
 	border-radius: 14px;
 }
-.past-trips-title {
+
+/* Sections stacked inside a tab pane (Matches + Available dates) */
+.trips-section + .trips-section {
+	margin-top: 28px;
+}
+.trips-section-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 12px;
+}
+.trips-section-title {
 	font-size: 20px;
 	font-weight: 800;
+}
+.trips-section-action {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--primary-dark);
+	padding: 4px 2px;
+}
+.trips-subsection-title {
+	font-size: 17px;
+	font-weight: 700;
 	margin-bottom: 12px;
 }
 
