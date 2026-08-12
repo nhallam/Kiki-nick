@@ -32,7 +32,7 @@ const VERSIONS = [
 		label: '2.1',
 		section: 'Round 2',
 		blurb:
-			'The current working version. Trimmed review card, compact window stepper, paired guest actions, simplified sent screen and the live Trips tabs.',
+			'Trimmed review card, compact window stepper, paired guest actions, simplified sent screen and the live Trips tabs.',
 		branch: 'round2-option2',
 	},
 	{
@@ -40,8 +40,16 @@ const VERSIONS = [
 		label: '2.2',
 		section: 'Round 2',
 		blurb:
-			"Adds Nina's Flat: three date windows in a two-month span, one of which the user has already requested. That window is marked on the listing and locked in the calendar.",
+			"Adds Nina's Flat: three date windows in a two-month span, one already requested. Plus the Staying/Hosting Trips split, an accessibility pass, and a calendar that fills the chosen window in.",
 		branch: 'round2-v22',
+	},
+	{
+		id: 'round2d',
+		label: '2.3',
+		section: 'Round 2',
+		blurb:
+			'The live working version, carrying on from 2.2. New changes land here.',
+		branch: 'round2-v23',
 	},
 	{
 		id: 'current',
