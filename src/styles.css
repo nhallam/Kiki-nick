@@ -2585,6 +2585,13 @@ input {
 	line-height: 17px;
 	color: var(--gray);
 }
+/* Explains that the picker has filled the dates in and they can be changed */
+.ws-hint {
+	margin: 10px 2px 0;
+	font-size: 13px;
+	line-height: 18px;
+	color: var(--gray);
+}
 
 
 .listing-cta-bar {

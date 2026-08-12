@@ -44,6 +44,11 @@ import {
 
 const nightsWord = (n: number) => (n === 1 ? 'night' : 'nights');
 
+const sameDay = (a: Date, b: Date) =>
+	a.getFullYear() === b.getFullYear() &&
+	a.getMonth() === b.getMonth() &&
+	a.getDate() === b.getDate();
+
 /* ---------- Dates editor sheet ---------- */
 
 function DatesSheet({
@@ -75,8 +80,31 @@ function DatesSheet({
 	const windowOf = (d: Date) =>
 		windows.find((w) => d >= w.start && d <= w.end) ?? null;
 
-	const [start, setStart] = useState<Date | null>(moveInDate);
-	const [end, setEnd] = useState<Date | null>(moveOutDate);
+	// The window the sheet opens on: the one the saved dates fall in, else
+	// the first that hasn't already been requested.
+	const initialWinIndex = useMemo(() => {
+		if (moveInDate) {
+			const i = windows.findIndex(
+				(w) => moveInDate >= w.start && moveInDate <= w.end,
+			);
+			if (i >= 0) return i;
+		}
+		const open = windows.findIndex((w) => !w.requested);
+		return open >= 0 ? open : 0;
+	}, [windows, moveInDate]);
+
+	// Picking a window fills its whole range in, so the common case is one
+	// tap; tapping either end of the selection clears it again.
+	const [start, setStart] = useState<Date | null>(
+		moveInDate ??
+			(windows[initialWinIndex].requested
+				? null
+				: windows[initialWinIndex].start),
+	);
+	const [end, setEnd] = useState<Date | null>(
+		moveOutDate ??
+			(windows[initialWinIndex].requested ? null : windows[initialWinIndex].end),
+	);
 	// Brief message when the user taps dates they've already requested.
 	const [toast, setToast] = useState(false);
 	const toastTimer = useRef<number | undefined>(undefined);
@@ -97,27 +125,36 @@ function DatesSheet({
 		}
 		return list;
 	}, [listing.availableStart, listing.availableEnd]);
-	const [monthIndex, setMonthIndex] = useState(0);
+	const [monthIndex, setMonthIndex] = useState(() => {
+		const target = windows[initialWinIndex].start;
+		const i = months.findIndex(
+			(m) =>
+				m.getFullYear() === target.getFullYear() &&
+				m.getMonth() === target.getMonth(),
+		);
+		return Math.max(0, i);
+	});
 	const month = months[Math.min(monthIndex, months.length - 1)];
 
 	// Window stepper: browse windows with the arrows (the calendar follows),
 	// or take a whole window with Select.
 	const [menuOpen, setMenuOpen] = useState(false);
-	const [winIndex, setWinIndex] = useState(() => {
-		const i = moveInDate ? windows.findIndex((w) => windowOf(moveInDate) === w) : -1;
-		return Math.max(0, i);
-	});
+	const [winIndex, setWinIndex] = useState(initialWinIndex);
 	const currentWin = windows[winIndex];
 	const gotoWindow = (i: number) => {
+		const win = windows[i];
 		setWinIndex(i);
 		setMenuOpen(false);
-		const target = windows[i].start;
 		const mi = months.findIndex(
 			(m) =>
-				m.getFullYear() === target.getFullYear() &&
-				m.getMonth() === target.getMonth(),
+				m.getFullYear() === win.start.getFullYear() &&
+				m.getMonth() === win.start.getMonth(),
 		);
 		if (mi >= 0) setMonthIndex(mi);
+		// Fill the window in ready to send; a requested one can't be taken, so
+		// it just clears whatever was selected.
+		setStart(win.requested ? null : win.start);
+		setEnd(win.requested ? null : win.end);
 	};
 	const fmtShort = (d: Date) =>
 		`${d.getDate()} ${MONTHS[d.getMonth()].slice(0, 3)}`;
@@ -131,6 +168,13 @@ function DatesSheet({
 			return;
 		}
 		setWinIndex(windows.indexOf(win));
+		// Tapping either end of the current range clears it, so the dates
+		// filled in by the picker can be undone without a Clear button.
+		if (start && (sameDay(date, start) || (end && sameDay(date, end)))) {
+			setStart(null);
+			setEnd(null);
+			return;
+		}
 		if (!start || end || date <= start || windowOf(start) !== win) {
 			setStart(date);
 			setEnd(null);
@@ -138,6 +182,12 @@ function DatesSheet({
 			setEnd(date);
 		}
 	};
+
+	const wholeWindowSelected =
+		!!start &&
+		!!end &&
+		sameDay(start, currentWin.start) &&
+		sameDay(end, currentWin.end);
 
 	const nights = start && end ? diffDays(end, start) : 0;
 	// Min-stay applies to the window the selection is in, not the whole span.
@@ -239,6 +289,11 @@ function DatesSheet({
 							</>
 						)}
 					</div>
+					{wholeWindowSelected && (
+						<div className="ws-hint">
+							The whole window is selected. Tap a date to change it.
+						</div>
+					)}
 					<DateRangeCalendar
 						month={month}
 						selectedStart={start}
