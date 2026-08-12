@@ -473,6 +473,9 @@ input {
 	border-top-right-radius: 20px;
 	border-bottom-right-radius: 20px;
 }
+/* Bookable days carry weight and near-black text; the ones outside the
+   host's windows stay grey, drop to regular weight and are struck through,
+   so the difference doesn't rest on colour alone. */
 .day-content {
 	width: 36px;
 	height: 36px;
@@ -480,7 +483,8 @@ input {
 	align-items: center;
 	justify-content: center;
 	border-radius: 18px;
-	font-size: 14px;
+	font-size: 15px;
+	font-weight: 600;
 	color: var(--dark);
 }
 .day-content.selected {
@@ -490,6 +494,9 @@ input {
 }
 .day-cell:disabled .day-content {
 	color: var(--disabled);
+	font-weight: 400;
+	text-decoration: line-through;
+	text-decoration-thickness: 1px;
 }
 
 .min-stay-error {
