@@ -318,6 +318,19 @@ function DatesSheet({
 								: null
 						}
 					/>
+					<div className="cal-legend">
+						<span className="cal-legend-item">
+							<i className="sw selected" /> Selected
+						</span>
+						{windows.some((w) => w.requested) && (
+							<span className="cal-legend-item">
+								<i className="sw requested" /> Request sent
+							</span>
+						)}
+						<span className="cal-legend-item">
+							<i className="sw unavailable" /> Not available
+						</span>
+					</div>
 					{isShort && (
 						<div className="min-stay-error">
 							Too short for {listing.listerName} 😭, you'll need at least{' '}

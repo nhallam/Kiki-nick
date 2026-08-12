@@ -28,6 +28,10 @@
 	--error: #c62828; /* 5.9:1 on white */
 	--star-gold: #ffb800;
 	--success: #12833c; /* 4.84:1 on white */
+	/* Pending / awaiting-the-host state. Deliberately off-brand so it can't
+	   be mistaken for the teal selection. */
+	--pending-tint: #fdf0d9;
+	--pending: #8a5a00; /* 5.1:1 on the tint */
 }
 
 html,
@@ -2351,23 +2355,52 @@ input {
 }
 
 /* Days in a window the user has already requested */
+/* Kept clearly apart from the teal selection: individual amber rings
+   rather than a continuous filled band, so the two never read alike. */
 .day-cell.requested {
-	color: var(--primary-dark) !important;
-	background: var(--primary-tint);
+	background: none;
 	opacity: 1;
 	position: relative;
-	font-weight: 600;
 }
-.day-cell.requested::after {
-	content: '';
-	position: absolute;
-	bottom: 4px;
-	left: 50%;
-	transform: translateX(-50%);
-	width: 4px;
-	height: 4px;
-	border-radius: 2px;
-	background: var(--primary);
+.day-cell.requested .day-content {
+	background: var(--pending-tint);
+	border: 1px dashed var(--pending);
+	color: var(--pending);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+/* Legend, since three states in one grid is a lot to infer */
+.cal-legend {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 16px;
+	margin-top: 12px;
+	padding: 0 2px;
+	font-size: 12.5px;
+	color: var(--gray);
+}
+.cal-legend-item {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+}
+.cal-legend .sw {
+	width: 16px;
+	height: 16px;
+	border-radius: 8px;
+	flex-shrink: 0;
+}
+.cal-legend .sw.selected {
+	background: var(--primary-strong);
+}
+.cal-legend .sw.requested {
+	background: var(--pending-tint);
+	border: 1px dashed var(--pending);
+}
+.cal-legend .sw.unavailable {
+	background: var(--light-gray);
+	border: 1px solid var(--border-medium);
 }
 
 /* Window stepper card in the dates sheet */
