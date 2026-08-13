@@ -1728,14 +1728,16 @@ input {
 .trip-card .meta .sep {
 	color: var(--gray);
 }
+/* "In review by host" — the same amber pending state as the calendar */
 .status-chip {
 	align-self: flex-start;
-	background: var(--primary-strong);
-	color: var(--white);
+	background: var(--pending-tint);
+	border: 1px solid var(--pending);
+	color: var(--pending);
 	font-size: 13px;
 	font-weight: 600;
 	border-radius: 8px;
-	padding: 5px 10px;
+	padding: 4px 9px;
 }
 
 /* ---------- Trips screen ---------- */
@@ -1784,12 +1786,13 @@ input {
 	margin-top: 2px;
 }
 .away-pending {
-	background: var(--primary-strong);
-	color: var(--white);
+	background: var(--pending-tint);
+	border: 1px solid var(--pending);
+	color: var(--pending);
 	font-size: 12.5px;
 	font-weight: 700;
 	border-radius: 14px;
-	padding: 5px 12px;
+	padding: 4px 11px;
 	white-space: nowrap;
 	flex-shrink: 0;
 }
@@ -2273,21 +2276,22 @@ input {
 	display: flex;
 	align-items: center;
 }
-/* A window the user has already requested */
+/* A window the user has already requested — amber, matching the pending
+   days in the calendar, so teal never means "waiting on the host". */
 .avail-window-card.requested {
-	background: var(--primary-tint);
-	border-color: var(--primary);
+	background: var(--pending-tint);
+	border-color: var(--pending);
 	box-shadow: none;
 }
 /* Muted but readable rather than a blanket opacity, which pushed the
    grey text on the tinted card below 2:1. */
 .avail-window-card.requested .avail-window-main {
-	color: var(--primary-dark);
+	color: var(--pending);
 }
 .avail-window-card.requested .nights-block .unit,
 .avail-window-card.requested .price-block .unit,
 .avail-window-card.requested .dates .dash {
-	color: var(--primary-dark);
+	color: var(--pending);
 }
 .avail-window-card + .avail-window-card {
 	margin-top: 12px;
@@ -2337,7 +2341,7 @@ input {
 	font-size: 12px;
 	line-height: 15px;
 	font-weight: 600;
-	color: var(--primary-dark);
+	color: var(--pending);
 	text-align: center;
 }
 .avail-window-card .dates .dash {
@@ -2545,10 +2549,11 @@ input {
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.03em;
-	color: var(--white);
-	background: var(--primary-strong);
+	color: var(--pending);
+	background: var(--pending-tint);
+	border: 1px solid var(--pending);
 	border-radius: 9px;
-	padding: 3px 8px;
+	padding: 2px 7px;
 	white-space: nowrap;
 	flex-shrink: 0;
 }
@@ -2577,19 +2582,24 @@ input {
 }
 /* Status tag beside the picker (not an action) */
 .ws-status.requested {
-	background: var(--primary-strong);
-	color: var(--white);
+	background: var(--pending-tint);
+	border: 1px solid var(--pending);
+	color: var(--pending);
 	font-size: 11.5px;
 	font-weight: 700;
 	letter-spacing: 0.03em;
 	text-transform: uppercase;
 	border-radius: 10px;
-	padding: 5px 10px;
+	padding: 4px 9px;
 	white-space: nowrap;
 	flex-shrink: 0;
 }
 .window-stepper.requested {
-	background: var(--light-gray);
+	background: var(--pending-tint);
+}
+.window-stepper.requested .ws-eyebrow,
+.window-stepper.requested .ws-requested-note {
+	color: var(--pending);
 }
 /* Toast inside the dates sheet */
 .sheet-toast {

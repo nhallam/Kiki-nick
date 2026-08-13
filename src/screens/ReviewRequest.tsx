@@ -827,17 +827,13 @@ export function ReviewRequestScreen({
 
 				{page === 3 && (
 					<>
-						{/* Host's-eye preview — the whole of page 3 */}
+						{/* Host's-eye preview — the whole of page 3. No Edit here:
+						    the back arrow already goes to the note. */}
 						<div className="preview-section-head">
-							<div className="section-label">
-								How {listing.listerName} will see it
-							</div>
-							<button className="review-change" onClick={() => setPage(2)}>
-								Edit note
-							</button>
+							<div className="section-label">Your booking request</div>
 						</div>
 						<p className="msg-description">
-							This is what {listing.listerName} sees when your request arrives.
+							This is what {listing.listerName} sees when it arrives.
 						</p>
 						<div className="preview-frame">
 							<div className="host-card">
