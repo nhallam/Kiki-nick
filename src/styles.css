@@ -1256,7 +1256,8 @@ input {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin-top: 24px;
+	/* Sits at the top of the confirm page, so no leading gap */
+	margin-top: 0;
 }
 .preview-section-head .section-label {
 	margin: 0;

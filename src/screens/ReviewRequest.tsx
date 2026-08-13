@@ -827,51 +827,7 @@ export function ReviewRequestScreen({
 
 				{page === 3 && (
 					<>
-						{/* Final recap */}
-						<div className="review-card">
-							<div className="review-listing">
-								<div className="review-thumb">
-									<RoomPhoto variant={listing.photoVariant} />
-								</div>
-								<div className="review-listing-info">
-									<div className="review-listing-title">{listing.title}</div>
-									<div className="review-listing-sub">
-										£{listing.nightlyRate} / night
-									</div>
-								</div>
-							</div>
-							<div className="review-row">
-								<span>
-									<div className="review-row-label">Dates</div>
-									<div className="review-row-value">{datesValue}</div>
-								</span>
-								<button className="review-change" onClick={() => setPage(1)}>
-									Edit
-								</button>
-							</div>
-							<div className="review-row">
-								<span>
-									<div className="review-row-label">Guests</div>
-									<div className="review-row-value">{guestsLabel}</div>
-								</span>
-								<button className="review-change" onClick={() => setPage(1)}>
-									Edit
-								</button>
-							</div>
-							<div className="review-row">
-								<span>
-									<div className="review-row-label">Total price</div>
-									<div className="review-row-value">
-										£{total}{' '}
-										<span className="review-row-note">
-											incl. £{listing.securityDeposit} refundable deposit
-										</span>
-									</div>
-								</span>
-							</div>
-						</div>
-
-						{/* Host's-eye preview */}
+						{/* Host's-eye preview — the whole of page 3 */}
 						<div className="preview-section-head">
 							<div className="section-label">
 								How {listing.listerName} will see it
