@@ -420,8 +420,9 @@ function GuestsSheet({
 							size={84}
 							flag={me.nationalityFlag}
 						/>
+						{/* No flag here — the avatar already carries one. */}
 						<div className="guest-hero-name">
-							{me.name} <span>{me.nationalityFlag}</span>
+							{me.name}
 							<span className="you-badge">You</span>
 						</div>
 						<div className="guest-hero-sub">
