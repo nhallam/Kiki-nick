@@ -495,14 +495,138 @@ function GuestsSheet({
 	);
 }
 
+/* ---------- Shared summary card ---------- */
+
+/**
+ * The dates / guests / price breakdown. Page 1 uses it with the Change
+ * buttons; page 3 shows the same card read-only, so the request the user
+ * confirms is laid out exactly as the one they built.
+ */
+function ReviewSummaryCard({
+	listing,
+	hasDates,
+	datesValue,
+	guestsLabel,
+	nights,
+	rentTotal,
+	total,
+	onEditDates,
+	onEditGuests,
+}: {
+	listing: Listing;
+	hasDates: boolean;
+	datesValue: string | null;
+	guestsLabel: string;
+	nights: number;
+	rentTotal: number;
+	total: number;
+	onEditDates?: () => void;
+	onEditGuests?: () => void;
+}) {
+	return (
+		<div className="review-card">
+			<div className="review-listing">
+				<div className="review-thumb">
+					<RoomPhoto variant={listing.photoVariant} />
+				</div>
+				<div className="review-listing-info">
+					<div className="review-listing-title">{listing.title}</div>
+					<div className="review-listing-sub">£{listing.nightlyRate} / night</div>
+				</div>
+			</div>
+
+			<div className="review-row">
+				<span>
+					<div className="review-row-label">Dates</div>
+					<div className="review-row-value">
+						{hasDates ? (
+							datesValue
+						) : (
+							<span className="review-row-empty">Add your dates</span>
+						)}
+					</div>
+				</span>
+				{onEditDates && (
+					<button className="review-change" onClick={onEditDates}>
+						{hasDates ? 'Change' : 'Add'}
+					</button>
+				)}
+			</div>
+
+			<div className="review-row">
+				<span>
+					<div className="review-row-label">Guests</div>
+					<div className="review-row-value">{guestsLabel}</div>
+				</span>
+				{onEditGuests && (
+					<button className="review-change" onClick={onEditGuests}>
+						Change
+					</button>
+				)}
+			</div>
+
+			<div className="review-row">
+				<span>
+					<div className="review-row-label">Total price</div>
+					<div className="review-row-value">
+						{hasDates ? (
+							<>
+								£{total}{' '}
+								<span className="review-row-note">
+									incl. £{listing.securityDeposit} refundable deposit
+								</span>
+							</>
+						) : (
+							<span className="review-row-empty">Add dates to see the price</span>
+						)}
+					</div>
+				</span>
+			</div>
+
+			{/* Always open — nothing here is worth a tap to reveal. */}
+			{hasDates && (
+				<div className="price-details">
+					<div className="summary-row">
+						<span>
+							Rent{' '}
+							<span className="summary-sub">
+								({nights} {nightsWord(nights)} × £{listing.nightlyRate})
+							</span>
+						</span>
+						<span>£{rentTotal}</span>
+					</div>
+					<div className="summary-row">
+						<span>
+							Security deposit{' '}
+							<span className="summary-sub">(refunded after your stay)</span>
+						</span>
+						<span>£{listing.securityDeposit}</span>
+					</div>
+					<div className="summary-row total">
+						<span>Total</span>
+						<span>£{total}</span>
+					</div>
+					{nights >= 45 && (
+						<div className="info-card" style={{ marginTop: 12 }}>
+							With matches 45 days or longer, you can request to split your
+							payment across the length of your stay. Both Kiki and{' '}
+							{listing.listerName} must approve the new payment schedule.
+						</div>
+					)}
+				</div>
+			)}
+		</div>
+	);
+}
+
 /* ---------- Review hub ---------- */
 
 /**
  * Round 2: the hub is now a 3-page flow (client direction, 2026-08-06):
  *   1. Review — the Airbnb-style breakdown (dates / guests / price + sheets)
  *   2. Note — intro to the host plus an optional questions box
- *   3. Confirm — final recap plus a preview of the request exactly as the
- *      host sees it in their inbox.
+ *   3. Confirm — the same summary card, read-only, with the note tucked
+ *      into a collapsed section.
  * Form state lives here so back/forward never loses anything.
  */
 export function ReviewRequestScreen({
@@ -532,6 +656,8 @@ export function ReviewRequestScreen({
 	});
 	const [page, setPage] = useState<1 | 2 | 3>(1);
 	const [editing, setEditing] = useState<null | 'dates' | 'guests'>(null);
+	// Collapsed by default — the note is written, not re-read.
+	const [introOpen, setIntroOpen] = useState(false);
 	const [attemptedContinue, setAttemptedContinue] = useState(false);
 	const [confirmLeave, setConfirmLeave] = useState(false);
 
@@ -650,105 +776,17 @@ export function ReviewRequestScreen({
 			<div className="form-content" style={{ paddingTop: 16 }} key={page}>
 				{page === 1 && (
 					<>
-						{/* Summary card */}
-						<div className="review-card">
-							<div className="review-listing">
-								<div className="review-thumb">
-									<RoomPhoto variant={listing.photoVariant} />
-								</div>
-								<div className="review-listing-info">
-									<div className="review-listing-title">{listing.title}</div>
-									<div className="review-listing-sub">
-										£{listing.nightlyRate} / night
-									</div>
-								</div>
-							</div>
-
-							<div className="review-row">
-								<span>
-									<div className="review-row-label">Dates</div>
-									<div className="review-row-value">
-										{hasDates ? (
-											datesValue
-										) : (
-											<span className="review-row-empty">Add your dates</span>
-										)}
-									</div>
-								</span>
-								<button
-									className="review-change"
-									onClick={() => setEditing('dates')}
-								>
-									{hasDates ? 'Change' : 'Add'}
-								</button>
-							</div>
-
-							<div className="review-row">
-								<span>
-									<div className="review-row-label">Guests</div>
-									<div className="review-row-value">{guestsLabel}</div>
-								</span>
-								<button
-									className="review-change"
-									onClick={() => setEditing('guests')}
-								>
-									Change
-								</button>
-							</div>
-
-							<div className="review-row">
-								<span>
-									<div className="review-row-label">Total price</div>
-									<div className="review-row-value">
-										{hasDates ? (
-											<>
-												£{total}{' '}
-												<span className="review-row-note">
-													incl. £{listing.securityDeposit} refundable deposit
-												</span>
-											</>
-										) : (
-											<span className="review-row-empty">
-												Add dates to see the price
-											</span>
-										)}
-									</div>
-								</span>
-							</div>
-
-							{/* Always open — nothing here is worth a tap to reveal. */}
-							{hasDates && (
-								<div className="price-details">
-									<div className="summary-row">
-										<span>
-											Rent{' '}
-											<span className="summary-sub">
-												({nights} {nightsWord(nights)} × £{listing.nightlyRate})
-											</span>
-										</span>
-										<span>£{rentTotal}</span>
-									</div>
-									<div className="summary-row">
-										<span>
-											Security deposit{' '}
-											<span className="summary-sub">(refunded after your stay)</span>
-										</span>
-										<span>£{listing.securityDeposit}</span>
-									</div>
-									<div className="summary-row total">
-										<span>Total</span>
-										<span>£{total}</span>
-									</div>
-									{nights >= 45 && (
-										<div className="info-card" style={{ marginTop: 12 }}>
-											With matches 45 days or longer, you can request to split
-											your payment across the length of your stay. Both Kiki and{' '}
-											{listing.listerName} must approve the new payment schedule.
-										</div>
-									)}
-								</div>
-							)}
-						</div>
+						<ReviewSummaryCard
+							listing={listing}
+							hasDates={hasDates}
+							datesValue={datesValue}
+							guestsLabel={guestsLabel}
+							nights={nights}
+							rentTotal={rentTotal}
+							total={total}
+							onEditDates={() => setEditing('dates')}
+							onEditGuests={() => setEditing('guests')}
+						/>
 
 						<div className="trust-line">
 							Sending a request is free. You only pay once{' '}
@@ -807,72 +845,41 @@ export function ReviewRequestScreen({
 
 				{page === 3 && (
 					<>
-						{/* Host's-eye preview — the whole of page 3. No Edit here:
-						    the back arrow already goes to the note. */}
-						<div className="preview-section-head">
-							<div className="section-label">Your booking request</div>
-						</div>
-						<p className="msg-description">
-							This is what {listing.listerName} sees when it arrives.
-						</p>
-						<div className="preview-frame">
-							<div className="host-card">
-								<div className="host-card-eyebrow">
-									<span className="label">Booking request</span>
-									<span className="new-chip">New</span>
+						{/* Same card as page 1, read-only: what you built is what you
+						    confirm. Editing is the back arrow. */}
+						<ReviewSummaryCard
+							listing={listing}
+							hasDates={hasDates}
+							datesValue={datesValue}
+							guestsLabel={guestsLabel}
+							nights={nights}
+							rentTotal={rentTotal}
+							total={total}
+						/>
+
+						<div className={`collapse-card${introOpen ? ' open' : ''}`}>
+							<button
+								className="collapse-head"
+								onClick={() => setIntroOpen((v) => !v)}
+								aria-expanded={introOpen}
+							>
+								<span className="collapse-title">Intro &amp; Questions</span>
+								<IconChevronDown size={20} />
+							</button>
+							{introOpen && (
+								<div className="collapse-body">
+									<div className="collapse-label">Intro</div>
+									<p className="collapse-text">{formData.peopleIntro.trim()}</p>
+									{formData.extraQuestions.trim().length > 0 && (
+										<>
+											<div className="collapse-label">Questions</div>
+											<p className="collapse-text">
+												{formData.extraQuestions.trim()}
+											</p>
+										</>
+									)}
 								</div>
-								<div className="profile-card">
-									<Avatar
-										variant="me"
-										initial={me.name[0]}
-										size={44}
-										flag={me.nationalityFlag}
-									/>
-									<span className="info">
-										<span className="name-row">
-											{me.name} <span>{me.nationalityFlag}</span>
-										</span>
-										<span className="subtitle">
-											{me.occupation}, {me.age}
-										</span>
-									</span>
-								</div>
-								{extraGuests.map((p, i) => (
-									<div key={i} className="profile-card" style={{ marginTop: 8 }}>
-										<Avatar initial={p.name[0]} size={44} />
-										<span className="info">
-											<span className="name-row">{p.name}</span>
-											<span className="subtitle">Guest</span>
-										</span>
-									</div>
-								))}
-								<div className="host-detail-rows">
-									<div className="host-detail-row">
-										<span className="k">Dates</span>
-										<span className="v">{datesValue}</span>
-									</div>
-									<div className="host-detail-row">
-										<span className="k">Staying as</span>
-										<span className="v">{partyLabel}</span>
-									</div>
-									<div className="host-detail-row">
-										<span className="k">Rent</span>
-										<span className="v">
-											£{rentTotal} ({nights} {nightsWord(nights)})
-										</span>
-									</div>
-								</div>
-								<div className="host-msg">
-									<div className="k">Intro</div>
-									<div className="body">{formData.peopleIntro.trim()}</div>
-								</div>
-								{formData.extraQuestions.trim().length > 0 && (
-									<div className="host-msg">
-										<div className="k">Questions</div>
-										<div className="body">{formData.extraQuestions.trim()}</div>
-									</div>
-								)}
-							</div>
+							)}
 						</div>
 
 						<div className="trust-line" style={{ marginTop: 18 }}>

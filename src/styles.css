@@ -1252,6 +1252,59 @@ input {
 }
 
 /* Page 3: host's-eye preview of the request */
+/* Collapsible section (Intro & Questions on the confirm page) */
+.collapse-card {
+	border: 1px solid var(--border-medium);
+	border-radius: 16px;
+	margin-top: 16px;
+	overflow: hidden;
+}
+.collapse-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	min-height: 52px;
+	padding: 0 16px;
+	text-align: left;
+	color: var(--dark);
+}
+.collapse-head:active {
+	background: var(--light-gray);
+}
+.collapse-title {
+	font-size: 16px;
+	font-weight: 700;
+}
+.collapse-head svg {
+	transition: transform 0.2s ease;
+	color: var(--gray);
+}
+.collapse-card.open .collapse-head svg {
+	transform: rotate(180deg);
+}
+.collapse-body {
+	padding: 0 16px 16px;
+	border-top: 1px solid var(--border-light);
+	padding-top: 14px;
+}
+.collapse-label {
+	font-size: 12px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--gray);
+	margin-bottom: 4px;
+}
+.collapse-label + .collapse-text + .collapse-label {
+	margin-top: 14px;
+}
+.collapse-text {
+	font-size: 14.5px;
+	line-height: 21px;
+	white-space: pre-wrap;
+}
+
 .preview-section-head {
 	display: flex;
 	align-items: center;
