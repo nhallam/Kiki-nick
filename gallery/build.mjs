@@ -48,8 +48,16 @@ const VERSIONS = [
 		label: '2.3',
 		section: 'Round 2',
 		blurb:
-			'The live working version, carrying on from 2.2. New changes land here.',
+			'Actions from the product review: amber pending state throughout, confirm page cut to the host preview, calendar legend.',
 		branch: 'round2-v23',
+	},
+	{
+		id: 'round2e',
+		label: '2.4',
+		section: 'Round 2',
+		blurb:
+			'The live working version, carrying on from 2.3. New changes land here.',
+		branch: 'round2-v24',
 	},
 	{
 		id: 'current',
