@@ -1252,57 +1252,29 @@ input {
 }
 
 /* Page 3: host's-eye preview of the request */
-/* Collapsible section (Intro & Questions on the confirm page) */
-.collapse-card {
-	border: 1px solid var(--border-medium);
-	border-radius: 16px;
-	margin-top: 16px;
-	overflow: hidden;
+/* Intro & Questions row on the confirm page's summary card */
+.review-row.intro-row {
+	/* Keep the Show/Hide button beside the label when the text is open */
+	align-items: flex-start;
 }
-.collapse-head {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	width: 100%;
-	min-height: 52px;
-	padding: 0 16px;
-	text-align: left;
-	color: var(--dark);
+.review-row.intro-row > span {
+	flex: 1;
+	min-width: 0;
 }
-.collapse-head:active {
-	background: var(--light-gray);
+.review-row.intro-row .review-row-label {
+	/* Optically centre against the 44px button when collapsed */
+	line-height: 44px;
 }
-.collapse-title {
-	font-size: 16px;
-	font-weight: 700;
+.review-row.intro-row .intro-text {
+	margin-top: -6px;
 }
-.collapse-head svg {
-	transition: transform 0.2s ease;
-	color: var(--gray);
-}
-.collapse-card.open .collapse-head svg {
-	transform: rotate(180deg);
-}
-.collapse-body {
-	padding: 0 16px 16px;
-	border-top: 1px solid var(--border-light);
-	padding-top: 14px;
-}
-.collapse-label {
-	font-size: 12px;
-	font-weight: 700;
-	text-transform: uppercase;
-	letter-spacing: 0.04em;
-	color: var(--gray);
-	margin-bottom: 4px;
-}
-.collapse-label + .collapse-text + .collapse-label {
-	margin-top: 14px;
-}
-.collapse-text {
+.review-row.intro-row .intro-text p {
 	font-size: 14.5px;
 	line-height: 21px;
 	white-space: pre-wrap;
+}
+.review-row.intro-row .questions-label {
+	margin-top: 12px;
 }
 
 .preview-section-head {

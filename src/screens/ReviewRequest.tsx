@@ -512,6 +512,8 @@ function ReviewSummaryCard({
 	total,
 	onEditDates,
 	onEditGuests,
+	intro,
+	questions,
 }: {
 	listing: Listing;
 	hasDates: boolean;
@@ -522,7 +524,12 @@ function ReviewSummaryCard({
 	total: number;
 	onEditDates?: () => void;
 	onEditGuests?: () => void;
+	/** When set, the card grows an Intro & Questions row (confirm page). */
+	intro?: string;
+	questions?: string;
 }) {
+	// Hidden by default — the note was written moments ago.
+	const [showIntro, setShowIntro] = useState(false);
 	return (
 		<div className="review-card">
 			<div className="review-listing">
@@ -615,6 +622,33 @@ function ReviewSummaryCard({
 					)}
 				</div>
 			)}
+
+			{intro && (
+				<div className="review-row intro-row">
+					<span>
+						<div className="review-row-label">Intro &amp; Questions</div>
+						{showIntro && (
+							<div className="review-row-value intro-text">
+								<p>{intro}</p>
+								{questions && (
+									<>
+										<div className="review-row-label questions-label">
+											Questions
+										</div>
+										<p>{questions}</p>
+									</>
+								)}
+							</div>
+						)}
+					</span>
+					<button
+						className="review-change"
+						onClick={() => setShowIntro((v) => !v)}
+					>
+						{showIntro ? 'Hide' : 'Show'}
+					</button>
+				</div>
+			)}
 		</div>
 	);
 }
@@ -656,8 +690,6 @@ export function ReviewRequestScreen({
 	});
 	const [page, setPage] = useState<1 | 2 | 3>(1);
 	const [editing, setEditing] = useState<null | 'dates' | 'guests'>(null);
-	// Collapsed by default — the note is written, not re-read.
-	const [introOpen, setIntroOpen] = useState(false);
 	const [attemptedContinue, setAttemptedContinue] = useState(false);
 	const [confirmLeave, setConfirmLeave] = useState(false);
 
@@ -855,32 +887,9 @@ export function ReviewRequestScreen({
 							nights={nights}
 							rentTotal={rentTotal}
 							total={total}
+							intro={formData.peopleIntro.trim()}
+							questions={formData.extraQuestions.trim() || undefined}
 						/>
-
-						<div className={`collapse-card${introOpen ? ' open' : ''}`}>
-							<button
-								className="collapse-head"
-								onClick={() => setIntroOpen((v) => !v)}
-								aria-expanded={introOpen}
-							>
-								<span className="collapse-title">Intro &amp; Questions</span>
-								<IconChevronDown size={20} />
-							</button>
-							{introOpen && (
-								<div className="collapse-body">
-									<div className="collapse-label">Intro</div>
-									<p className="collapse-text">{formData.peopleIntro.trim()}</p>
-									{formData.extraQuestions.trim().length > 0 && (
-										<>
-											<div className="collapse-label">Questions</div>
-											<p className="collapse-text">
-												{formData.extraQuestions.trim()}
-											</p>
-										</>
-									)}
-								</div>
-							)}
-						</div>
 
 						<div className="trust-line" style={{ marginTop: 18 }}>
 							Sending a request is free. You only pay once{' '}
