@@ -819,12 +819,6 @@ export function ReviewRequestScreen({
 							onEditDates={() => setEditing('dates')}
 							onEditGuests={() => setEditing('guests')}
 						/>
-
-						<div className="trust-line">
-							Sending a request is free. You only pay once{' '}
-							{listing.listerName} accepts, and you can withdraw anytime before
-							then.
-						</div>
 					</>
 				)}
 
