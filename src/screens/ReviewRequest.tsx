@@ -1,7 +1,7 @@
 /**
  * Round 2 — review-centric request flow (Airbnb checkout pattern, adapted
  * to Kiki's request-to-book model), now in three pages:
- *   1. Review and request — the breakdown: dates, guests, price, with
+ *   1. Booking request — the breakdown: dates, guests, price, with
  *      Change buttons opening focused editor sheets
  *   2. Note to host — intro plus an optional questions box
  *   3. Confirm and send — final recap plus a preview of the request as
@@ -729,7 +729,7 @@ export function ReviewRequestScreen({
 				: `Group of ${Math.max(guests, 2)}`;
 
 	const PAGE_TITLES: Record<1 | 2 | 3, string> = {
-		1: 'Review and request',
+		1: 'Booking request',
 		2: `Note to ${listing.listerName}`,
 		3: 'Confirm and send',
 	};
