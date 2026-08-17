@@ -2434,8 +2434,9 @@ input {
 }
 
 /* Window stepper card in the dates sheet */
+/* Neutral surface — the teal/amber is reserved for the states inside it */
 .window-stepper {
-	background: var(--primary-tint);
+	background: var(--light-gray);
 	border-radius: 14px;
 	padding: 10px 14px 12px;
 	margin-bottom: 12px;
@@ -2454,7 +2455,7 @@ input {
 	font-weight: 700;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
-	color: var(--primary-dark);
+	color: var(--dark);
 }
 /* Window picker dropdown */
 .window-stepper {
@@ -2619,10 +2620,8 @@ input {
 	white-space: nowrap;
 	flex-shrink: 0;
 }
-.window-stepper.requested {
-	background: var(--pending-tint);
-}
-.window-stepper.requested .ws-eyebrow,
+/* Same grey when a requested window is showing — the Request sent tag
+   and the note carry that state, not the surface. */
 .window-stepper.requested .ws-requested-note {
 	color: var(--pending);
 }
