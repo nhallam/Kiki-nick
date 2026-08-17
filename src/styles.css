@@ -1541,6 +1541,16 @@ input {
 .add-guest-btn:active {
 	background: var(--primary-tint);
 }
+/* Sits in the sheet footer above Save, full width */
+.add-guest-btn.pinned {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	margin: 0 0 10px;
+	min-height: 48px;
+	border-radius: 10px;
+}
 
 /* Change profile + Add guest, equal width, side by side */
 .hero-actions {

@@ -428,14 +428,6 @@ function GuestsSheet({
 						</div>
 					</div>
 
-					{!soloOnly && (
-						<div className="hero-actions">
-							<button className="add-guest-btn" onClick={addGuest}>
-								+ Add guest
-							</button>
-						</div>
-					)}
-
 					{soloOnly ? (
 						<div className="slot-helper centered">
 							This place is only open for one person.
@@ -483,6 +475,12 @@ function GuestsSheet({
 					)}
 				</div>
 				<div className="editor-footer">
+					{/* Pinned above Save so it stays put as guest slots grow */}
+					{!soloOnly && (
+						<button className="add-guest-btn pinned" onClick={addGuest}>
+							+ Add guest
+						</button>
+					)}
 					<button
 						className="btn-primary square"
 						onClick={() => onSave(derivedWho, [me, ...extras])}
