@@ -34,8 +34,6 @@ import {
 	BookingFormData,
 	DateRangeCalendar,
 	MONTHS,
-	PaymentScheduleGraphic,
-	computeRentPayments,
 	diffDays,
 	formatDoMMM,
 	minNightsForAvailability,
@@ -534,7 +532,6 @@ export function ReviewRequestScreen({
 	});
 	const [page, setPage] = useState<1 | 2 | 3>(1);
 	const [editing, setEditing] = useState<null | 'dates' | 'guests'>(null);
-	const [showPriceDetails, setShowPriceDetails] = useState(false);
 	const [attemptedContinue, setAttemptedContinue] = useState(false);
 	const [confirmLeave, setConfirmLeave] = useState(false);
 
@@ -546,9 +543,6 @@ export function ReviewRequestScreen({
 	const nights = hasDates ? diffDays(moveOutDate!, moveInDate!) : 0;
 	const rentTotal = nights * listing.nightlyRate;
 	const total = rentTotal + listing.securityDeposit;
-	const payments = hasDates
-		? computeRentPayments(moveInDate!, nights, listing.nightlyRate)
-		: [];
 
 	const trimmed = formData.peopleIntro.trim().length;
 	const introOk = trimmed >= MIN_PEOPLE_INTRO_LENGTH;
@@ -720,17 +714,10 @@ export function ReviewRequestScreen({
 										)}
 									</div>
 								</span>
-								{hasDates && (
-									<button
-										className="review-change"
-										onClick={() => setShowPriceDetails((v) => !v)}
-									>
-										{showPriceDetails ? 'Hide' : 'Details'}
-									</button>
-								)}
 							</div>
 
-							{showPriceDetails && hasDates && (
+							{/* Always open — nothing here is worth a tap to reveal. */}
+							{hasDates && (
 								<div className="price-details">
 									<div className="summary-row">
 										<span>
@@ -752,21 +739,13 @@ export function ReviewRequestScreen({
 										<span>Total</span>
 										<span>£{total}</span>
 									</div>
-									<div className="price-details-when">
-										<div className="price-details-when-title">When you'd pay</div>
-										<PaymentScheduleGraphic
-											payments={payments}
-											moveIn={moveInDate!}
-											moveOut={moveOutDate!}
-										/>
-										{nights >= 45 && (
-											<div className="info-card" style={{ marginTop: 10 }}>
-												With matches 45 days or longer, you can request to split
-												your payment across the length of your stay. Both Kiki and{' '}
-												{listing.listerName} must approve the new payment schedule.
-											</div>
-										)}
-									</div>
+									{nights >= 45 && (
+										<div className="info-card" style={{ marginTop: 12 }}>
+											With matches 45 days or longer, you can request to split
+											your payment across the length of your stay. Both Kiki and{' '}
+											{listing.listerName} must approve the new payment schedule.
+										</div>
+									)}
 								</div>
 							)}
 						</div>
