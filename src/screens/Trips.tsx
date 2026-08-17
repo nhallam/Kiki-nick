@@ -119,6 +119,18 @@ export function TripsScreen({
 					<div className="trips-pane">
 						<div className="trips-section">
 							<div className="trips-section-head">
+								<h2 className="trips-section-title">Matches</h2>
+							</div>
+							<div className="empty-card">
+								<div className="empty-title">You don't have any matches yet.</div>
+								<div className="empty-sub">
+									When you have a match, you'll be able to see it here.
+								</div>
+							</div>
+						</div>
+
+						<div className="trips-section">
+							<div className="trips-section-head">
 								<h2 className="trips-section-title">Booking requests</h2>
 								{onReorder && (
 									<button className="trips-section-action" onClick={onReorder}>
