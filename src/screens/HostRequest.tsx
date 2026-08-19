@@ -39,9 +39,8 @@ export function HostRequestScreen({ onBack }: { onBack: () => void }) {
 				<div className="profile-card">
 					<Avatar variant="melissa" size={44} flag={MY_PROFILE.nationalityFlag} />
 					<span className="info">
-						<span className="name-row">
-							{MY_PROFILE.name} <span>{MY_PROFILE.nationalityFlag}</span>
-						</span>
+						{/* No inline flag — the avatar already carries one. */}
+						<span className="name-row">{MY_PROFILE.name}</span>
 						<span className="subtitle">
 							{MY_PROFILE.occupation}, {MY_PROFILE.age}
 						</span>
