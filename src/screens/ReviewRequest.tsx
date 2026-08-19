@@ -500,7 +500,7 @@ function GuestsSheet({
  * buttons; page 3 shows the same card read-only, so the request the user
  * confirms is laid out exactly as the one they built.
  */
-function ReviewSummaryCard({
+export function ReviewSummaryCard({
 	listing,
 	hasDates,
 	datesValue,

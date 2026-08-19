@@ -13,6 +13,7 @@ import { ListingDetailScreen } from './screens/ListingDetail';
 import { RankScreen } from './screens/Rank';
 import { SentScreen } from './screens/Sent';
 import { TripsScreen } from './screens/Trips';
+import { HostRequestScreen } from './screens/HostRequest';
 
 type Route =
 	| { name: 'explore' }
@@ -20,7 +21,8 @@ type Route =
 	| { name: 'booking'; listing: Listing }
 	| { name: 'sent'; requests: SentRequest[]; newRequest: SentRequest; listerName: string }
 	| { name: 'rank'; requests: SentRequest[]; newRequest: SentRequest }
-	| { name: 'trips'; requests: SentRequest[]; showSuccess: boolean; newRequest: SentRequest };
+	| { name: 'trips'; requests: SentRequest[]; showSuccess: boolean; newRequest: SentRequest }
+	| { name: 'hostRequest' };
 
 export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 	// The matching prototype starts both phones on Trips, each on its own
@@ -143,7 +145,10 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 					initialTab={persona === 'host' ? 'hosting' : 'staying'}
 					canHost={persona === 'host'}
 					onNavigate={navigate}
+					onOpenRequest={() => setRoute({ name: 'hostRequest' })}
 				/>
 			);
+		case 'hostRequest':
+			return <HostRequestScreen onBack={() => setRoute(tripsRoute())} />;
 	}
 }

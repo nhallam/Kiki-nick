@@ -76,7 +76,13 @@ const IconTrash = ({ size = 18 }: { size?: number }) => (
 	</svg>
 );
 
-function AwayTripCard({ trip }: { trip: AwayTrip }) {
+function AwayTripCard({
+	trip,
+	onOpenRequest,
+}: {
+	trip: AwayTrip;
+	onOpenRequest?: () => void;
+}) {
 	return (
 		<div className="away-card">
 			<div className="away-main">
@@ -99,7 +105,7 @@ function AwayTripCard({ trip }: { trip: AwayTrip }) {
 				</div>
 			</div>
 			{trip.request && (
-				<button className="trip-request">
+				<button className="trip-request" onClick={onOpenRequest}>
 					<Avatar variant={trip.request.avatar} size={36} />
 					<span className="tr-body">
 						<span className="tr-title">
@@ -120,6 +126,7 @@ export function TripsScreen({
 	initialTab,
 	canHost,
 	onNavigate,
+	onOpenRequest,
 }: {
 	requests: SentRequest[];
 	onReorder?: () => void;
@@ -127,6 +134,7 @@ export function TripsScreen({
 	/** Without a listing there is nothing to host — the tab sells listing. */
 	canHost?: boolean;
 	onNavigate?: (tab: 'explore' | 'trips') => void;
+	onOpenRequest?: () => void;
 }) {
 	const [tab, setTab] = useState<TripsTab>(initialTab ?? 'staying');
 
@@ -228,7 +236,7 @@ export function TripsScreen({
 								</button>
 							</div>
 							{UPCOMING_TRIPS.map((t) => (
-								<AwayTripCard key={t.id} trip={t} />
+								<AwayTripCard key={t.id} trip={t} onOpenRequest={onOpenRequest} />
 							))}
 							<div className="trips-subsection-title">Past trips</div>
 							{PAST_TRIPS.map((t) => (
