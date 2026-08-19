@@ -83,6 +83,15 @@ const VERSIONS = [
 		branch: 'booking-flow-bigger-ideas',
 	},
 	{
+		id: 'tripsnow',
+		label: '1.0',
+		section: 'tr-current',
+		blurb:
+			'The Staying/Hosting split in the current build. Open the Trips tab in the bottom bar.',
+		branch: 'round2-v24',
+		alias: 'round2e',
+	},
+	{
 		id: 'match11',
 		label: '1.1',
 		section: 'mf-round1',
@@ -100,30 +109,45 @@ const VERSIONS = [
 	},
 ];
 
-const PRODUCTS = [
-	{ title: 'Booking Request', default: true },
-	{ title: 'Matching Flow' },
+const FEATURES = [
+	{ key: 'booking', title: 'Booking Request Flow' },
+	{ key: 'trips', title: 'Trips \u2013 nav bar quick fix' },
+	{ key: 'matches', title: 'Matches flow' },
+	{ key: 'notifications', title: 'Notifications' },
+	{ key: 'appnav', title: 'App Navigation and IA' },
+	{ key: 'listingflow', title: 'Listing flow (and profile tab)' },
+	{ key: 'explore', title: 'Explore Tab & Map' },
+	{ key: 'ratings', title: 'Ratings and reviews' },
+	{ key: 'messaging', title: 'Messaging' },
+	{ key: 'listingdetail', title: 'Listing Detail Page' },
 ];
 
 const SECTIONS = [
 	{
 		key: 'br-round1',
-		product: 'Booking Request',
+		feature: 'booking',
 		title: 'Round 1',
 		note: 'The exploration that led to the decision, kept for reference.',
 	},
 	{
 		key: 'br-round2',
-		product: 'Booking Request',
+		feature: 'booking',
 		title: 'Round 2',
 		note: 'The active direction. Client feedback gets applied here.',
 		default: true,
 	},
 	{
+		key: 'tr-current',
+		feature: 'trips',
+		title: 'Current',
+		note: 'Shipped as part of the booking-request builds; kept here so it has a home of its own.',
+		default: true,
+	},
+	{
 		key: 'mf-round1',
-		product: 'Matching Flow',
+		feature: 'matches',
 		title: 'Round 1',
-		note: 'First round of the matching flow.',
+		note: 'First round of the matches flow.',
 		default: true,
 	},
 ];
@@ -136,7 +160,7 @@ const readBranchDist = (branch) =>
 
 const payload = {};
 for (const v of VERSIONS) {
-	if (!v.branch) continue;
+	if (!v.branch || v.alias) continue; // aliases reuse another id's payload
 	const html = readBranchDist(v.branch);
 	payload[v.id] = Buffer.from(html, 'utf8').toString('base64');
 	console.log(`${v.id}: ${v.branch} (${(html.length / 1024).toFixed(0)} kB)`);
@@ -154,45 +178,72 @@ const cardFor = (v) =>
 				<span class="card-blurb">${v.blurb}</span>
 			</div>`;
 
-// One block per round; visible when its round tab is active. Only the
-// default round of the default product starts visible.
-const cards = SECTIONS.map(
-	(s) => {
-		const startVisible =
-			s.default && PRODUCTS.find((p) => p.title === s.product)?.default;
-		return `<div class="section-block" data-section="${s.key}"${startVisible ? '' : ' hidden'}>
-			<div class="section-note">${s.note}</div>
-${VERSIONS.filter((v) => v.section === s.key)
-	.map(cardFor)
-	.join('\n')}
-		</div>`;
-	},
-).join('\n');
+// Home screen: one row per feature, stacked vertically.
+const versionCount = (f) =>
+	VERSIONS.filter(
+		(v) =>
+			v.branch && SECTIONS.some((s) => s.key === v.section && s.feature === f.key),
+	).length;
 
-const productTabs = PRODUCTS.map(
-	(p) =>
-		`<button class="product-tab${p.default ? ' active' : ''}" data-product="${p.title}">${p.title}</button>`,
-).join('\n');
-
-// One row of round tabs per product; the product tabs swap the rows.
-const roundTabRows = PRODUCTS.map((p) => {
-	const secs = SECTIONS.filter((s) => s.product === p.title);
-	const tabs = secs
-		.map(
-			(s) =>
-				`<button class="round-tab${s.default ? ' active' : ''}"${s.default ? ' data-default="1"' : ''} data-round="${s.key}">${s.title}</button>`,
-		)
-		.join('\n');
-	return `<div class="round-tabs" role="tablist" aria-label="${p.title} rounds" data-product="${p.title}"${p.default ? '' : ' hidden'}>\n${tabs}\n</div>`;
+const featureRows = FEATURES.map((f) => {
+	const n = versionCount(f);
+	const meta = n
+		? `<span class="row-count">${n} ${n === 1 ? 'prototype' : 'prototypes'}</span>`
+		: `<span class="row-soon">Soon</span>`;
+	return `<button class="feature-row" data-feature="${f.key}">
+		<span class="row-title">${f.title}</span>
+		${meta}
+		<span class="row-chev">\u203a</span>
+	</button>`;
 }).join('\n');
 
-const productsById = JSON.stringify(
+// One page per feature: round tabs (when there are 2+ rounds), then the
+// version cards for the active round. Empty features get a placeholder.
+const featurePages = FEATURES.map((f) => {
+	const secs = SECTIONS.filter((s) => s.feature === f.key);
+	let inner;
+	if (secs.length === 0) {
+		inner = `<div class="empty-note">No prototypes yet. Work on this area lands here.</div>`;
+	} else {
+		const tabs =
+			secs.length > 1
+				? `<div class="round-tabs" role="tablist" aria-label="${f.title} rounds">\n${secs
+						.map(
+							(sec) =>
+								`<button class="round-tab${sec.default ? ' active' : ''}" data-round="${sec.key}">${sec.title}</button>`,
+						)
+						.join('\n')}\n</div>`
+				: '';
+		const blocks = secs
+			.map(
+				(sec) => `<div class="section-block" data-section="${sec.key}"${sec.default ? '' : ' hidden'}>
+			<div class="section-note">${sec.note}</div>
+${VERSIONS.filter((v) => v.section === sec.key)
+	.map(cardFor)
+	.join('\n')}
+		</div>`,
+			)
+			.join('\n');
+		inner = `${tabs}\n<div class="cards">\n${blocks}\n</div>`;
+	}
+	return `<div class="feature-page" data-feature="${f.key}" hidden>
+		<button class="feature-back">\u2190 All features</button>
+		<h2 class="feature-title">${f.title}</h2>
+${inner}
+	</div>`;
+}).join('\n');
+
+const featuresById = JSON.stringify(
 	Object.fromEntries(
-		VERSIONS.map((v) => [
-			v.id,
-			SECTIONS.find((s) => s.key === v.section).product,
-		]),
+		VERSIONS.map((v) => {
+			const sec = SECTIONS.find((s) => s.key === v.section);
+			return [v.id, FEATURES.find((f) => f.key === sec.feature).title];
+		}),
 	),
+);
+
+const aliases = JSON.stringify(
+	Object.fromEntries(VERSIONS.filter((v) => v.alias).map((v) => [v.id, v.alias])),
 );
 
 const chips = VERSIONS.filter((v) => v.branch)
@@ -265,6 +316,7 @@ body {
 	padding: 48px 20px 32px; gap: 0;
 	overflow-y: auto;
 }
+.home { display: flex; flex-direction: column; align-items: center; width: 100%; }
 .brand {
 	display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
 }
@@ -279,29 +331,45 @@ body {
 	font-size: 15px; color: var(--muted); margin-bottom: 28px; text-align: center;
 	max-width: 420px; line-height: 22px;
 }
-.product-tabs {
-	display: inline-flex;
-	background: var(--card);
-	border: 1.5px solid var(--line);
-	border-radius: 24px;
-	padding: 4px;
-	gap: 4px;
+/* home: stacked feature list */
+.feature-list { display: flex; flex-direction: column; gap: 10px; width: min(440px, 100%); }
+.feature-row {
+	display: flex; align-items: center; gap: 10px; text-align: left;
+	background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+	padding: 16px 18px; cursor: pointer; font-family: inherit; color: inherit;
+	transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.feature-row:hover {
+	border-color: var(--primary); transform: translateY(-1px);
+	box-shadow: 0 6px 18px rgba(32, 165, 152, 0.12);
+}
+.feature-row:focus { outline: none; }
+.feature-row:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.row-title { flex: 1; font-size: 15.5px; font-weight: 700; min-width: 0; }
+.row-count { font-size: 12.5px; font-weight: 700; color: var(--primary-dark); background: var(--tint); border-radius: 11px; padding: 4px 10px; white-space: nowrap; }
+.row-soon { font-size: 11.5px; font-weight: 700; color: var(--muted); background: var(--ground); border: 1px solid var(--line); border-radius: 11px; padding: 4px 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+.row-chev { color: var(--muted); font-size: 20px; line-height: 1; }
+
+/* feature pages */
+.feature-page { display: flex; flex-direction: column; width: min(440px, 100%); }
+.feature-page[hidden] { display: none; }
+.feature-back {
+	align-self: flex-start;
+	font-family: inherit; font-size: 13.5px; font-weight: 700;
+	color: var(--primary-dark); background: var(--tint);
+	border: none; border-radius: 16px; padding: 8px 14px; cursor: pointer;
 	margin-bottom: 16px;
 }
-.product-tab {
-	font-family: inherit; font-size: 14.5px; font-weight: 700;
-	color: var(--muted); background: none; border: none;
-	border-radius: 19px; padding: 9px 20px; cursor: pointer;
-	transition: background 0.15s, color 0.15s;
+.feature-title { font-size: 21px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 12px; }
+.empty-note {
+	background: var(--card); border: 1px dashed var(--line); border-radius: 14px;
+	padding: 22px 18px; font-size: 13.5px; color: var(--muted); text-align: center;
 }
-.product-tab:hover { color: var(--ink); }
-.product-tab.active { background: var(--primary); color: #fff; }
-.product-tab:focus { outline: none; }
-.product-tab:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.home[hidden] { display: none; }
 .round-tabs {
 	display: inline-flex;
 	gap: 2px;
-	margin-bottom: 18px;
+	margin-bottom: 14px;
 }
 .round-tabs[hidden] { display: none; }
 .round-tab {
@@ -473,20 +541,19 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 
 <div id="gallery-root">
 	<div class="launcher" id="launcher">
-		<div class="brand"><span class="brand-dot">K</span><h1>Kiki prototypes</h1></div>
-		<p class="sub">Prototype versions of each flow. Pick one to walk through it, everything is clickable.</p>
-		<div class="product-tabs" role="tablist" aria-label="Flow">
-${productTabs}
+		<div class="home" id="home">
+			<div class="brand"><span class="brand-dot">K</span><h1>Kiki prototypes</h1></div>
+			<p class="sub">Pick a feature area, then a prototype version to walk through. Everything is clickable.</p>
+			<div class="feature-list">
+${featureRows}
+			</div>
 		</div>
-${roundTabRows}
-		<div class="cards">
-${cards}
-		</div>
-		<p class="hint">Use "All versions" at the top of any prototype to come back here.</p>
+${featurePages}
+		<p class="hint">Use "Back" at the top of any prototype to come back here.</p>
 	</div>
 	<div class="viewer" id="viewer">
 		<div class="bar">
-			<button class="bar-back" id="backBtn">← All versions</button>
+		<button class="bar-back" id="backBtn">← Back</button>
 			<span class="bar-title" id="barTitle"></span>
 			<span class="bar-chips">${chips}</span>
 		</div>
@@ -523,7 +590,8 @@ ${cards}
 	var data = JSON.parse(document.getElementById('v-data').textContent);
 	var labels = ${labels};
 	var sections = ${sectionsById};
-	var products = ${productsById};
+	var features = ${featuresById};
+	var aliases = ${aliases};
 	var launcher = document.getElementById('launcher');
 	var viewer = document.getElementById('viewer');
 	var frame = document.getElementById('frame');
@@ -535,10 +603,13 @@ ${cards}
 	}
 
 	function activateSection(key) {
-		document.querySelectorAll('.round-tab').forEach(function (t) {
+		var tab = document.querySelector('.round-tab[data-round="' + key + '"]');
+		var page = tab && tab.closest('.feature-page');
+		if (!page) return;
+		page.querySelectorAll('.round-tab').forEach(function (t) {
 			t.classList.toggle('active', t.dataset.round === key);
 		});
-		document.querySelectorAll('.section-block').forEach(function (block) {
+		page.querySelectorAll('.section-block').forEach(function (block) {
 			block.hidden = block.dataset.section !== key;
 		});
 	}
@@ -548,31 +619,30 @@ ${cards}
 			activateSection(tab.dataset.round);
 		});
 	});
-	document.querySelectorAll('.product-tab').forEach(function (tab) {
-		tab.addEventListener('click', function () {
-			tab.blur();
-			document.querySelectorAll('.product-tab').forEach(function (t) {
-				t.classList.toggle('active', t === tab);
+	var home = document.getElementById('home');
+	document.querySelectorAll('.feature-row').forEach(function (row) {
+		row.addEventListener('click', function () {
+			row.blur();
+			home.hidden = true;
+			document.querySelectorAll('.feature-page').forEach(function (pg) {
+				pg.hidden = pg.dataset.feature !== row.dataset.feature;
 			});
-			var key = null;
-			document.querySelectorAll('.round-tabs').forEach(function (row) {
-				var mine = row.dataset.product === tab.dataset.product;
-				row.hidden = !mine;
-				if (mine) {
-					var def =
-						row.querySelector('.round-tab[data-default]') ||
-						row.querySelector('.round-tab');
-					key = def.dataset.round;
-				}
+		});
+	});
+	document.querySelectorAll('.feature-back').forEach(function (btn) {
+		btn.addEventListener('click', function () {
+			home.hidden = false;
+			document.querySelectorAll('.feature-page').forEach(function (pg) {
+				pg.hidden = true;
 			});
-			if (key) activateSection(key);
 		});
 	});
 
 	function open(id) {
-		if (!data[id]) return;
-		frame.srcdoc = decode(data[id]); // fresh document each open — flow restarts
-		barTitle.textContent = products[id] + ' \u00b7 ' + labels[id];
+		var src = aliases[id] || id;
+		if (!data[src]) return;
+		frame.srcdoc = decode(data[src]); // fresh document each open — flow restarts
+		barTitle.textContent = features[id] + ' \u00b7 ' + labels[id];
 		launcher.classList.add('hidden');
 		viewer.classList.add('active');
 		startComments(id);
