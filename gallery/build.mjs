@@ -83,12 +83,12 @@ const VERSIONS = [
 		branch: 'booking-flow-bigger-ideas',
 	},
 	{
-		id: 'match11',
-		label: '1.1',
-		section: 'mf-round1',
+		id: 'match30',
+		label: '3.0',
+		section: 'mf-round3',
 		blurb:
 			'Guest and host side by side: Melissa books, Ryan hosts. Both phones are live and independent.',
-		branch: 'matching-v11',
+		branch: 'matching-v30',
 		wide: true,
 	},
 	{
@@ -128,10 +128,10 @@ const SECTIONS = [
 		default: true,
 	},
 	{
-		key: 'mf-round1',
+		key: 'mf-round3',
 		feature: 'matches',
-		title: 'Round 1',
-		note: 'First round of the matches flow.',
+		title: 'Round 3',
+		note: 'Version numbers run on from the booking-request rounds, so this round is 3.',
 		default: true,
 	},
 ];
@@ -426,7 +426,7 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 .viewer-main {
 	flex: 1; min-height: 0;
 	display: flex;
-	background: #b3b6ba;
+	background: var(--ground);
 }
 .frame-col { flex: 1; min-width: 0; display: flex; justify-content: center; }
 .phone-stage { position: relative; width: 100%; max-width: 470px; height: 100%; }
@@ -435,9 +435,7 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 	width: 100%; height: 100%;
 	border: none; display: block; background: #e7e9ec;
 }
-@media (prefers-color-scheme: dark) { .viewer-main { background: #101211; } }
-:root[data-theme='dark'] .viewer-main { background: #101211; }
-:root[data-theme='light'] .viewer-main { background: #b3b6ba; }
+
 
 /* comment pins over the prototype */
 .pin-layer { position: absolute; inset: 0; pointer-events: none; }
