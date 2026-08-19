@@ -22,7 +22,7 @@ const VERSIONS = [
 	{
 		id: 'round2',
 		label: '2.0',
-		section: 'Round 2',
+		section: 'br-round2',
 		blurb:
 			'The first Round 2 build. 1.3 evolved through client feedback into a 3-page flow with a window stepper, centred guests and a host preview.',
 		branch: 'round2',
@@ -30,7 +30,7 @@ const VERSIONS = [
 	{
 		id: 'round2b',
 		label: '2.1',
-		section: 'Round 2',
+		section: 'br-round2',
 		blurb:
 			'Trimmed review card, compact window stepper, paired guest actions, simplified sent screen and the live Trips tabs.',
 		branch: 'round2-option2',
@@ -38,7 +38,7 @@ const VERSIONS = [
 	{
 		id: 'round2c',
 		label: '2.2',
-		section: 'Round 2',
+		section: 'br-round2',
 		blurb:
 			"Adds Nina's Flat: three date windows in a two-month span, one already requested. Plus the Staying/Hosting Trips split, an accessibility pass, and a calendar that fills the chosen window in.",
 		branch: 'round2-v22',
@@ -46,7 +46,7 @@ const VERSIONS = [
 	{
 		id: 'round2d',
 		label: '2.3',
-		section: 'Round 2',
+		section: 'br-round2',
 		blurb:
 			'Actions from the product review: amber pending state throughout, confirm page cut to the host preview, calendar legend.',
 		branch: 'round2-v23',
@@ -54,7 +54,7 @@ const VERSIONS = [
 	{
 		id: 'round2e',
 		label: '2.4',
-		section: 'Round 2',
+		section: 'br-round2',
 		blurb:
 			'The live working version, carrying on from 2.3. New changes land here.',
 		branch: 'round2-v24',
@@ -62,14 +62,14 @@ const VERSIONS = [
 	{
 		id: 'current',
 		label: '1.0',
-		section: 'Round 1',
+		section: 'br-round1',
 		blurb: 'Faithful rebuild of the live app: 4 steps, exactly as shipped.',
 		branch: 'claude/kiki-booking-flow-redesign-e0rhj6',
 	},
 	{
 		id: 'option1',
 		label: '1.1',
-		section: 'Round 1',
+		section: 'br-round1',
 		blurb:
 			'Best-practice polish: live price preview, "Select all" tip, character counter, pre-send recap, leave guard.',
 		branch: 'booking-flow-edits',
@@ -77,29 +77,53 @@ const VERSIONS = [
 	{
 		id: 'option2',
 		label: '1.2',
-		section: 'Round 1',
+		section: 'br-round1',
 		blurb:
 			'Restructured: dates & payments merged into one step (3-step flow), availability chip, intro prompt chips, 45+ day split payments.',
 		branch: 'booking-flow-bigger-ideas',
 	},
 	{
+		id: 'match11',
+		label: '1.1',
+		section: 'mf-round1',
+		blurb:
+			'Starting point for the matching flow, built on the current app. The current-state screens land here next.',
+		branch: 'matching-v11',
+	},
+	{
 		id: 'option3',
 		label: '1.3',
-		section: 'Round 1',
+		section: 'br-round1',
 		blurb:
 			'Review-centric (Airbnb-style): one "Review and request" hub with Change buttons opening dates/guests editor sheets, price details expander and trust line, no wizard. Chosen by the client as the Round 2 direction.',
 		branch: 'booking-flow-airbnb-style',
 	},
 ];
 
+const PRODUCTS = [
+	{ title: 'Booking Request', default: true },
+	{ title: 'Matching Flow' },
+];
+
 const SECTIONS = [
 	{
+		key: 'br-round1',
+		product: 'Booking Request',
 		title: 'Round 1',
 		note: 'The exploration that led to the decision, kept for reference.',
 	},
 	{
+		key: 'br-round2',
+		product: 'Booking Request',
 		title: 'Round 2',
 		note: 'The active direction. Client feedback gets applied here.',
+		default: true,
+	},
+	{
+		key: 'mf-round1',
+		product: 'Matching Flow',
+		title: 'Round 1',
+		note: 'First round of the matching flow.',
 		default: true,
 	},
 ];
@@ -130,20 +154,46 @@ const cardFor = (v) =>
 				<span class="card-blurb">${v.blurb}</span>
 			</div>`;
 
-// One block per round; the round dropdown toggles which block is visible.
+// One block per round; visible when its round tab is active. Only the
+// default round of the default product starts visible.
 const cards = SECTIONS.map(
-	(s) => `<div class="section-block" data-section="${s.title}"${s.default ? '' : ' hidden'}>
+	(s) => {
+		const startVisible =
+			s.default && PRODUCTS.find((p) => p.title === s.product)?.default;
+		return `<div class="section-block" data-section="${s.key}"${startVisible ? '' : ' hidden'}>
 			<div class="section-note">${s.note}</div>
-${VERSIONS.filter((v) => v.section === s.title)
+${VERSIONS.filter((v) => v.section === s.key)
 	.map(cardFor)
 	.join('\n')}
-		</div>`,
+		</div>`;
+	},
 ).join('\n');
 
-const roundTabs = SECTIONS.map(
-	(s) =>
-		`<button class="round-tab${s.default ? ' active' : ''}" data-round="${s.title}">${s.title}</button>`,
+const productTabs = PRODUCTS.map(
+	(p) =>
+		`<button class="product-tab${p.default ? ' active' : ''}" data-product="${p.title}">${p.title}</button>`,
 ).join('\n');
+
+// One row of round tabs per product; the product tabs swap the rows.
+const roundTabRows = PRODUCTS.map((p) => {
+	const secs = SECTIONS.filter((s) => s.product === p.title);
+	const tabs = secs
+		.map(
+			(s) =>
+				`<button class="round-tab${s.default ? ' active' : ''}"${s.default ? ' data-default="1"' : ''} data-round="${s.key}">${s.title}</button>`,
+		)
+		.join('\n');
+	return `<div class="round-tabs" role="tablist" aria-label="${p.title} rounds" data-product="${p.title}"${p.default ? '' : ' hidden'}>\n${tabs}\n</div>`;
+}).join('\n');
+
+const productsById = JSON.stringify(
+	Object.fromEntries(
+		VERSIONS.map((v) => [
+			v.id,
+			SECTIONS.find((s) => s.key === v.section).product,
+		]),
+	),
+);
 
 const chips = VERSIONS.filter((v) => v.branch)
 	.map(
@@ -229,23 +279,39 @@ body {
 	font-size: 15px; color: var(--muted); margin-bottom: 28px; text-align: center;
 	max-width: 420px; line-height: 22px;
 }
-.round-tabs {
+.product-tabs {
 	display: inline-flex;
 	background: var(--card);
 	border: 1.5px solid var(--line);
 	border-radius: 24px;
 	padding: 4px;
 	gap: 4px;
-	margin-bottom: 20px;
+	margin-bottom: 16px;
 }
-.round-tab {
+.product-tab {
 	font-family: inherit; font-size: 14.5px; font-weight: 700;
 	color: var(--muted); background: none; border: none;
 	border-radius: 19px; padding: 9px 20px; cursor: pointer;
 	transition: background 0.15s, color 0.15s;
 }
+.product-tab:hover { color: var(--ink); }
+.product-tab.active { background: var(--primary); color: #fff; }
+.product-tab:focus { outline: none; }
+.product-tab:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.round-tabs {
+	display: inline-flex;
+	gap: 2px;
+	margin-bottom: 18px;
+}
+.round-tabs[hidden] { display: none; }
+.round-tab {
+	font-family: inherit; font-size: 13.5px; font-weight: 700;
+	color: var(--muted); background: none; border: none;
+	border-radius: 15px; padding: 7px 15px; cursor: pointer;
+	transition: background 0.15s, color 0.15s;
+}
 .round-tab:hover { color: var(--ink); }
-.round-tab.active { background: var(--primary); color: #fff; }
+.round-tab.active { background: var(--tint); color: var(--primary-dark); }
 .round-tab:focus { outline: none; }
 .round-tab:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 .cards { display: flex; flex-direction: column; gap: 26px; width: min(440px, 100%); }
@@ -407,11 +473,12 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 
 <div id="gallery-root">
 	<div class="launcher" id="launcher">
-		<div class="brand"><span class="brand-dot">K</span><h1>Kiki booking flow</h1></div>
-		<p class="sub">Prototype versions of the booking request flow. Pick one to walk through it, everything is clickable.</p>
-		<div class="round-tabs" role="tablist" aria-label="Round">
-${roundTabs}
+		<div class="brand"><span class="brand-dot">K</span><h1>Kiki prototypes</h1></div>
+		<p class="sub">Prototype versions of each flow. Pick one to walk through it, everything is clickable.</p>
+		<div class="product-tabs" role="tablist" aria-label="Flow">
+${productTabs}
 		</div>
+${roundTabRows}
 		<div class="cards">
 ${cards}
 		</div>
@@ -456,6 +523,7 @@ ${cards}
 	var data = JSON.parse(document.getElementById('v-data').textContent);
 	var labels = ${labels};
 	var sections = ${sectionsById};
+	var products = ${productsById};
 	var launcher = document.getElementById('launcher');
 	var viewer = document.getElementById('viewer');
 	var frame = document.getElementById('frame');
@@ -466,22 +534,45 @@ ${cards}
 		return new TextDecoder().decode(bytes);
 	}
 
+	function activateSection(key) {
+		document.querySelectorAll('.round-tab').forEach(function (t) {
+			t.classList.toggle('active', t.dataset.round === key);
+		});
+		document.querySelectorAll('.section-block').forEach(function (block) {
+			block.hidden = block.dataset.section !== key;
+		});
+	}
 	document.querySelectorAll('.round-tab').forEach(function (tab) {
 		tab.addEventListener('click', function () {
 			tab.blur();
-			document.querySelectorAll('.round-tab').forEach(function (t) {
+			activateSection(tab.dataset.round);
+		});
+	});
+	document.querySelectorAll('.product-tab').forEach(function (tab) {
+		tab.addEventListener('click', function () {
+			tab.blur();
+			document.querySelectorAll('.product-tab').forEach(function (t) {
 				t.classList.toggle('active', t === tab);
 			});
-			document.querySelectorAll('.section-block').forEach(function (block) {
-				block.hidden = block.dataset.section !== tab.dataset.round;
+			var key = null;
+			document.querySelectorAll('.round-tabs').forEach(function (row) {
+				var mine = row.dataset.product === tab.dataset.product;
+				row.hidden = !mine;
+				if (mine) {
+					var def =
+						row.querySelector('.round-tab[data-default]') ||
+						row.querySelector('.round-tab');
+					key = def.dataset.round;
+				}
 			});
+			if (key) activateSection(key);
 		});
 	});
 
 	function open(id) {
 		if (!data[id]) return;
 		frame.srcdoc = decode(data[id]); // fresh document each open — flow restarts
-		barTitle.textContent = labels[id];
+		barTitle.textContent = products[id] + ' \u00b7 ' + labels[id];
 		launcher.classList.add('hidden');
 		viewer.classList.add('active');
 		startComments(id);
