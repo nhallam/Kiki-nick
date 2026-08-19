@@ -62,11 +62,22 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 		});
 	};
 
+	// Bottom-bar navigation between the two working tabs.
+	const tripsRoute = (): Route => ({
+		name: 'trips',
+		requests: EXISTING_REQUESTS,
+		showSuccess: false,
+		newRequest: EXISTING_REQUESTS[0],
+	});
+	const navigate = (tab: 'explore' | 'trips') =>
+		setRoute(tab === 'explore' ? { name: 'explore' } : tripsRoute());
+
 	switch (route.name) {
 		case 'explore':
 			return (
 				<ExploreScreen
 					onOpenListing={(listing) => setRoute({ name: 'listing', listing })}
+					onNavigate={navigate}
 				/>
 			);
 		case 'listing':
@@ -131,6 +142,7 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 					requests={route.requests}
 					initialTab={persona === 'host' ? 'hosting' : 'staying'}
 					canHost={persona === 'host'}
+					onNavigate={navigate}
 				/>
 			);
 	}

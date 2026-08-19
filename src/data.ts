@@ -31,6 +31,8 @@ export interface Listing {
 	favouritedBy: number;
 	vouchedForBy: string;
 	photoVariant: PhotoVariant;
+	/** Avatar variant for the host; defaults derived from photoVariant */
+	hostAvatar?: string;
 	/** Host profile shown at the bottom of the listing page */
 	hostAge: number;
 	hostGender: string;
@@ -74,31 +76,37 @@ export const LISTINGS: Listing[] = [
 		instagram: 'ieva.kas',
 	},
 	{
-		// Long availability (76 nights) so the 45+ day split-payment path is
-		// demoable end-to-end.
+		// Ryan's place — the host phone's listing. The windows here are the
+		// trips on his Hosting tab; Melissa has requested the August one.
 		id: 2,
-		listerName: 'Jake',
-		title: "Jake's Room",
-		area: 'London Fields',
+		listerName: 'Ryan',
+		title: "Ryan's Apartment",
+		area: 'Hackney',
 		city: 'London',
-		nightlyRate: 40,
-		roomType: 'Room',
-		availableStart: '2026-08-16',
-		availableEnd: '2026-10-31',
+		nightlyRate: 67,
+		roomType: 'Whole place',
+		availableStart: '2026-08-26',
+		availableEnd: '2026-09-19',
+		availabilityWindows: [
+			{ start: '2026-08-26', end: '2026-08-29' },
+			{ start: '2026-09-12', end: '2026-09-19' },
+		],
+		requestedWindows: ['2026-08-26'],
 		openToCouples: true,
-		securityDeposit: 180,
-		nationalityFlag: '🇬🇧',
+		securityDeposit: 150,
+		nationalityFlag: '🇳🇿',
 		description:
-			'A cosy room right by London Fields park, with a big desk for remote work, fast wifi and a sunny shared kitchen. Lido and the best coffee in Hackney within five minutes walk.',
-		favouritedBy: 3,
-		vouchedForBy: 'Ana',
+			'A bright one-bed apartment two minutes from London Fields, with a big desk for remote work, fast wifi and a sunny balcony. The whole place is yours while I am away.',
+		favouritedBy: 4,
+		vouchedForBy: 'Nina',
 		photoVariant: 'jake',
-		hostAge: 29,
+		hostAvatar: 'ryan',
+		hostAge: 31,
 		hostGender: 'Male',
-		hostNationality: 'British',
-		hostHometown: 'London, England, GB',
-		hostJob: 'Musician',
-		instagram: 'jake_lf',
+		hostNationality: 'New Zealander',
+		hostHometown: 'Auckland, New Zealand',
+		hostJob: 'Architect',
+		instagram: 'ryan.draws',
 	},
 	{
 		// Three windows inside a two-month span, with a request already sent
@@ -245,8 +253,16 @@ export interface SentRequest {
 	photoVariant: PhotoVariant;
 }
 
-/** Pre-existing active request the new one gets ranked against. */
+/** Melissa's active requests — the Ryan one is the pair's shared story. */
 export const EXISTING_REQUESTS: SentRequest[] = [
+	{
+		id: 902,
+		title: "Ryan's Apartment in Hackney, London",
+		dates: '26 Aug - 29 Aug',
+		nightlyRate: 67,
+		status: 'In review by host',
+		photoVariant: 'jake',
+	},
 	{
 		id: 901,
 		title: "Nina's Flat in Peckham, London",
@@ -254,14 +270,6 @@ export const EXISTING_REQUESTS: SentRequest[] = [
 		nightlyRate: 48,
 		status: 'In review by host',
 		photoVariant: 'nina',
-	},
-	{
-		id: 900,
-		title: "Tash's Room in Clapham common, London",
-		dates: '19 Aug - 22 Aug',
-		nightlyRate: 42,
-		status: 'In review by host',
-		photoVariant: 'tash',
 	},
 ];
 

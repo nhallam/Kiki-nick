@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 
 import { SentRequest } from '../data';
-import { IconAddCircle, StatusBar } from '../ui';
+import { Avatar, IconAddCircle, IconChevronRight, StatusBar } from '../ui';
 import { TripRequestCard } from './Rank';
 import { TabBar } from './TabBar';
 
@@ -18,10 +18,26 @@ interface AwayTrip {
 	nightlyRate: number;
 	dates: string;
 	pending?: boolean;
+	/** A booking request someone has sent against these dates */
+	request?: { name: string; avatar: string; sub: string };
 }
 
+/* Ryan's trips: the same windows as his listing's Available Dates.
+   Melissa's request rides on the August one. */
 const UPCOMING_TRIPS: AwayTrip[] = [
-	{ id: 1, nights: 3, nightlyRate: 67, dates: '26 - 29 Aug', pending: true },
+	{
+		id: 1,
+		nights: 3,
+		nightlyRate: 67,
+		dates: '26 - 29 Aug',
+		pending: true,
+		request: {
+			name: 'Melissa',
+			avatar: 'melissa',
+			sub: 'Individual · 26 - 29 Aug · £201 + deposit',
+		},
+	},
+	{ id: 4, nights: 7, nightlyRate: 67, dates: '12 - 19 Sep' },
 ];
 
 const PAST_TRIPS: AwayTrip[] = [
@@ -63,23 +79,37 @@ const IconTrash = ({ size = 18 }: { size?: number }) => (
 function AwayTripCard({ trip }: { trip: AwayTrip }) {
 	return (
 		<div className="away-card">
-			<div className="away-thumb">✈️</div>
-			<div className="away-body">
-				<div className="away-title">Trip</div>
-				<div className="away-meta">
-					{trip.nights} nights @ £{trip.nightlyRate}/night
+			<div className="away-main">
+				<div className="away-thumb">✈️</div>
+				<div className="away-body">
+					<div className="away-title">Trip</div>
+					<div className="away-meta">
+						{trip.nights} nights @ £{trip.nightlyRate}/night
+					</div>
+					<div className="away-meta">{trip.dates}</div>
 				</div>
-				<div className="away-meta">{trip.dates}</div>
+				{trip.pending && <span className="away-pending">Pending</span>}
+				<div className="away-actions">
+					<button className="away-action" aria-label="Edit trip">
+						<IconPencil />
+					</button>
+					<button className="away-action" aria-label="Delete trip">
+						<IconTrash />
+					</button>
+				</div>
 			</div>
-			{trip.pending && <span className="away-pending">Pending</span>}
-			<div className="away-actions">
-				<button className="away-action" aria-label="Edit trip">
-					<IconPencil />
+			{trip.request && (
+				<button className="trip-request">
+					<Avatar variant={trip.request.avatar} size={36} />
+					<span className="tr-body">
+						<span className="tr-title">
+							{trip.request.name} sent a booking request
+						</span>
+						<span className="tr-sub">{trip.request.sub}</span>
+					</span>
+					<IconChevronRight size={18} />
 				</button>
-				<button className="away-action" aria-label="Delete trip">
-					<IconTrash />
-				</button>
-			</div>
+			)}
 		</div>
 	);
 }
@@ -89,12 +119,14 @@ export function TripsScreen({
 	onReorder,
 	initialTab,
 	canHost,
+	onNavigate,
 }: {
 	requests: SentRequest[];
 	onReorder?: () => void;
 	initialTab?: TripsTab;
 	/** Without a listing there is nothing to host — the tab sells listing. */
 	canHost?: boolean;
+	onNavigate?: (tab: 'explore' | 'trips') => void;
 }) {
 	const [tab, setTab] = useState<TripsTab>(initialTab ?? 'staying');
 
@@ -207,7 +239,7 @@ export function TripsScreen({
 				)}
 			</div>
 
-			<TabBar active="trips" notificationCount={1} />
+			<TabBar active="trips" notificationCount={1} onNavigate={onNavigate} />
 		</div>
 	);
 }

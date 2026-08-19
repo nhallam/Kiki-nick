@@ -56,7 +56,7 @@ export function ListingDetailScreen({
 				</button>
 				<div className="detail-host">
 					<Avatar
-						variant={listing.photoVariant === 'ieva' ? 'ieva' : 'jake'}
+						variant={listing.hostAvatar ?? (listing.photoVariant === 'ieva' ? 'ieva' : 'jake')}
 						initial={listing.listerName[0]}
 						size={76}
 						flag={listing.nationalityFlag}
@@ -182,7 +182,7 @@ export function ListingDetailScreen({
 			<div className="listing-cta-bar">
 				<span className="info">
 					<Avatar
-						variant={listing.photoVariant === 'ieva' ? 'ieva' : 'jake'}
+						variant={listing.hostAvatar ?? (listing.photoVariant === 'ieva' ? 'ieva' : 'jake')}
 						initial={listing.listerName[0]}
 						size={44}
 						flag={listing.nationalityFlag}

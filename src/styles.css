@@ -1853,14 +1853,50 @@ input {
 }
 
 .away-card {
-	display: flex;
-	align-items: center;
-	gap: 12px;
 	border: 1px solid var(--border-light);
 	border-radius: 14px;
 	padding: 12px;
 	background: var(--white);
 	margin-bottom: 12px;
+}
+.away-main {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+/* A booking request pinned to the trip it asks for */
+.trip-request {
+	display: flex;
+	align-items: center;
+	gap: 11px;
+	width: 100%;
+	margin-top: 12px;
+	padding: 10px 12px;
+	background: var(--pending-tint);
+	border: 1px solid var(--pending);
+	border-radius: 12px;
+	text-align: left;
+	color: var(--dark);
+}
+.trip-request .tr-body {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+}
+.trip-request .tr-title {
+	font-size: 14px;
+	font-weight: 700;
+}
+.trip-request .tr-sub {
+	font-size: 12.5px;
+	color: var(--pending);
+	font-weight: 600;
+}
+.trip-request > svg {
+	color: var(--pending);
+	flex-shrink: 0;
 }
 .away-thumb {
 	width: 64px;

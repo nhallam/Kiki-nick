@@ -28,7 +28,7 @@ function ListingCard({
 		>
 			<div className="top">
 				<Avatar
-					variant={listing.photoVariant === 'ieva' ? 'ieva' : 'jake'}
+					variant={listing.hostAvatar ?? (listing.photoVariant === 'ieva' ? 'ieva' : 'jake')}
 					initial={listing.listerName[0]}
 					size={92}
 					flag={listing.nationalityFlag}
@@ -65,8 +65,10 @@ function ListingCard({
 
 export function ExploreScreen({
 	onOpenListing,
+	onNavigate,
 }: {
 	onOpenListing: (listing: Listing) => void;
+	onNavigate?: (tab: 'explore' | 'trips') => void;
 }) {
 	return (
 		<div className="screen">
@@ -94,7 +96,7 @@ export function ExploreScreen({
 					<ListingCard key={l.id} listing={l} onOpen={() => onOpenListing(l)} />
 				))}
 			</div>
-			<TabBar active="explore" />
+			<TabBar active="explore" onNavigate={onNavigate} />
 		</div>
 	);
 }
