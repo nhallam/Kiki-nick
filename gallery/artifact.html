@@ -288,11 +288,6 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 		<span class="row-count">9 prototypes</span>
 		<span class="row-chev">›</span>
 	</button>
-<button class="feature-row" data-feature="trips">
-		<span class="row-title">Trips – nav bar quick fix</span>
-		<span class="row-count">1 prototype</span>
-		<span class="row-chev">›</span>
-	</button>
 <button class="feature-row" data-feature="matches">
 		<span class="row-title">Matches flow</span>
 		<span class="row-count">1 prototype</span>
@@ -396,21 +391,6 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 		</div>
 </div>
 	</div>
-<div class="feature-page" data-feature="trips" hidden>
-		<button class="feature-back">← All features</button>
-		<h2 class="feature-title">Trips – nav bar quick fix</h2>
-
-<div class="cards">
-<div class="section-block" data-section="tr-current">
-			<div class="section-note">Shipped as part of the booking-request builds; kept here so it has a home of its own.</div>
-<button class="card" data-version="tripsnow">
-				<span class="card-head"><span class="card-label">1.0</span><span class="card-go">Open →</span></span>
-				<span class="card-blurb">The Staying/Hosting split in the current build. Open the Trips tab in the bottom bar.</span>
-				<span class="card-branch">round2-v24</span>
-			</button>
-		</div>
-</div>
-	</div>
 <div class="feature-page" data-feature="matches" hidden>
 		<button class="feature-back">← All features</button>
 		<h2 class="feature-title">Matches flow</h2>
@@ -467,7 +447,7 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 		<div class="bar">
 		<button class="bar-back" id="backBtn">← Back</button>
 			<span class="bar-title" id="barTitle"></span>
-			<span class="bar-chips"><button class="bar-chip" data-version="round2" data-section="br-round2">2.0</button><button class="bar-chip" data-version="round2b" data-section="br-round2">2.1</button><button class="bar-chip" data-version="round2c" data-section="br-round2">2.2</button><button class="bar-chip" data-version="round2d" data-section="br-round2">2.3</button><button class="bar-chip" data-version="round2e" data-section="br-round2">2.4</button><button class="bar-chip" data-version="current" data-section="br-round1">1.0</button><button class="bar-chip" data-version="option1" data-section="br-round1">1.1</button><button class="bar-chip" data-version="option2" data-section="br-round1">1.2</button><button class="bar-chip" data-version="tripsnow" data-section="tr-current">1.0</button><button class="bar-chip" data-version="match11" data-section="mf-round1">1.1</button><button class="bar-chip" data-version="option3" data-section="br-round1">1.3</button></span>
+			<span class="bar-chips"><button class="bar-chip" data-version="round2" data-section="br-round2">2.0</button><button class="bar-chip" data-version="round2b" data-section="br-round2">2.1</button><button class="bar-chip" data-version="round2c" data-section="br-round2">2.2</button><button class="bar-chip" data-version="round2d" data-section="br-round2">2.3</button><button class="bar-chip" data-version="round2e" data-section="br-round2">2.4</button><button class="bar-chip" data-version="current" data-section="br-round1">1.0</button><button class="bar-chip" data-version="option1" data-section="br-round1">1.1</button><button class="bar-chip" data-version="option2" data-section="br-round1">1.2</button><button class="bar-chip" data-version="match11" data-section="mf-round1">1.1</button><button class="bar-chip" data-version="option3" data-section="br-round1">1.3</button></span>
 		</div>
 		<div class="viewer-main">
 			<div class="frame-col">
@@ -500,10 +480,10 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 <script>
 (function () {
 	var data = JSON.parse(document.getElementById('v-data').textContent);
-	var labels = {"round2":"2.0","round2b":"2.1","round2c":"2.2","round2d":"2.3","round2e":"2.4","current":"1.0","option1":"1.1","option2":"1.2","tripsnow":"1.0","match11":"1.1","option3":"1.3"};
-	var sections = {"round2":"br-round2","round2b":"br-round2","round2c":"br-round2","round2d":"br-round2","round2e":"br-round2","current":"br-round1","option1":"br-round1","option2":"br-round1","tripsnow":"tr-current","match11":"mf-round1","option3":"br-round1"};
-	var features = {"round2":"Booking Request Flow","round2b":"Booking Request Flow","round2c":"Booking Request Flow","round2d":"Booking Request Flow","round2e":"Booking Request Flow","current":"Booking Request Flow","option1":"Booking Request Flow","option2":"Booking Request Flow","tripsnow":"Trips – nav bar quick fix","match11":"Matches flow","option3":"Booking Request Flow"};
-	var aliases = {"tripsnow":"round2e"};
+	var labels = {"round2":"2.0","round2b":"2.1","round2c":"2.2","round2d":"2.3","round2e":"2.4","current":"1.0","option1":"1.1","option2":"1.2","match11":"1.1","option3":"1.3"};
+	var sections = {"round2":"br-round2","round2b":"br-round2","round2c":"br-round2","round2d":"br-round2","round2e":"br-round2","current":"br-round1","option1":"br-round1","option2":"br-round1","match11":"mf-round1","option3":"br-round1"};
+	var features = {"round2":"Booking Request Flow","round2b":"Booking Request Flow","round2c":"Booking Request Flow","round2d":"Booking Request Flow","round2e":"Booking Request Flow","current":"Booking Request Flow","option1":"Booking Request Flow","option2":"Booking Request Flow","match11":"Matches flow","option3":"Booking Request Flow"};
+	var aliases = {};
 	var launcher = document.getElementById('launcher');
 	var viewer = document.getElementById('viewer');
 	var frame = document.getElementById('frame');
