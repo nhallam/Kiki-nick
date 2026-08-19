@@ -13,7 +13,7 @@ import './styles.css';
 
 // Natural size of the pair; the stage scales down to fit the window.
 const DUO_W = 393 * 2 + 48 + 48; // phones + gap + breathing room
-const DUO_H = 830 + 62; // phone + label row
+const DUO_H = 830 + 84; // phone + label row + breathing room
 
 function DuoStage() {
 	const [scale, setScale] = useState(1);
