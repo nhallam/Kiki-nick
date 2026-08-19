@@ -130,6 +130,7 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 				<TripsScreen
 					requests={route.requests}
 					initialTab={persona === 'host' ? 'hosting' : 'staying'}
+					canHost={persona === 'host'}
 				/>
 			);
 	}

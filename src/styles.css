@@ -41,7 +41,8 @@ body {
 
 body {
 	font-family: 'Inter', -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
-	background: var(--white);
+	/* Matches the gallery viewer's ground so the stage reads as one surface */
+	background: #f3f3f6;
 	color: var(--dark);
 	-webkit-font-smoothing: antialiased;
 }
@@ -1957,6 +1958,15 @@ input {
 	border-radius: 14px;
 	padding: 22px 20px;
 	text-align: center;
+}
+.empty-card.hosting-cta {
+	padding: 30px 20px;
+}
+.empty-card.hosting-cta .btn-primary {
+	display: inline-flex;
+	width: auto;
+	margin-top: 16px;
+	padding: 12px 30px;
 }
 .empty-title {
 	font-size: 16px;

@@ -88,10 +88,13 @@ export function TripsScreen({
 	requests,
 	onReorder,
 	initialTab,
+	canHost,
 }: {
 	requests: SentRequest[];
 	onReorder?: () => void;
 	initialTab?: TripsTab;
+	/** Without a listing there is nothing to host — the tab sells listing. */
+	canHost?: boolean;
 }) {
 	const [tab, setTab] = useState<TripsTab>(initialTab ?? 'staying');
 
@@ -160,7 +163,18 @@ export function TripsScreen({
 					</div>
 				)}
 
-				{tab === 'hosting' && (
+				{tab === 'hosting' && !canHost && (
+					<div className="trips-pane">
+						<div className="empty-card hosting-cta">
+							<div className="empty-title">
+								Going away? List your home or room.
+							</div>
+							<button className="btn-primary">Get started</button>
+						</div>
+					</div>
+				)}
+
+				{tab === 'hosting' && canHost && (
 					<div className="trips-pane">
 						<div className="trips-section">
 							<div className="trips-section-head">
