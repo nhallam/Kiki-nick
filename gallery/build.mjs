@@ -83,15 +83,6 @@ const VERSIONS = [
 		branch: 'booking-flow-bigger-ideas',
 	},
 	{
-		id: 'tripsnow',
-		label: '1.0',
-		section: 'tr-current',
-		blurb:
-			'The Staying/Hosting split in the current build. Open the Trips tab in the bottom bar.',
-		branch: 'round2-v24',
-		alias: 'round2e',
-	},
-	{
 		id: 'match11',
 		label: '1.1',
 		section: 'mf-round1',
@@ -111,7 +102,6 @@ const VERSIONS = [
 
 const FEATURES = [
 	{ key: 'booking', title: 'Booking Request Flow' },
-	{ key: 'trips', title: 'Trips \u2013 nav bar quick fix' },
 	{ key: 'matches', title: 'Matches flow' },
 	{ key: 'notifications', title: 'Notifications' },
 	{ key: 'appnav', title: 'App Navigation and IA' },
@@ -134,13 +124,6 @@ const SECTIONS = [
 		feature: 'booking',
 		title: 'Round 2',
 		note: 'The active direction. Client feedback gets applied here.',
-		default: true,
-	},
-	{
-		key: 'tr-current',
-		feature: 'trips',
-		title: 'Current',
-		note: 'Shipped as part of the booking-request builds; kept here so it has a home of its own.',
 		default: true,
 	},
 	{
