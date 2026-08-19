@@ -7,9 +7,16 @@ import React, { useRef, useState } from 'react';
 import { SentRequest } from '../data';
 import { IconDrag, IconInfo, RoomPhoto, StatusBar } from '../ui';
 
-export function TripRequestCard({ request }: { request: SentRequest }) {
+export function TripRequestCard({
+	request,
+	onOpen,
+}: {
+	request: SentRequest;
+	onOpen?: () => void;
+}) {
+	const Tag = onOpen ? 'button' : 'div';
 	return (
-		<div className="trip-card">
+		<Tag className="trip-card" onClick={onOpen}>
 			<div className="photo">
 				<RoomPhoto variant={request.photoVariant} />
 			</div>
@@ -21,7 +28,7 @@ export function TripRequestCard({ request }: { request: SentRequest }) {
 				</div>
 				<span className="status-chip">{request.status}</span>
 			</div>
-		</div>
+		</Tag>
 	);
 }
 

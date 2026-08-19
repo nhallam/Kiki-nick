@@ -127,6 +127,7 @@ export function TripsScreen({
 	canHost,
 	onNavigate,
 	onOpenRequest,
+	onOpenRequestListing,
 }: {
 	requests: SentRequest[];
 	onReorder?: () => void;
@@ -135,6 +136,8 @@ export function TripsScreen({
 	canHost?: boolean;
 	onNavigate?: (tab: 'explore' | 'trips') => void;
 	onOpenRequest?: () => void;
+	/** Open the listing a sent request points at */
+	onOpenRequestListing?: (listingId: number) => void;
 }) {
 	const [tab, setTab] = useState<TripsTab>(initialTab ?? 'staying');
 
@@ -187,7 +190,14 @@ export function TripsScreen({
 								<div className="rank-list">
 									{requests.map((r) => (
 										<div key={r.id} className="rank-row">
-											<TripRequestCard request={r} />
+											<TripRequestCard
+												request={r}
+												onOpen={
+													r.listingId && onOpenRequestListing
+														? () => onOpenRequestListing(r.listingId!)
+														: undefined
+												}
+											/>
 										</div>
 									))}
 								</div>

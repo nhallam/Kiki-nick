@@ -17,7 +17,7 @@ import { HostRequestScreen } from './screens/HostRequest';
 
 type Route =
 	| { name: 'explore' }
-	| { name: 'listing'; listing: Listing }
+	| { name: 'listing'; listing: Listing; from?: 'explore' | 'trips' }
 	| { name: 'booking'; listing: Listing }
 	| { name: 'sent'; requests: SentRequest[]; newRequest: SentRequest; listerName: string }
 	| { name: 'rank'; requests: SentRequest[]; newRequest: SentRequest }
@@ -86,7 +86,9 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 			return (
 				<ListingDetailScreen
 					listing={route.listing}
-					onBack={() => setRoute({ name: 'explore' })}
+					onBack={() =>
+						setRoute(route.from === 'trips' ? tripsRoute() : { name: 'explore' })
+					}
 					onRequestToBook={() =>
 						setRoute({ name: 'booking', listing: route.listing })
 					}
@@ -146,6 +148,10 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 					canHost={persona === 'host'}
 					onNavigate={navigate}
 					onOpenRequest={() => setRoute({ name: 'hostRequest' })}
+					onOpenRequestListing={(listingId) => {
+						const listing = LISTINGS.find((l) => l.id === listingId);
+						if (listing) setRoute({ name: 'listing', listing, from: 'trips' });
+					}}
 				/>
 			);
 		case 'hostRequest':

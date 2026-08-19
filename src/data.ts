@@ -251,12 +251,15 @@ export interface SentRequest {
 	nightlyRate: number;
 	status: string;
 	photoVariant: PhotoVariant;
+	/** The listing the request is for, when it exists in this prototype */
+	listingId?: number;
 }
 
 /** Melissa's active requests — the Ryan one is the pair's shared story. */
 export const EXISTING_REQUESTS: SentRequest[] = [
 	{
 		id: 902,
+		listingId: 2,
 		title: "Ryan's Apartment in Hackney, London",
 		dates: '26 Aug - 29 Aug',
 		nightlyRate: 67,
@@ -265,6 +268,7 @@ export const EXISTING_REQUESTS: SentRequest[] = [
 	},
 	{
 		id: 901,
+		listingId: 3,
 		title: "Nina's Flat in Peckham, London",
 		dates: '26 Sep - 3 Oct',
 		nightlyRate: 48,
