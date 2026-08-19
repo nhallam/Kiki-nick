@@ -41,8 +41,8 @@ body {
 
 body {
 	font-family: 'Inter', -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
-	/* Matches the gallery viewer's ground so the stage reads as one surface */
-	background: #f3f3f6;
+	/* Same ground as the gallery home page, so the stage reads as one surface */
+	background: #f2f5f4;
 	color: var(--dark);
 	-webkit-font-smoothing: antialiased;
 }
