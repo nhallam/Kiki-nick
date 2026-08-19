@@ -87,8 +87,9 @@ const VERSIONS = [
 		label: '1.1',
 		section: 'mf-round1',
 		blurb:
-			'Starting point for the matching flow, built on the current app. The current-state screens land here next.',
+			'Guest and host side by side: Melissa books, Ryan hosts. Both phones are live and independent.',
 		branch: 'matching-v11',
+		wide: true,
 	},
 	{
 		id: 'option3',
@@ -227,6 +228,10 @@ const featuresById = JSON.stringify(
 
 const aliases = JSON.stringify(
 	Object.fromEntries(VERSIONS.filter((v) => v.alias).map((v) => [v.id, v.alias])),
+);
+
+const wides = JSON.stringify(
+	Object.fromEntries(VERSIONS.filter((v) => v.wide).map((v) => [v.id, 1])),
 );
 
 const chips = VERSIONS.filter((v) => v.branch)
@@ -425,6 +430,7 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 }
 .frame-col { flex: 1; min-width: 0; display: flex; justify-content: center; }
 .phone-stage { position: relative; width: 100%; max-width: 470px; height: 100%; }
+.phone-stage.wide { max-width: 1040px; }
 .phone-stage iframe {
 	width: 100%; height: 100%;
 	border: none; display: block; background: #e7e9ec;
@@ -575,6 +581,7 @@ ${featurePages}
 	var sections = ${sectionsById};
 	var features = ${featuresById};
 	var aliases = ${aliases};
+	var wides = ${wides};
 	var launcher = document.getElementById('launcher');
 	var viewer = document.getElementById('viewer');
 	var frame = document.getElementById('frame');
@@ -625,6 +632,7 @@ ${featurePages}
 		var src = aliases[id] || id;
 		if (!data[src]) return;
 		frame.srcdoc = decode(data[src]); // fresh document each open — flow restarts
+		document.querySelector('.phone-stage').classList.toggle('wide', !!wides[id]);
 		barTitle.textContent = features[id] + ' \u00b7 ' + labels[id];
 		launcher.classList.add('hidden');
 		viewer.classList.add('active');
