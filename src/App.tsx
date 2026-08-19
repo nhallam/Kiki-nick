@@ -22,8 +22,19 @@ type Route =
 	| { name: 'rank'; requests: SentRequest[]; newRequest: SentRequest }
 	| { name: 'trips'; requests: SentRequest[]; showSuccess: boolean; newRequest: SentRequest };
 
-export default function App() {
-	const [route, setRoute] = useState<Route>({ name: 'explore' });
+export default function App({ persona }: { persona?: 'guest' | 'host' }) {
+	// The matching prototype starts both phones on Trips, each on its own
+	// side of the swap; without a persona the app opens on Explore as usual.
+	const [route, setRoute] = useState<Route>(() =>
+		persona
+			? {
+					name: 'trips',
+					requests: EXISTING_REQUESTS,
+					showSuccess: false,
+					newRequest: EXISTING_REQUESTS[0],
+				}
+			: { name: 'explore' },
+	);
 
 	const handleSubmitted = (listing: Listing, formData: BookingFormData) => {
 		const shortDate = (d: Date) =>
@@ -116,7 +127,10 @@ export default function App() {
 			);
 		case 'trips':
 			return (
-				<TripsScreen requests={route.requests} />
+				<TripsScreen
+					requests={route.requests}
+					initialTab={persona === 'host' ? 'hosting' : 'staying'}
+				/>
 			);
 	}
 }

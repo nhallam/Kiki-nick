@@ -186,13 +186,24 @@ export interface UserProfile {
 	type: 'user' | 'partner' | 'other';
 }
 
+/* Matching-flow personas: Melissa is the guest, Ryan the host. */
 export const MY_PROFILE: UserProfile = {
 	id: 101,
-	name: 'Reviewer 1 Tester',
-	shortName: 'Reviewer',
-	occupation: 'Kiki Tester',
-	age: 26,
-	nationalityFlag: '🇬🇧',
+	name: 'Melissa',
+	shortName: 'Melissa',
+	occupation: 'Marketing Manager',
+	age: 28,
+	nationalityFlag: '🇦🇺',
+	type: 'user',
+};
+
+export const HOST_PROFILE: UserProfile = {
+	id: 201,
+	name: 'Ryan',
+	shortName: 'Ryan',
+	occupation: 'Architect',
+	age: 31,
+	nationalityFlag: '🇳🇿',
 	type: 'user',
 };
 
@@ -204,11 +215,11 @@ export const MY_PROFILES: UserProfile[] = [
 	MY_PROFILE,
 	{
 		id: 103,
-		name: 'Reviewer 1 Tester',
-		shortName: 'Reviewer',
+		name: 'Melissa',
+		shortName: 'Melissa',
 		occupation: 'Product Designer',
-		age: 26,
-		nationalityFlag: '🇬🇧',
+		age: 28,
+		nationalityFlag: '🇦🇺',
 		type: 'user',
 	},
 ];

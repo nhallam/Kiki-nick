@@ -87,11 +87,13 @@ function AwayTripCard({ trip }: { trip: AwayTrip }) {
 export function TripsScreen({
 	requests,
 	onReorder,
+	initialTab,
 }: {
 	requests: SentRequest[];
 	onReorder?: () => void;
+	initialTab?: TripsTab;
 }) {
-	const [tab, setTab] = useState<TripsTab>('staying');
+	const [tab, setTab] = useState<TripsTab>(initialTab ?? 'staying');
 
 	return (
 		<div className="screen">
