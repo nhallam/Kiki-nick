@@ -11,6 +11,7 @@ import {
 import {
 	Avatar,
 	IconArrowLeft,
+	IconCheck,
 	IconDotsVertical,
 	IconHeart,
 	IconShare,
@@ -192,9 +193,15 @@ export function ListingDetailScreen({
 						<div className="price">£{listing.nightlyRate} / night</div>
 					</span>
 				</span>
-				<button className="cta-btn" onClick={onRequestToBook}>
-					Request to book
-				</button>
+				{(listing.requestedWindows ?? []).length > 0 ? (
+					<span className="cta-btn sent">
+						<IconCheck size={16} /> Request sent
+					</span>
+				) : (
+					<button className="cta-btn" onClick={onRequestToBook}>
+						Request to book
+					</button>
+				)}
 			</div>
 		</div>
 	);

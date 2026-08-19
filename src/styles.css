@@ -2831,6 +2831,16 @@ input {
 	flex-shrink: 0;
 }
 
+/* Already-requested listings: the CTA becomes a passive pending badge. */
+.cta-btn.sent {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	background: var(--pending-tint);
+	color: var(--pending);
+	border: 1.5px solid rgba(138, 90, 0, 0.28);
+}
+
 /* ---------- Avatars & photos ---------- */
 
 .avatar {
