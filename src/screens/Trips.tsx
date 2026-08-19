@@ -164,7 +164,7 @@ export function TripsScreen({
 				)}
 
 				{tab === 'hosting' && !canHost && (
-					<div className="trips-pane">
+					<div className="trips-pane centered">
 						<div className="empty-card hosting-cta">
 							<div className="empty-title">
 								Going away? List your home or room.

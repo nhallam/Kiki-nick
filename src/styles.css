@@ -1840,6 +1840,14 @@ input {
 .trips-pane {
 	padding: 16px 20px 24px;
 }
+/* A lone empty state sits in the middle of the screen, not at the top */
+.trips-pane.centered {
+	min-height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding-bottom: 48px;
+}
 .trips-pane .rank-list {
 	padding: 0;
 }
