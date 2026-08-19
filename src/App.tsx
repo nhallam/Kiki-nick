@@ -13,6 +13,7 @@ import { ListingDetailScreen } from './screens/ListingDetail';
 import { RankScreen } from './screens/Rank';
 import { SentScreen } from './screens/Sent';
 import { TripsScreen } from './screens/Trips';
+import { TripRequestsScreen } from './screens/TripRequests';
 import { HostRequestScreen } from './screens/HostRequest';
 
 type Route =
@@ -22,6 +23,7 @@ type Route =
 	| { name: 'sent'; requests: SentRequest[]; newRequest: SentRequest; listerName: string }
 	| { name: 'rank'; requests: SentRequest[]; newRequest: SentRequest }
 	| { name: 'trips'; requests: SentRequest[]; showSuccess: boolean; newRequest: SentRequest }
+	| { name: 'tripRequests' }
 	| { name: 'hostRequest' };
 
 export default function App({ persona }: { persona?: 'guest' | 'host' }) {
@@ -147,14 +149,23 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 					initialTab={persona === 'host' ? 'hosting' : 'staying'}
 					canHost={persona === 'host'}
 					onNavigate={navigate}
-					onOpenRequest={() => setRoute({ name: 'hostRequest' })}
+					onOpenTrip={() => setRoute({ name: 'tripRequests' })}
 					onOpenRequestListing={(listingId) => {
 						const listing = LISTINGS.find((l) => l.id === listingId);
 						if (listing) setRoute({ name: 'listing', listing, from: 'trips' });
 					}}
 				/>
 			);
+		case 'tripRequests':
+			return (
+				<TripRequestsScreen
+					onBack={() => setRoute(tripsRoute())}
+					onOpenRequest={() => setRoute({ name: 'hostRequest' })}
+				/>
+			);
 		case 'hostRequest':
-			return <HostRequestScreen onBack={() => setRoute(tripsRoute())} />;
+			return (
+				<HostRequestScreen onBack={() => setRoute({ name: 'tripRequests' })} />
+			);
 	}
 }

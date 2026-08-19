@@ -1864,39 +1864,114 @@ input {
 	align-items: center;
 	gap: 12px;
 }
-/* A booking request pinned to the trip it asks for */
-.trip-request {
+/* A trip with requests opens its detail screen */
+.away-card.clickable {
+	cursor: pointer;
+}
+.away-card.clickable:active {
+	background: #fafafa;
+}
+
+/* Compact "N new requests" strip on the trip card */
+.away-requests {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	margin-top: 10px;
+	padding: 5px 8px 5px 12px;
+	background: var(--pending-tint);
+	border: 1px solid var(--pending);
+	border-radius: 14px;
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--pending);
+}
+.away-requests > svg {
+	flex-shrink: 0;
+}
+
+/* ---------- Trip detail: dates + its booking requests ---------- */
+
+.trip-hero {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+.trip-hero-dates {
+	font-size: 20px;
+	font-weight: 700;
+	margin-bottom: 2px;
+}
+
+.req-count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 24px;
+	height: 24px;
+	margin-left: 4px;
+	border-radius: 12px;
+	background: var(--light-gray);
+	color: var(--dark);
+	font-size: 13.5px;
+	font-weight: 700;
+	vertical-align: 2px;
+}
+
+.req-row {
 	display: flex;
 	align-items: center;
 	gap: 11px;
 	width: 100%;
-	margin-top: 12px;
-	padding: 10px 12px;
-	background: var(--pending-tint);
-	border: 1px solid var(--pending);
+	margin-bottom: 10px;
+	padding: 12px;
+	background: var(--white);
+	border: 1px solid var(--border-light);
 	border-radius: 12px;
 	text-align: left;
 	color: var(--dark);
 }
-.trip-request .tr-body {
+.req-row.new {
+	background: var(--pending-tint);
+	border-color: var(--pending);
+}
+.req-row .tr-body {
 	flex: 1;
 	min-width: 0;
 	display: flex;
 	flex-direction: column;
 	gap: 1px;
 }
-.trip-request .tr-title {
-	font-size: 14px;
+.req-row .tr-title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 15px;
 	font-weight: 700;
 }
-.trip-request .tr-sub {
+.req-row .tr-sub {
 	font-size: 12.5px;
-	color: var(--pending);
+	color: var(--gray);
 	font-weight: 600;
 }
-.trip-request > svg {
+.req-row.new .tr-sub {
 	color: var(--pending);
+}
+.req-row > svg {
+	color: var(--gray);
 	flex-shrink: 0;
+}
+.req-row.new > svg {
+	color: var(--pending);
+}
+.new-badge {
+	background: var(--pending);
+	color: var(--white);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	border-radius: 9px;
+	padding: 2px 8px;
 }
 .away-thumb {
 	width: 64px;

@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 
 import { SentRequest } from '../data';
-import { Avatar, IconAddCircle, IconChevronRight, StatusBar } from '../ui';
+import { IconAddCircle, IconChevronRight, StatusBar } from '../ui';
 import { TripRequestCard } from './Rank';
 import { TabBar } from './TabBar';
 
@@ -18,8 +18,8 @@ interface AwayTrip {
 	nightlyRate: number;
 	dates: string;
 	pending?: boolean;
-	/** A booking request someone has sent against these dates */
-	request?: { name: string; avatar: string; sub: string };
+	/** Booking requests the host hasn't looked at yet */
+	newRequests?: number;
 }
 
 /* Ryan's trips: the same windows as his listing's Available Dates.
@@ -31,11 +31,7 @@ const UPCOMING_TRIPS: AwayTrip[] = [
 		nightlyRate: 67,
 		dates: '26 - 29 Aug',
 		pending: true,
-		request: {
-			name: 'Melissa',
-			avatar: 'melissa',
-			sub: 'Individual · 26 - 29 Aug · £201 + deposit',
-		},
+		newRequests: 1,
 	},
 	{ id: 4, nights: 7, nightlyRate: 67, dates: '12 - 19 Sep' },
 ];
@@ -78,13 +74,18 @@ const IconTrash = ({ size = 18 }: { size?: number }) => (
 
 function AwayTripCard({
 	trip,
-	onOpenRequest,
+	onOpenTrip,
 }: {
 	trip: AwayTrip;
-	onOpenRequest?: () => void;
+	onOpenTrip?: () => void;
 }) {
 	return (
-		<div className="away-card">
+		<div
+			className={`away-card${onOpenTrip ? ' clickable' : ''}`}
+			onClick={onOpenTrip}
+			role={onOpenTrip ? 'button' : undefined}
+			tabIndex={onOpenTrip ? 0 : undefined}
+		>
 			<div className="away-main">
 				<div className="away-thumb">✈️</div>
 				<div className="away-body">
@@ -96,25 +97,27 @@ function AwayTripCard({
 				</div>
 				{trip.pending && <span className="away-pending">Pending</span>}
 				<div className="away-actions">
-					<button className="away-action" aria-label="Edit trip">
+					<button
+						className="away-action"
+						aria-label="Edit trip"
+						onClick={(e) => e.stopPropagation()}
+					>
 						<IconPencil />
 					</button>
-					<button className="away-action" aria-label="Delete trip">
+					<button
+						className="away-action"
+						aria-label="Delete trip"
+						onClick={(e) => e.stopPropagation()}
+					>
 						<IconTrash />
 					</button>
 				</div>
 			</div>
-			{trip.request && (
-				<button className="trip-request" onClick={onOpenRequest}>
-					<Avatar variant={trip.request.avatar} size={36} />
-					<span className="tr-body">
-						<span className="tr-title">
-							{trip.request.name} sent a booking request
-						</span>
-						<span className="tr-sub">{trip.request.sub}</span>
-					</span>
-					<IconChevronRight size={18} />
-				</button>
+			{trip.newRequests != null && trip.newRequests > 0 && (
+				<div className="away-requests">
+					{trip.newRequests} new request{trip.newRequests > 1 ? 's' : ''}
+					<IconChevronRight size={16} />
+				</div>
 			)}
 		</div>
 	);
@@ -126,7 +129,7 @@ export function TripsScreen({
 	initialTab,
 	canHost,
 	onNavigate,
-	onOpenRequest,
+	onOpenTrip,
 	onOpenRequestListing,
 }: {
 	requests: SentRequest[];
@@ -135,7 +138,8 @@ export function TripsScreen({
 	/** Without a listing there is nothing to host — the tab sells listing. */
 	canHost?: boolean;
 	onNavigate?: (tab: 'explore' | 'trips') => void;
-	onOpenRequest?: () => void;
+	/** Open a trip's detail (dates + its booking requests) */
+	onOpenTrip?: () => void;
 	/** Open the listing a sent request points at */
 	onOpenRequestListing?: (listingId: number) => void;
 }) {
@@ -246,7 +250,11 @@ export function TripsScreen({
 								</button>
 							</div>
 							{UPCOMING_TRIPS.map((t) => (
-								<AwayTripCard key={t.id} trip={t} onOpenRequest={onOpenRequest} />
+								<AwayTripCard
+									key={t.id}
+									trip={t}
+									onOpenTrip={t.newRequests ? onOpenTrip : undefined}
+								/>
 							))}
 							<div className="trips-subsection-title">Past trips</div>
 							{PAST_TRIPS.map((t) => (
