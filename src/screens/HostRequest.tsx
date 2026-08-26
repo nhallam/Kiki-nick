@@ -22,6 +22,9 @@ interface RequestPreview {
 	flag: string;
 	occupation: string;
 	age: number;
+	hometown: string;
+	/** e.g. 'second' — which Kiki stay this booking is for them */
+	stayOrdinal: string;
 	nights: number;
 	datesValue: string;
 	guestsLabel: string;
@@ -38,11 +41,13 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		flag: '🇦🇺',
 		occupation: 'Marketing Manager',
 		age: 28,
+		hometown: 'Melbourne, Australia',
+		stayOrdinal: 'second',
 		nights: 3,
 		datesValue: '26th Aug – 29th Aug 2026 · 3 nights',
 		guestsLabel: 'Just Melissa',
 		intro:
-			"Hi Ryan! I'm Melissa, a marketing manager from Sydney over in London for a work sprint. I'm tidy, quiet, and out most of the day — your balcony sold me. Happy to answer anything before you decide.",
+			"Hi Ryan! I'm Melissa, a marketing manager from Melbourne over in London for a work sprint. I'm tidy, quiet, and out most of the day — your balcony sold me. Happy to answer anything before you decide.",
 		questions:
 			'Is it okay to use the balcony in the evenings, and is there somewhere to lock a bike?',
 		email: 'melissa.hart@gmail.com',
@@ -55,6 +60,8 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		flag: '🇬🇧',
 		occupation: 'Product Designer',
 		age: 29,
+		hometown: 'Manchester, UK',
+		stayOrdinal: 'first',
 		nights: 2,
 		datesValue: '27th Aug – 29th Aug 2026 · 2 nights',
 		guestsLabel: 'Just Aisha',
