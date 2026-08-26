@@ -2466,12 +2466,12 @@ input {
 	display: flex;
 	align-items: center;
 	gap: 6px;
-	min-height: 40px;
-	padding: 0 15px;
-	border-radius: 20px;
-	background: var(--primary-strong);
-	color: var(--white);
-	font-size: 14px;
+	min-height: 30px;
+	padding: 0 13px;
+	border-radius: 15px;
+	background: var(--light-gray);
+	color: var(--dark);
+	font-size: 13px;
 	font-weight: 600;
 	white-space: nowrap;
 	flex-shrink: 0;
