@@ -482,6 +482,7 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 	var labels = {"round2":"2.0","round2b":"2.1","round2c":"2.2","round2d":"2.3","round2e":"2.4","current":"1.0","option1":"1.1","option2":"1.2","match30":"3.0","option3":"1.3"};
 	var sections = {"round2":"br-round2","round2b":"br-round2","round2c":"br-round2","round2d":"br-round2","round2e":"br-round2","current":"br-round1","option1":"br-round1","option2":"br-round1","match30":"mf-round3","option3":"br-round1"};
 	var features = {"round2":"Booking Request Flow","round2b":"Booking Request Flow","round2c":"Booking Request Flow","round2d":"Booking Request Flow","round2e":"Booking Request Flow","current":"Booking Request Flow","option1":"Booking Request Flow","option2":"Booking Request Flow","match30":"Matches flow","option3":"Booking Request Flow"};
+	var featureKeys = {"round2":"booking","round2b":"booking","round2c":"booking","round2d":"booking","round2e":"booking","current":"booking","option1":"booking","option2":"booking","match30":"matches","option3":"booking"};
 	var aliases = {};
 	var wides = {"match30":1};
 	var launcher = document.getElementById('launcher');
@@ -512,23 +513,23 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 		});
 	});
 	var home = document.getElementById('home');
-	document.querySelectorAll('.feature-row').forEach(function (row) {
-		row.addEventListener('click', function () {
-			row.blur();
-			home.hidden = true;
-			document.querySelectorAll('.feature-page').forEach(function (pg) {
-				pg.hidden = pg.dataset.feature !== row.dataset.feature;
-			});
+
+	function showHome() {
+		home.hidden = false;
+		document.querySelectorAll('.feature-page').forEach(function (pg) {
+			pg.hidden = true;
 		});
-	});
-	document.querySelectorAll('.feature-back').forEach(function (btn) {
-		btn.addEventListener('click', function () {
-			home.hidden = false;
-			document.querySelectorAll('.feature-page').forEach(function (pg) {
-				pg.hidden = true;
-			});
+	}
+	function showFeature(key) {
+		var found = false;
+		document.querySelectorAll('.feature-page').forEach(function (pg) {
+			var match = pg.dataset.feature === key;
+			pg.hidden = !match;
+			if (match) found = true;
 		});
-	});
+		home.hidden = found;
+		return found;
+	}
 
 	function open(id) {
 		var src = aliases[id] || id;
@@ -563,10 +564,51 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 		stopComments();
 	}
 
-	document.querySelectorAll('[data-version]').forEach(function (el) {
-		el.addEventListener('click', function () { open(el.dataset.version); });
+	// The URL hash is the source of truth: '' = home, '#feature' = a
+	// feature page, '#feature/versionId' = a prototype. Refreshing (or
+	// sharing the link) restores the same view, and browser back/forward
+	// walk the history.
+	var openId = null;
+	function applyHash() {
+		var parts = decodeURIComponent(location.hash.replace(/^#\/?/, ''))
+			.split('/')
+			.filter(Boolean);
+		var vid = parts[1];
+		if (vid && featureKeys[vid] === parts[0] && data[aliases[vid] || vid]) {
+			showFeature(parts[0]);
+			if (sections[vid]) activateSection(sections[vid]);
+			openId = vid;
+			open(vid);
+			return;
+		}
+		if (viewer.classList.contains('active')) close();
+		openId = null;
+		if (!parts[0] || !showFeature(parts[0])) showHome();
+	}
+	function go(h) {
+		// Setting an identical hash fires no event, so render directly.
+		if (location.hash.replace(/^#/, '') === h) applyHash();
+		else location.hash = h;
+	}
+
+	document.querySelectorAll('.feature-row').forEach(function (row) {
+		row.addEventListener('click', function () {
+			row.blur();
+			go(row.dataset.feature);
+		});
 	});
-	document.getElementById('backBtn').addEventListener('click', close);
+	document.querySelectorAll('.feature-back').forEach(function (btn) {
+		btn.addEventListener('click', function () { go(''); });
+	});
+	document.querySelectorAll('[data-version]').forEach(function (el) {
+		el.addEventListener('click', function () {
+			go(featureKeys[el.dataset.version] + '/' + el.dataset.version);
+		});
+	});
+	document.getElementById('backBtn').addEventListener('click', function () {
+		go(openId ? featureKeys[openId] : '');
+	});
+	window.addEventListener('hashchange', applyHash);
 
 	/* ---------- screen-tied comments ---------- */
 	// Shared store via /api/comments (Vercel function + KV). When that isn't
@@ -852,5 +894,9 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 		clearInterval(screenTimer);
 		clearInterval(pollTimer);
 	}
+
+	// Restore the view the URL points at (must run last, once the comment
+	// panel's elements are wired up, since opening a prototype uses them).
+	applyHash();
 })();
 </script>

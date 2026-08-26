@@ -230,6 +230,16 @@ const aliases = JSON.stringify(
 	Object.fromEntries(VERSIONS.filter((v) => v.alias).map((v) => [v.id, v.alias])),
 );
 
+// version id → feature key, for hash routes like #booking/round2e
+const featureKeysById = JSON.stringify(
+	Object.fromEntries(
+		VERSIONS.map((v) => [
+			v.id,
+			SECTIONS.find((s) => s.key === v.section).feature,
+		]),
+	),
+);
+
 const wides = JSON.stringify(
 	Object.fromEntries(VERSIONS.filter((v) => v.wide).map((v) => [v.id, 1])),
 );
@@ -578,6 +588,7 @@ ${featurePages}
 	var labels = ${labels};
 	var sections = ${sectionsById};
 	var features = ${featuresById};
+	var featureKeys = ${featureKeysById};
 	var aliases = ${aliases};
 	var wides = ${wides};
 	var launcher = document.getElementById('launcher');
@@ -608,23 +619,23 @@ ${featurePages}
 		});
 	});
 	var home = document.getElementById('home');
-	document.querySelectorAll('.feature-row').forEach(function (row) {
-		row.addEventListener('click', function () {
-			row.blur();
-			home.hidden = true;
-			document.querySelectorAll('.feature-page').forEach(function (pg) {
-				pg.hidden = pg.dataset.feature !== row.dataset.feature;
-			});
+
+	function showHome() {
+		home.hidden = false;
+		document.querySelectorAll('.feature-page').forEach(function (pg) {
+			pg.hidden = true;
 		});
-	});
-	document.querySelectorAll('.feature-back').forEach(function (btn) {
-		btn.addEventListener('click', function () {
-			home.hidden = false;
-			document.querySelectorAll('.feature-page').forEach(function (pg) {
-				pg.hidden = true;
-			});
+	}
+	function showFeature(key) {
+		var found = false;
+		document.querySelectorAll('.feature-page').forEach(function (pg) {
+			var match = pg.dataset.feature === key;
+			pg.hidden = !match;
+			if (match) found = true;
 		});
-	});
+		home.hidden = found;
+		return found;
+	}
 
 	function open(id) {
 		var src = aliases[id] || id;
@@ -659,10 +670,51 @@ ${featurePages}
 		stopComments();
 	}
 
-	document.querySelectorAll('[data-version]').forEach(function (el) {
-		el.addEventListener('click', function () { open(el.dataset.version); });
+	// The URL hash is the source of truth: '' = home, '#feature' = a
+	// feature page, '#feature/versionId' = a prototype. Refreshing (or
+	// sharing the link) restores the same view, and browser back/forward
+	// walk the history.
+	var openId = null;
+	function applyHash() {
+		var parts = decodeURIComponent(location.hash.replace(/^#\\/?/, ''))
+			.split('/')
+			.filter(Boolean);
+		var vid = parts[1];
+		if (vid && featureKeys[vid] === parts[0] && data[aliases[vid] || vid]) {
+			showFeature(parts[0]);
+			if (sections[vid]) activateSection(sections[vid]);
+			openId = vid;
+			open(vid);
+			return;
+		}
+		if (viewer.classList.contains('active')) close();
+		openId = null;
+		if (!parts[0] || !showFeature(parts[0])) showHome();
+	}
+	function go(h) {
+		// Setting an identical hash fires no event, so render directly.
+		if (location.hash.replace(/^#/, '') === h) applyHash();
+		else location.hash = h;
+	}
+
+	document.querySelectorAll('.feature-row').forEach(function (row) {
+		row.addEventListener('click', function () {
+			row.blur();
+			go(row.dataset.feature);
+		});
 	});
-	document.getElementById('backBtn').addEventListener('click', close);
+	document.querySelectorAll('.feature-back').forEach(function (btn) {
+		btn.addEventListener('click', function () { go(''); });
+	});
+	document.querySelectorAll('[data-version]').forEach(function (el) {
+		el.addEventListener('click', function () {
+			go(featureKeys[el.dataset.version] + '/' + el.dataset.version);
+		});
+	});
+	document.getElementById('backBtn').addEventListener('click', function () {
+		go(openId ? featureKeys[openId] : '');
+	});
+	window.addEventListener('hashchange', applyHash);
 
 	/* ---------- screen-tied comments ---------- */
 	// Shared store via /api/comments (Vercel function + KV). When that isn't
@@ -948,6 +1000,10 @@ ${featurePages}
 		clearInterval(screenTimer);
 		clearInterval(pollTimer);
 	}
+
+	// Restore the view the URL points at (must run last, once the comment
+	// panel's elements are wired up, since opening a prototype uses them).
+	applyHash();
 })();
 </script>
 `;
