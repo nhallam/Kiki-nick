@@ -2098,7 +2098,9 @@ input {
 	height: 100%;
 	object-fit: cover;
 	border-radius: 20px;
-	box-shadow: 0 0 0 3px var(--white);
+	/* the deck is the one place a soft shadow stays — the stacked photos
+	   need it to separate */
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
 	transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.25, 1);
 	user-select: none;
 	-webkit-user-drag: none;
