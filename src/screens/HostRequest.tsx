@@ -240,6 +240,12 @@ export function HostRequestScreen({
 				{/* Who it's from — same subtitle as the Reserved screen's card */}
 				<GuestProfileCard guest={guest} subtitle={preview.datesValue} />
 
+				<p className="reserved-note">
+					{guest} has requested to book your place. Review the request,
+					then accept it to reserve their stay — or decline and we'll
+					let them know.
+				</p>
+
 				<ReviewSummaryCard
 					listing={listing}
 					hasDates
