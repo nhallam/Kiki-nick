@@ -5,6 +5,7 @@
 import React from 'react';
 
 import { Avatar, IconChevronLeft, IconChevronRight, StatusBar } from '../ui';
+import { guestState, useSwapState } from '../store';
 import { REQUEST_PREVIEWS } from './HostRequest';
 
 interface TripBookingRequest {
@@ -14,7 +15,7 @@ interface TripBookingRequest {
 	initial?: string;
 	sub: string;
 	/** new = untouched, inReview = opened but not actioned */
-	status?: 'new' | 'inReview' | 'declined';
+	status?: 'new' | 'inReview' | 'declined' | 'reserved' | 'confirmed';
 }
 
 export const TRIP_REQUESTS: TripBookingRequest[] = [
@@ -62,11 +63,20 @@ export const TRIP_REQUESTS: TripBookingRequest[] = [
 export function TripRequestsScreen({
 	onBack,
 	onOpenRequest,
+	onOpenReserved,
 }: {
 	onBack: () => void;
 	/** Open a request's preview screen; only requesters with preview data */
 	onOpenRequest: (guest: string) => void;
+	/** Open the reserved booking's checklist */
+	onOpenReserved: (guest: string) => void;
 }) {
+	const swap = useSwapState();
+	// Melissa's and Aisha's statuses are live (the host acts on them);
+	// the rest keep their static state.
+	const statusOf = (r: TripBookingRequest) =>
+		REQUEST_PREVIEWS[r.name] ? guestState(swap, r.name) : r.status;
+
 	return (
 		<div className="screen">
 			<StatusBar time="12:13" />
@@ -95,31 +105,40 @@ export function TripRequestsScreen({
 					</h2>
 				</div>
 
-				{TRIP_REQUESTS.map((r) => (
-					<button
-						key={r.id}
-						className="req-row"
-						onClick={
-							REQUEST_PREVIEWS[r.name] ? () => onOpenRequest(r.name) : undefined
-						}
-					>
-						<Avatar variant={r.avatar} initial={r.initial} size={44} />
-						<span className="tr-body">
-							<span className="tr-title">
-								{r.name}
-								{r.status === 'new' && <span className="new-badge">New</span>}
-								{r.status === 'inReview' && (
-									<span className="review-badge">In review</span>
-								)}
-								{r.status === 'declined' && (
-									<span className="declined-badge">Declined</span>
-								)}
+				{TRIP_REQUESTS.map((r) => {
+					const status = statusOf(r);
+					const onOpen =
+						status === 'reserved' || status === 'confirmed'
+							? () => onOpenReserved(r.name)
+							: status === 'new' && REQUEST_PREVIEWS[r.name]
+								? () => onOpenRequest(r.name)
+								: undefined;
+					return (
+						<button key={r.id} className="req-row" onClick={onOpen}>
+							<Avatar variant={r.avatar} initial={r.initial} size={44} />
+							<span className="tr-body">
+								<span className="tr-title">
+									{r.name}
+									{status === 'new' && <span className="new-badge">New</span>}
+									{status === 'inReview' && (
+										<span className="review-badge">In review</span>
+									)}
+									{status === 'reserved' && (
+										<span className="review-badge">Reserved</span>
+									)}
+									{status === 'confirmed' && (
+										<span className="confirmed-badge">Confirmed</span>
+									)}
+									{status === 'declined' && (
+										<span className="declined-badge">Declined</span>
+									)}
+								</span>
+								<span className="tr-sub">{r.sub}</span>
 							</span>
-							<span className="tr-sub">{r.sub}</span>
-						</span>
-						<IconChevronRight size={18} />
-					</button>
-				))}
+							<IconChevronRight size={18} />
+						</button>
+					);
+				})}
 			</div>
 		</div>
 	);

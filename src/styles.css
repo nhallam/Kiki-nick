@@ -1974,6 +1974,153 @@ input {
 	padding: 1px 8px;
 	white-space: nowrap;
 }
+.confirmed-badge {
+	background: var(--primary-tint);
+	border: 1px solid var(--primary-strong);
+	color: var(--primary-strong);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	border-radius: 9px;
+	padding: 1px 8px;
+	white-space: nowrap;
+}
+
+/* Matches section entry — a settled req-row, not a button */
+.req-row.match {
+	cursor: default;
+}
+
+/* ---------- Host actions on a request ---------- */
+
+.request-actions {
+	display: flex;
+	gap: 10px;
+}
+.request-actions .btn-primary {
+	flex: 1.4;
+}
+.btn-decline {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 15px;
+	border: 1.5px solid var(--border-medium);
+	border-radius: 28px;
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--error);
+	background: var(--white);
+}
+.footer-note {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--gray);
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+/* Small centred confirm dialog over the sheet overlay */
+.sheet-overlay .dialog-card {
+	background: var(--white);
+	border-radius: 18px;
+	padding: 22px 20px;
+	margin: auto 24px; /* centres vertically in the column overlay */
+	width: calc(100% - 48px);
+}
+.dialog-title {
+	font-size: 17px;
+	font-weight: 700;
+	margin-bottom: 6px;
+}
+.dialog-sub {
+	font-size: 14px;
+	color: var(--gray);
+	line-height: 1.45;
+	margin-bottom: 18px;
+}
+.dialog-actions {
+	display: flex;
+	gap: 10px;
+}
+.btn-dialog-cancel,
+.btn-dialog-danger {
+	flex: 1;
+	padding: 12px;
+	border-radius: 22px;
+	font-size: 15px;
+	font-weight: 600;
+}
+.btn-dialog-cancel {
+	background: var(--light-gray);
+	color: var(--dark);
+}
+.btn-dialog-danger {
+	background: var(--error);
+	color: var(--white);
+}
+
+/* ---------- Reserved checklist ---------- */
+
+.reserved-note {
+	font-size: 14px;
+	color: var(--gray);
+	line-height: 1.5;
+	margin: 14px 2px 16px;
+}
+.check-card {
+	border: 1px solid var(--border-light);
+	border-radius: 14px;
+	background: var(--white);
+}
+.check-item {
+	padding: 14px 16px;
+}
+.check-item + .check-item {
+	border-top: 1px solid var(--border-light);
+}
+.check-title {
+	font-size: 15px;
+	font-weight: 700;
+	margin-bottom: 8px;
+}
+.check-line {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 14px;
+	font-weight: 600;
+	min-height: 30px;
+}
+.check-line.done {
+	color: var(--primary-strong);
+}
+.check-line.pending-line {
+	justify-content: space-between;
+	color: var(--gray);
+}
+.tick {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 19px;
+	height: 19px;
+	border-radius: 50%;
+	background: var(--primary-strong);
+	color: var(--white);
+	flex-shrink: 0;
+}
+.sign-btn {
+	background: var(--primary-strong);
+	color: var(--white);
+	font-size: 13.5px;
+	font-weight: 700;
+	border-radius: 16px;
+	padding: 7px 14px;
+	flex-shrink: 0;
+}
+
 .declined-badge {
 	background: var(--light-gray);
 	border: 1px solid var(--border-medium);

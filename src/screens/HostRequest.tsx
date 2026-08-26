@@ -3,10 +3,11 @@
  * summary-card UI as the guest-side booking request (2.4). One entry per
  * requester who can be previewed from the trip's request list.
  */
-import React from 'react';
+import React, { useState } from 'react';
 
 import { LISTINGS } from '../data';
 import { Avatar, IconChevronLeft, StatusBar } from '../ui';
+import { guestState, setGuestState, useSwapState } from '../store';
 import { ReviewSummaryCard } from './ReviewRequest';
 
 interface RequestPreview {
@@ -55,14 +56,26 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 export function HostRequestScreen({
 	guest,
 	onBack,
+	onDeclined,
+	onReserved,
 }: {
 	guest: string;
 	onBack: () => void;
+	onDeclined: () => void;
+	onReserved: () => void;
 }) {
 	const listing = LISTINGS.find((l) => l.listerName === 'Ryan')!;
 	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
 	const rentTotal = preview.nights * listing.nightlyRate;
 	const total = rentTotal + listing.securityDeposit;
+
+	const swap = useSwapState();
+	const [confirmDecline, setConfirmDecline] = useState(false);
+	// Only one request can be reserved at a time for these dates.
+	const otherReserved =
+		['Melissa', 'Aisha'].some(
+			(g) => g !== guest && guestState(swap, g) !== 'new' && guestState(swap, g) !== 'declined',
+		);
 
 	return (
 		<div className="screen">
@@ -108,6 +121,61 @@ export function HostRequestScreen({
 					questions={preview.questions}
 				/>
 			</div>
+
+			<div className="form-footer">
+				{otherReserved && (
+					<div className="footer-note">
+						You already have a reserved guest for these dates.
+					</div>
+				)}
+				<div className="request-actions">
+					<button
+						className="btn-decline"
+						onClick={() => setConfirmDecline(true)}
+					>
+						Decline
+					</button>
+					<button
+						className="btn-primary"
+						disabled={otherReserved}
+						onClick={() => {
+							setGuestState(guest, 'reserved');
+							onReserved();
+						}}
+					>
+						Accept and Reserve
+					</button>
+				</div>
+			</div>
+
+			{confirmDecline && (
+				<div className="sheet-overlay" onClick={() => setConfirmDecline(false)}>
+					<div className="dialog-card" onClick={(e) => e.stopPropagation()}>
+						<div className="dialog-title">Decline {guest}'s request?</div>
+						<div className="dialog-sub">
+							We'll send {guest} a notification to let them know their
+							request wasn't successful.
+						</div>
+						<div className="dialog-actions">
+							<button
+								className="btn-dialog-cancel"
+								onClick={() => setConfirmDecline(false)}
+							>
+								Cancel
+							</button>
+							<button
+								className="btn-dialog-danger"
+								onClick={() => {
+									setGuestState(guest, 'declined');
+									onDeclined();
+								}}
+							>
+								Decline
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }

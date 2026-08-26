@@ -6,7 +6,8 @@
 import React, { useState } from 'react';
 
 import { SentRequest } from '../data';
-import { IconAddCircle, StatusBar } from '../ui';
+import { Avatar, IconAddCircle, StatusBar } from '../ui';
+import { guestState, useSwapState } from '../store';
 import { TripRequestCard } from './Rank';
 import { TabBar } from './TabBar';
 import { TRIP_REQUESTS } from './TripRequests';
@@ -23,24 +24,12 @@ interface AwayTrip {
 }
 
 /* Ryan's trips: the same windows as his listing's Available Dates. The
-   count only surfaces requests still marked New — opened or declined
-   ones don't badge. */
+   Aug trip's New count is computed live in TripsScreen — the host acting
+   on requests moves them out of New. */
 const UPCOMING_TRIPS: AwayTrip[] = [
-	{
-		id: 1,
-		nights: 3,
-		nightlyRate: 67,
-		dates: '26 - 29 Aug',
-		newRequests: TRIP_REQUESTS.filter((r) => r.status === 'new').length,
-	},
+	{ id: 1, nights: 3, nightlyRate: 67, dates: '26 - 29 Aug' },
 	{ id: 4, nights: 7, nightlyRate: 67, dates: '12 - 19 Sep' },
 ];
-
-/** What the Hosting tab surfaces at the top level */
-const HOSTING_NEW_REQUESTS = UPCOMING_TRIPS.reduce(
-	(n, t) => n + (t.newRequests ?? 0),
-	0,
-);
 
 const PAST_TRIPS: AwayTrip[] = [
 	{ id: 2, nights: 10, nightlyRate: 66, dates: '20 - 30 Jul' },
@@ -149,6 +138,22 @@ export function TripsScreen({
 }) {
 	const [tab, setTab] = useState<TripsTab>(initialTab ?? 'staying');
 
+	const swap = useSwapState();
+	// Requests still New for the Aug trip (Tash/Sara/Marco are settled).
+	const newCount = TRIP_REQUESTS.filter(
+		(r) => guestState(swap, r.name) === 'new' && (r.name === 'Melissa' || r.name === 'Aisha'),
+	).length;
+	const matched = swap.melissa === 'confirmed';
+
+	// Melissa's own phone: her request card tracks what Ryan does with it.
+	const stayingStatus = (r: SentRequest): string => {
+		if (r.listingId !== 2) return r.status;
+		if (swap.melissa === 'reserved') return 'Reserved - complete your steps';
+		if (swap.melissa === 'confirmed') return 'Confirmed';
+		if (swap.melissa === 'declined') return 'Declined';
+		return r.status;
+	};
+
 	return (
 		<div className="screen">
 			<StatusBar time="12:13" />
@@ -166,8 +171,8 @@ export function TripsScreen({
 						onClick={() => setTab('hosting')}
 					>
 						Hosting
-						{canHost && HOSTING_NEW_REQUESTS > 0 && (
-							<span className="count-badge">{HOSTING_NEW_REQUESTS}</span>
+						{canHost && newCount > 0 && (
+							<span className="count-badge">{newCount}</span>
 						)}
 					</button>
 				</div>
@@ -180,12 +185,25 @@ export function TripsScreen({
 							<div className="trips-section-head">
 								<h2 className="trips-section-title">Matches</h2>
 							</div>
-							<div className="empty-card">
-								<div className="empty-title">You don't have any matches yet.</div>
-								<div className="empty-sub">
-									When you have a match, you'll be able to see it here.
+							{matched ? (
+								<div className="req-row match">
+									<Avatar variant="ryan" size={44} flag="🇳🇿" />
+									<span className="tr-body">
+										<span className="tr-title">
+											Ryan's Apartment
+											<span className="confirmed-badge">Confirmed</span>
+										</span>
+										<span className="tr-sub">26 - 29 Aug · 3 nights · Hackney, London</span>
+									</span>
 								</div>
-							</div>
+							) : (
+								<div className="empty-card">
+									<div className="empty-title">You don't have any matches yet.</div>
+									<div className="empty-sub">
+										When you have a match, you'll be able to see it here.
+									</div>
+								</div>
+							)}
 						</div>
 
 						<div className="trips-section">
@@ -202,7 +220,7 @@ export function TripsScreen({
 									{requests.map((r) => (
 										<div key={r.id} className="rank-row">
 											<TripRequestCard
-												request={r}
+												request={{ ...r, status: stayingStatus(r) }}
 												onOpen={
 													r.listingId && onOpenRequestListing
 														? () => onOpenRequestListing(r.listingId!)
@@ -241,12 +259,25 @@ export function TripsScreen({
 							<div className="trips-section-head">
 								<h2 className="trips-section-title">Matches</h2>
 							</div>
-							<div className="empty-card">
-								<div className="empty-title">You don't have any matches yet.</div>
-								<div className="empty-sub">
-									When you have a match, you'll be able to see it here.
+							{matched ? (
+								<div className="req-row match">
+									<Avatar variant="melissa" size={44} flag="🇦🇺" />
+									<span className="tr-body">
+										<span className="tr-title">
+											Melissa
+											<span className="confirmed-badge">Confirmed</span>
+										</span>
+										<span className="tr-sub">26 - 29 Aug · 3 nights · £201 + deposit</span>
+									</span>
 								</div>
-							</div>
+							) : (
+								<div className="empty-card">
+									<div className="empty-title">You don't have any matches yet.</div>
+									<div className="empty-sub">
+										When you have a match, you'll be able to see it here.
+									</div>
+								</div>
+							)}
 						</div>
 
 						<div className="trips-section">
@@ -259,8 +290,10 @@ export function TripsScreen({
 							{UPCOMING_TRIPS.map((t) => (
 								<AwayTripCard
 									key={t.id}
-									trip={t}
-									onOpenTrip={t.newRequests ? onOpenTrip : undefined}
+									trip={
+										t.id === 1 ? { ...t, newRequests: newCount } : t
+									}
+									onOpenTrip={t.id === 1 ? onOpenTrip : undefined}
 								/>
 							))}
 							<div className="trips-subsection-title">Past trips</div>

@@ -15,6 +15,7 @@ import { SentScreen } from './screens/Sent';
 import { TripsScreen } from './screens/Trips';
 import { TripRequestsScreen } from './screens/TripRequests';
 import { HostRequestScreen } from './screens/HostRequest';
+import { ReservedScreen } from './screens/Reserved';
 
 type Route =
 	| { name: 'explore' }
@@ -24,7 +25,8 @@ type Route =
 	| { name: 'rank'; requests: SentRequest[]; newRequest: SentRequest }
 	| { name: 'trips'; requests: SentRequest[]; showSuccess: boolean; newRequest: SentRequest }
 	| { name: 'tripRequests' }
-	| { name: 'hostRequest'; guest: string };
+	| { name: 'hostRequest'; guest: string }
+	| { name: 'reserved'; guest: string };
 
 export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 	// The matching prototype starts both phones on Trips, each on its own
@@ -161,6 +163,7 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 				<TripRequestsScreen
 					onBack={() => setRoute(tripsRoute())}
 					onOpenRequest={(guest) => setRoute({ name: 'hostRequest', guest })}
+					onOpenReserved={(guest) => setRoute({ name: 'reserved', guest })}
 				/>
 			);
 		case 'hostRequest':
@@ -168,6 +171,16 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 				<HostRequestScreen
 					guest={route.guest}
 					onBack={() => setRoute({ name: 'tripRequests' })}
+					onDeclined={() => setRoute({ name: 'tripRequests' })}
+					onReserved={() => setRoute({ name: 'reserved', guest: route.guest })}
+				/>
+			);
+		case 'reserved':
+			return (
+				<ReservedScreen
+					guest={route.guest}
+					onBack={() => setRoute({ name: 'tripRequests' })}
+					onConfirmed={() => setRoute(tripsRoute())}
 				/>
 			);
 	}
