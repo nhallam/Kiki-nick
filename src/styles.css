@@ -2328,7 +2328,6 @@ input {
 }
 .check-line.tappable {
 	width: 100%;
-	font: inherit;
 	text-align: left;
 	border-radius: 8px;
 }
