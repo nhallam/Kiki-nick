@@ -24,7 +24,7 @@ type Route =
 	| { name: 'rank'; requests: SentRequest[]; newRequest: SentRequest }
 	| { name: 'trips'; requests: SentRequest[]; showSuccess: boolean; newRequest: SentRequest }
 	| { name: 'tripRequests' }
-	| { name: 'hostRequest' };
+	| { name: 'hostRequest'; guest: string };
 
 export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 	// The matching prototype starts both phones on Trips, each on its own
@@ -160,12 +160,15 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 			return (
 				<TripRequestsScreen
 					onBack={() => setRoute(tripsRoute())}
-					onOpenRequest={() => setRoute({ name: 'hostRequest' })}
+					onOpenRequest={(guest) => setRoute({ name: 'hostRequest', guest })}
 				/>
 			);
 		case 'hostRequest':
 			return (
-				<HostRequestScreen onBack={() => setRoute({ name: 'tripRequests' })} />
+				<HostRequestScreen
+					guest={route.guest}
+					onBack={() => setRoute({ name: 'tripRequests' })}
+				/>
 			);
 	}
 }

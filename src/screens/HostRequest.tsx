@@ -1,23 +1,67 @@
 /**
- * Host's view of an incoming booking request — Melissa's request for
- * Ryan's August window, laid out with the same summary-card UI as the
- * guest-side booking request (2.4).
+ * Host's view of an incoming booking request, laid out with the same
+ * summary-card UI as the guest-side booking request (2.4). One entry per
+ * requester who can be previewed from the trip's request list.
  */
 import React from 'react';
 
-import { LISTINGS, MY_PROFILE } from '../data';
+import { LISTINGS } from '../data';
 import { Avatar, IconChevronLeft, StatusBar } from '../ui';
 import { ReviewSummaryCard } from './ReviewRequest';
 
-const INTRO =
-	"Hi Ryan! I'm Melissa, a marketing manager from Sydney over in London for a work sprint. I'm tidy, quiet, and out most of the day — your balcony sold me. Happy to answer anything before you decide.";
-const QUESTIONS =
-	'Is it okay to use the balcony in the evenings, and is there somewhere to lock a bike?';
+interface RequestPreview {
+	avatar: string;
+	initial?: string;
+	flag: string;
+	occupation: string;
+	age: number;
+	nights: number;
+	datesValue: string;
+	guestsLabel: string;
+	intro: string;
+	questions: string;
+}
 
-export function HostRequestScreen({ onBack }: { onBack: () => void }) {
+export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
+	Melissa: {
+		avatar: 'melissa',
+		flag: '🇦🇺',
+		occupation: 'Marketing Manager',
+		age: 28,
+		nights: 3,
+		datesValue: '26th Aug – 29th Aug 2026 · 3 nights',
+		guestsLabel: 'Just Melissa',
+		intro:
+			"Hi Ryan! I'm Melissa, a marketing manager from Sydney over in London for a work sprint. I'm tidy, quiet, and out most of the day — your balcony sold me. Happy to answer anything before you decide.",
+		questions:
+			'Is it okay to use the balcony in the evenings, and is there somewhere to lock a bike?',
+	},
+	Aisha: {
+		avatar: 'aisha',
+		initial: 'A',
+		flag: '🇬🇧',
+		occupation: 'Product Designer',
+		age: 29,
+		nights: 2,
+		datesValue: '27th Aug – 29th Aug 2026 · 2 nights',
+		guestsLabel: 'Just Aisha',
+		intro:
+			"Hi Ryan! I'm Aisha, a product designer from Manchester in London for a client workshop. I keep things spotless and mostly need a quiet desk in the evenings — your place looks perfect for it.",
+		questions:
+			'Would an early check-in on the 27th be possible? And is the wifi okay for video calls?',
+	},
+};
+
+export function HostRequestScreen({
+	guest,
+	onBack,
+}: {
+	guest: string;
+	onBack: () => void;
+}) {
 	const listing = LISTINGS.find((l) => l.listerName === 'Ryan')!;
-	const nights = 3;
-	const rentTotal = nights * listing.nightlyRate;
+	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
+	const rentTotal = preview.nights * listing.nightlyRate;
 	const total = rentTotal + listing.securityDeposit;
 
 	return (
@@ -37,12 +81,17 @@ export function HostRequestScreen({ onBack }: { onBack: () => void }) {
 			<div className="form-content" style={{ paddingTop: 16 }}>
 				{/* Who it's from */}
 				<div className="profile-card">
-					<Avatar variant="melissa" size={44} flag={MY_PROFILE.nationalityFlag} />
+					<Avatar
+						variant={preview.avatar}
+						initial={preview.initial}
+						size={44}
+						flag={preview.flag}
+					/>
 					<span className="info">
 						{/* No inline flag — the avatar already carries one. */}
-						<span className="name-row">{MY_PROFILE.name}</span>
+						<span className="name-row">{guest}</span>
 						<span className="subtitle">
-							{MY_PROFILE.occupation}, {MY_PROFILE.age}
+							{preview.occupation}, {preview.age}
 						</span>
 					</span>
 				</div>
@@ -50,13 +99,13 @@ export function HostRequestScreen({ onBack }: { onBack: () => void }) {
 				<ReviewSummaryCard
 					listing={listing}
 					hasDates
-					datesValue={`26th Aug – 29th Aug 2026 · ${nights} nights`}
-					guestsLabel="Just Melissa"
-					nights={nights}
+					datesValue={preview.datesValue}
+					guestsLabel={preview.guestsLabel}
+					nights={preview.nights}
 					rentTotal={rentTotal}
 					total={total}
-					intro={INTRO}
-					questions={QUESTIONS}
+					intro={preview.intro}
+					questions={preview.questions}
 				/>
 			</div>
 		</div>

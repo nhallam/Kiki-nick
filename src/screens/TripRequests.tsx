@@ -5,6 +5,7 @@
 import React from 'react';
 
 import { Avatar, IconChevronLeft, IconChevronRight, StatusBar } from '../ui';
+import { REQUEST_PREVIEWS } from './HostRequest';
 
 interface TripBookingRequest {
 	id: number;
@@ -63,8 +64,8 @@ export function TripRequestsScreen({
 	onOpenRequest,
 }: {
 	onBack: () => void;
-	/** Only Melissa's request has a detail screen in this prototype */
-	onOpenRequest: () => void;
+	/** Open a request's preview screen; only requesters with preview data */
+	onOpenRequest: (guest: string) => void;
 }) {
 	return (
 		<div className="screen">
@@ -98,7 +99,9 @@ export function TripRequestsScreen({
 					<button
 						key={r.id}
 						className="req-row"
-						onClick={r.name === 'Melissa' ? onOpenRequest : undefined}
+						onClick={
+							REQUEST_PREVIEWS[r.name] ? () => onOpenRequest(r.name) : undefined
+						}
 					>
 						<Avatar variant={r.avatar} initial={r.initial} size={44} />
 						<span className="tr-body">
