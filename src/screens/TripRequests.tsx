@@ -12,7 +12,7 @@ interface TripBookingRequest {
 	avatar: string;
 	initial?: string;
 	sub: string;
-	isNew?: boolean;
+	status?: 'new' | 'declined';
 }
 
 const TRIP_REQUESTS: TripBookingRequest[] = [
@@ -21,21 +21,39 @@ const TRIP_REQUESTS: TripBookingRequest[] = [
 		name: 'Melissa',
 		avatar: 'melissa',
 		sub: 'Individual · 26 - 29 Aug · £201 + deposit',
-		isNew: true,
+		status: 'new',
 	},
 	{
 		id: 2,
+		name: 'Aisha',
+		avatar: 'aisha',
+		initial: 'A',
+		sub: 'Individual · 27 - 29 Aug · £134 + deposit',
+		status: 'new',
+	},
+	{
+		id: 3,
 		name: 'Tash',
 		avatar: 'tash',
 		initial: 'T',
 		sub: 'Couple · 26 - 29 Aug · £201 + deposit',
+		status: 'declined',
 	},
 	{
-		id: 3,
+		id: 4,
 		name: 'Sara',
 		avatar: 'sara',
 		initial: 'S',
 		sub: 'Individual · 26 - 28 Aug · £134 + deposit',
+		status: 'declined',
+	},
+	{
+		id: 5,
+		name: 'Marco',
+		avatar: 'marco',
+		initial: 'M',
+		sub: 'Couple · 26 - 29 Aug · £201 + deposit',
+		status: 'declined',
 	},
 ];
 
@@ -71,21 +89,24 @@ export function TripRequestsScreen({
 
 				<div className="trips-section-head" style={{ marginTop: 22 }}>
 					<h2 className="trips-section-title">
-						Booking requests <span className="req-count">3</span>
+						Booking requests <span className="req-count">{TRIP_REQUESTS.length}</span>
 					</h2>
 				</div>
 
 				{TRIP_REQUESTS.map((r) => (
 					<button
 						key={r.id}
-						className={`req-row${r.isNew ? ' new' : ''}`}
-						onClick={r.isNew ? onOpenRequest : undefined}
+						className="req-row"
+						onClick={r.name === 'Melissa' ? onOpenRequest : undefined}
 					>
 						<Avatar variant={r.avatar} initial={r.initial} size={44} />
 						<span className="tr-body">
 							<span className="tr-title">
 								{r.name}
-								{r.isNew && <span className="new-badge">New</span>}
+								{r.status === 'new' && <span className="new-badge">New</span>}
+								{r.status === 'declined' && (
+									<span className="declined-badge">Declined</span>
+								)}
 							</span>
 							<span className="tr-sub">{r.sub}</span>
 						</span>

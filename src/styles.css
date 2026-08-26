@@ -1879,12 +1879,12 @@ input {
 	gap: 5px;
 	margin-top: 10px;
 	padding: 5px 8px 5px 12px;
-	background: var(--pending-tint);
-	border: 1px solid var(--pending);
+	background: var(--primary-tint);
+	border: 1px solid var(--primary-strong);
 	border-radius: 14px;
 	font-size: 13px;
 	font-weight: 700;
-	color: var(--pending);
+	color: var(--primary-strong);
 }
 .away-requests > svg {
 	flex-shrink: 0;
@@ -1931,10 +1931,6 @@ input {
 	text-align: left;
 	color: var(--dark);
 }
-.req-row.new {
-	background: var(--pending-tint);
-	border-color: var(--pending);
-}
 .req-row .tr-body {
 	flex: 1;
 	min-width: 0;
@@ -1954,24 +1950,28 @@ input {
 	color: var(--gray);
 	font-weight: 600;
 }
-.req-row.new .tr-sub {
-	color: var(--pending);
-}
 .req-row > svg {
 	color: var(--gray);
 	flex-shrink: 0;
 }
-.req-row.new > svg {
-	color: var(--pending);
-}
 .new-badge {
-	background: var(--pending);
+	background: var(--primary-strong);
 	color: var(--white);
 	font-size: 11px;
 	font-weight: 700;
 	letter-spacing: 0.03em;
 	border-radius: 9px;
 	padding: 2px 8px;
+}
+.declined-badge {
+	background: var(--light-gray);
+	border: 1px solid var(--border-medium);
+	color: var(--gray);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	border-radius: 9px;
+	padding: 1px 8px;
 }
 .away-thumb {
 	width: 64px;

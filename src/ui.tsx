@@ -279,6 +279,8 @@ const AVATAR_GRADIENTS: Record<string, string> = {
 	tash: 'linear-gradient(135deg, #d9a066 0%, #a3683a 100%)',
 	jake: 'linear-gradient(135deg, #2f6b3f 0%, #79b06a 100%)',
 	sara: 'linear-gradient(135deg, #e8e4de 0%, #b9b1a5 100%)',
+	aisha: 'linear-gradient(135deg, #7ea1d6 0%, #4a6ba8 100%)',
+	marco: 'linear-gradient(135deg, #c98bb8 0%, #8f5480 100%)',
 	generic: 'linear-gradient(135deg, #9ca3af 0%, #6b7280 100%)',
 };
 
