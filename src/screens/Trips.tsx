@@ -31,7 +31,7 @@ const UPCOMING_TRIPS: AwayTrip[] = [
 		nightlyRate: 67,
 		dates: '26 - 29 Aug',
 		pending: true,
-		newRequests: 2,
+		newRequests: 1,
 	},
 	{ id: 4, nights: 7, nightlyRate: 67, dates: '12 - 19 Sep' },
 ];

@@ -12,7 +12,8 @@ interface TripBookingRequest {
 	avatar: string;
 	initial?: string;
 	sub: string;
-	status?: 'new' | 'declined';
+	/** new = untouched, inReview = opened but not actioned */
+	status?: 'new' | 'inReview' | 'declined';
 }
 
 const TRIP_REQUESTS: TripBookingRequest[] = [
@@ -21,7 +22,7 @@ const TRIP_REQUESTS: TripBookingRequest[] = [
 		name: 'Melissa',
 		avatar: 'melissa',
 		sub: 'Individual · 26 - 29 Aug · £201 + deposit',
-		status: 'new',
+		status: 'inReview',
 	},
 	{
 		id: 2,
@@ -104,6 +105,9 @@ export function TripRequestsScreen({
 							<span className="tr-title">
 								{r.name}
 								{r.status === 'new' && <span className="new-badge">New</span>}
+								{r.status === 'inReview' && (
+									<span className="review-badge">In review</span>
+								)}
 								{r.status === 'declined' && (
 									<span className="declined-badge">Declined</span>
 								)}
