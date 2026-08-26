@@ -2264,6 +2264,10 @@ input {
 	gap: 8px;
 	flex-shrink: 0;
 }
+.away-actions.horizontal {
+	flex-direction: row;
+	margin-left: auto;
+}
 .away-action {
 	width: 34px;
 	height: 34px;

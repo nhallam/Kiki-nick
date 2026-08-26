@@ -36,37 +36,6 @@ const PAST_TRIPS: AwayTrip[] = [
 	{ id: 3, nights: 13, nightlyRate: 45, dates: '09 - 22 Aug' },
 ];
 
-const IconPencil = ({ size = 18 }: { size?: number }) => (
-	<svg
-		width={size}
-		height={size}
-		viewBox="0 0 24 24"
-		fill="none"
-		stroke="currentColor"
-		strokeWidth="2"
-		strokeLinecap="round"
-		strokeLinejoin="round"
-	>
-		<path d="M17 3a2.8 2.8 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-	</svg>
-);
-
-const IconTrash = ({ size = 18 }: { size?: number }) => (
-	<svg
-		width={size}
-		height={size}
-		viewBox="0 0 24 24"
-		fill="none"
-		stroke="currentColor"
-		strokeWidth="2"
-		strokeLinecap="round"
-		strokeLinejoin="round"
-	>
-		<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" />
-		<path d="M10 11v6M14 11v6" />
-	</svg>
-);
-
 function AwayTripCard({
 	trip,
 	onOpenTrip,
@@ -94,22 +63,6 @@ function AwayTripCard({
 						{trip.nights} nights @ £{trip.nightlyRate}/night
 					</div>
 					<div className="away-meta">{trip.dates}</div>
-				</div>
-				<div className="away-actions">
-					<button
-						className="away-action"
-						aria-label="Edit trip"
-						onClick={(e) => e.stopPropagation()}
-					>
-						<IconPencil />
-					</button>
-					<button
-						className="away-action"
-						aria-label="Delete trip"
-						onClick={(e) => e.stopPropagation()}
-					>
-						<IconTrash />
-					</button>
 				</div>
 			</div>
 		</div>
