@@ -14,7 +14,13 @@ export interface SwapState {
 	hostSigned: boolean;
 }
 
-let state: SwapState = { melissa: 'new', aisha: 'new', hostSigned: false };
+const INITIAL_STATE: SwapState = {
+	melissa: 'new',
+	aisha: 'new',
+	hostSigned: false,
+};
+
+let state: SwapState = INITIAL_STATE;
 
 const listeners = new Set<() => void>();
 const subscribe = (l: () => void) => {
@@ -28,6 +34,12 @@ export const getSwapState = () => state;
 
 export function setSwapState(patch: Partial<SwapState>) {
 	state = { ...state, ...patch };
+	listeners.forEach((l) => l());
+}
+
+/** Back to the demo's starting point (used by the Restart button). */
+export function resetSwapState() {
+	state = INITIAL_STATE;
 	listeners.forEach((l) => l());
 }
 

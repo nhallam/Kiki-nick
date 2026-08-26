@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom/client';
 
 import App from './App';
 import { HOST_PROFILE, MY_PROFILE } from './data';
+import { resetSwapState } from './store';
 import { Avatar, SelfAvatarContext } from './ui';
 import './styles.css';
 
@@ -17,6 +18,13 @@ const DUO_H = 830 + 84; // phone + label row + breathing room
 
 function DuoStage() {
 	const [scale, setScale] = useState(1);
+	// Bumping the run remounts both phones, taking every screen back to
+	// its start; the shared swap store is reset alongside.
+	const [run, setRun] = useState(0);
+	const restart = () => {
+		resetSwapState();
+		setRun((r) => r + 1);
+	};
 	const stageRef = useRef<HTMLDivElement>(null);
 
 	useLayoutEffect(() => {
@@ -38,6 +46,23 @@ function DuoStage() {
 			className="duo-viewport"
 			style={{ width: DUO_W * scale, height: DUO_H * scale }}
 		>
+			<button className="restart-btn" onClick={restart}>
+				<svg
+					width="14"
+					height="14"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="2.4"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					aria-hidden
+				>
+					<path d="M3 12a9 9 0 1 0 3-6.7" />
+					<polyline points="3 4 3 9 8 9" />
+				</svg>
+				Restart demo
+			</button>
 			<div
 				ref={stageRef}
 				className="duo"
@@ -53,7 +78,7 @@ function DuoStage() {
 					</div>
 					<div className="phone">
 						<SelfAvatarContext.Provider value="melissa">
-							<App persona="guest" />
+							<App key={run} persona="guest" />
 						</SelfAvatarContext.Provider>
 					</div>
 				</div>
@@ -67,7 +92,7 @@ function DuoStage() {
 					</div>
 					<div className="phone">
 						<SelfAvatarContext.Provider value="ryan">
-							<App persona="host" />
+							<App key={run} persona="host" />
 						</SelfAvatarContext.Provider>
 					</div>
 				</div>

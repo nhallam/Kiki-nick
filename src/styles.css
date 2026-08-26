@@ -109,6 +109,28 @@ input {
 	gap: 48px;
 	transform-origin: top left;
 }
+
+/* Resets both phones and the shared swap state — for demo walkthroughs */
+.restart-btn {
+	position: fixed;
+	top: 14px;
+	right: 14px;
+	z-index: 40;
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 8px 14px;
+	border-radius: 18px;
+	background: var(--white);
+	border: 1px solid var(--border-medium);
+	color: var(--dark);
+	font-size: 13px;
+	font-weight: 700;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.restart-btn:hover {
+	background: var(--light-gray);
+}
 .duo-col {
 	display: flex;
 	flex-direction: column;
