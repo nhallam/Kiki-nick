@@ -34,17 +34,14 @@ export function ReservedScreen({
 	return (
 		<div className="screen">
 			<StatusBar time="12:13" />
+			{/* The stepper is the heading — it names the stage and shows progress */}
 			<div className="form-header review-head with-back">
 				<button className="icon-btn review-back" onClick={onBack} aria-label="Back">
 					<IconChevronLeft size={26} />
 				</button>
-				<span className="review-head-titles">
-					<span className="review-head-title">Reserved</span>
-				</span>
+				<HostFlowSteps current={2} />
 				<span style={{ width: 44 }} />
 			</div>
-
-			<HostFlowSteps current={2} />
 
 			<div className="form-content" style={{ paddingTop: 16 }}>
 				<GuestProfileCard guest={guest} subtitle={preview.datesValue} />

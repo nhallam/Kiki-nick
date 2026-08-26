@@ -257,18 +257,14 @@ export function HostRequestScreen({
 	return (
 		<div className="screen">
 			<StatusBar time="12:13" />
+			{/* The stepper is the heading — it names the stage and shows progress */}
 			<div className="form-header review-head with-back">
 				<button className="icon-btn review-back" onClick={onBack} aria-label="Back">
 					<IconChevronLeft size={26} />
 				</button>
-				<span className="review-head-titles">
-					<span className="review-head-title">Booking request</span>
-				</span>
-				{/* mirrors the flow header's right slot so the title centres */}
+				<HostFlowSteps current={1} />
 				<span style={{ width: 44 }} />
 			</div>
-
-			<HostFlowSteps current={1} />
 
 			<div className="form-content" style={{ paddingTop: 16 }}>
 				{/* Who it's from — same subtitle as the Reserved screen's card */}
