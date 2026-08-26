@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 
 import { SentRequest } from '../data';
-import { IconAddCircle, IconChevronRight, StatusBar } from '../ui';
+import { IconAddCircle, StatusBar } from '../ui';
 import { TripRequestCard } from './Rank';
 import { TabBar } from './TabBar';
 
@@ -17,24 +17,28 @@ interface AwayTrip {
 	nights: number;
 	nightlyRate: number;
 	dates: string;
-	pending?: boolean;
-	/** Booking requests the host hasn't looked at yet */
+	/** Booking requests still awaiting the host's decision */
 	newRequests?: number;
 }
 
 /* Ryan's trips: the same windows as his listing's Available Dates.
-   Melissa's request rides on the August one. */
+   The August one has Melissa's and Aisha's requests waiting on him. */
 const UPCOMING_TRIPS: AwayTrip[] = [
 	{
 		id: 1,
 		nights: 3,
 		nightlyRate: 67,
 		dates: '26 - 29 Aug',
-		pending: true,
-		newRequests: 1,
+		newRequests: 2,
 	},
 	{ id: 4, nights: 7, nightlyRate: 67, dates: '12 - 19 Sep' },
 ];
+
+/** What the Hosting tab surfaces at the top level */
+const HOSTING_NEW_REQUESTS = UPCOMING_TRIPS.reduce(
+	(n, t) => n + (t.newRequests ?? 0),
+	0,
+);
 
 const PAST_TRIPS: AwayTrip[] = [
 	{ id: 2, nights: 10, nightlyRate: 66, dates: '20 - 30 Jul' },
@@ -89,13 +93,17 @@ function AwayTripCard({
 			<div className="away-main">
 				<div className="away-thumb">✈️</div>
 				<div className="away-body">
-					<div className="away-title">Trip</div>
+					<div className="away-title">
+						Trip
+						{trip.newRequests != null && trip.newRequests > 0 && (
+							<span className="count-badge">{trip.newRequests}</span>
+						)}
+					</div>
 					<div className="away-meta">
 						{trip.nights} nights @ £{trip.nightlyRate}/night
 					</div>
 					<div className="away-meta">{trip.dates}</div>
 				</div>
-				{trip.pending && <span className="away-pending">Pending</span>}
 				<div className="away-actions">
 					<button
 						className="away-action"
@@ -113,12 +121,6 @@ function AwayTripCard({
 					</button>
 				</div>
 			</div>
-			{trip.newRequests != null && trip.newRequests > 0 && (
-				<div className="away-requests">
-					{trip.newRequests} new request{trip.newRequests > 1 ? 's' : ''}
-					<IconChevronRight size={16} />
-				</div>
-			)}
 		</div>
 	);
 }
@@ -162,6 +164,9 @@ export function TripsScreen({
 						onClick={() => setTab('hosting')}
 					>
 						Hosting
+						{canHost && HOSTING_NEW_REQUESTS > 0 && (
+							<span className="count-badge">{HOSTING_NEW_REQUESTS}</span>
+						)}
 					</button>
 				</div>
 			</div>
