@@ -115,30 +115,22 @@ export function TripRequestsScreen({
 				<button className="icon-btn review-back" onClick={onBack} aria-label="Back">
 					<IconChevronLeft size={26} />
 				</button>
-				<span className="review-head-titles">
-					<span className="review-head-title">Trip</span>
+				<span className="review-head-titles trip-head">
+					<span className="review-head-title">26 - 29 Aug</span>
+					<span className="trip-head-sub">3 nights @ £67/night</span>
 				</span>
-				<span style={{ width: 44 }} />
+				<div className="away-actions horizontal trip-head-actions">
+					<button className="away-action" aria-label="Edit trip">
+						<IconPencil />
+					</button>
+					<button className="away-action" aria-label="Delete trip">
+						<IconTrash />
+					</button>
+				</div>
 			</div>
 
 			<div className="screen-scroll" style={{ padding: '16px 20px 24px' }}>
-				<div className="trip-hero">
-					<div className="away-thumb">✈️</div>
-					<div className="away-body">
-						<div className="trip-hero-dates">26 - 29 Aug</div>
-						<div className="away-meta">3 nights @ £67/night</div>
-					</div>
-					<div className="away-actions horizontal">
-						<button className="away-action" aria-label="Edit trip">
-							<IconPencil />
-						</button>
-						<button className="away-action" aria-label="Delete trip">
-							<IconTrash />
-						</button>
-					</div>
-				</div>
-
-				<div className="trips-section-head" style={{ marginTop: 22 }}>
+				<div className="trips-section-head" style={{ marginTop: 4 }}>
 					<h2 className="trips-section-title">
 						Booking requests <span className="req-count">{TRIP_REQUESTS.length}</span>
 					</h2>

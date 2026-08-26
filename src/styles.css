@@ -1980,15 +1980,16 @@ input {
 
 /* ---------- Trip detail: dates + its booking requests ---------- */
 
-.trip-hero {
-	display: flex;
-	align-items: center;
-	gap: 12px;
+.review-head-titles.trip-head {
+	flex: 1;
 }
-.trip-hero-dates {
-	font-size: 20px;
-	font-weight: 700;
-	margin-bottom: 2px;
+.trip-head-sub {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--gray);
+}
+.trip-head-actions {
+	margin-right: 8px;
 }
 
 .req-count {
