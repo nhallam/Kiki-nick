@@ -8,7 +8,7 @@ import React from 'react';
 import { LISTINGS } from '../data';
 import { IconCheck, IconChevronLeft, StatusBar } from '../ui';
 import { setGuestState, setSwapState, useSwapState } from '../store';
-import { GuestProfileCard, REQUEST_PREVIEWS } from './HostRequest';
+import { GuestProfileCard, HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
 
 const Tick = () => (
 	<span className="tick" aria-hidden>
@@ -43,6 +43,8 @@ export function ReservedScreen({
 				</span>
 				<span style={{ width: 44 }} />
 			</div>
+
+			<HostFlowSteps current={2} />
 
 			<div className="form-content" style={{ paddingTop: 16 }}>
 				<GuestProfileCard guest={guest} subtitle={preview.datesValue} />

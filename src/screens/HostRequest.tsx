@@ -68,6 +68,38 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 	},
 };
 
+/* ---------- Host flow stepper: Booking request → Reserved → Confirmed ---------- */
+
+const FLOW_STEPS = ['Booking request', 'Reserved', 'Confirmed'];
+
+export function HostFlowSteps({
+	current,
+	complete,
+}: {
+	/** 1-based index of the stage the user is on */
+	current: 1 | 2 | 3;
+	/** The flow is finished — every step shows a check */
+	complete?: boolean;
+}) {
+	return (
+		<div className="flow-steps">
+			{FLOW_STEPS.map((label, i) => {
+				const n = i + 1;
+				const done = complete || n < current;
+				const state = done ? ' done' : n === current ? ' active' : '';
+				return (
+					<span key={label} className={`fs-step${state}`}>
+						<span className="fs-dot">
+							{done ? <IconCheck size={10} /> : n}
+						</span>
+						<span className="fs-label">{label}</span>
+					</span>
+				);
+			})}
+		</div>
+	);
+}
+
 /* ---------- Expandable guest card with tap-to-copy contact details ---------- */
 
 const contactIconProps = {
@@ -235,6 +267,8 @@ export function HostRequestScreen({
 				{/* mirrors the flow header's right slot so the title centres */}
 				<span style={{ width: 44 }} />
 			</div>
+
+			<HostFlowSteps current={1} />
 
 			<div className="form-content" style={{ paddingTop: 16 }}>
 				{/* Who it's from — same subtitle as the Reserved screen's card */}

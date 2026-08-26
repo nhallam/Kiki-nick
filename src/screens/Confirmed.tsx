@@ -5,7 +5,7 @@
 import React from 'react';
 
 import { Avatar, RoomPhoto, StatusBar } from '../ui';
-import { REQUEST_PREVIEWS } from './HostRequest';
+import { HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
 
 export function ConfirmedScreen({
 	guest,
@@ -19,6 +19,8 @@ export function ConfirmedScreen({
 	return (
 		<div className="screen">
 			<StatusBar time="12:13" />
+
+			<HostFlowSteps current={3} complete />
 
 			<div className="confirmed-hero">
 				<div className="confirmed-photo">
