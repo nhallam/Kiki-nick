@@ -981,6 +981,80 @@ input {
 	margin-left: 14px;
 	min-width: 0;
 }
+
+/* Expandable variant: header row toggles tap-to-copy contact details */
+.profile-card.expandable {
+	flex-direction: column;
+	align-items: stretch;
+	padding: 0;
+}
+.profile-main {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	padding: 12px 14px;
+	min-height: 72px;
+	text-align: left;
+}
+.profile-chev {
+	display: flex;
+	align-items: center;
+	color: var(--gray);
+	transition: transform 0.18s ease;
+	flex-shrink: 0;
+	margin-left: 8px;
+}
+.profile-chev.open {
+	transform: rotate(180deg);
+}
+.contact-rows {
+	border-top: 1px solid var(--border-light);
+	padding: 4px 0;
+}
+.contact-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	padding: 10px 14px;
+	text-align: left;
+}
+.contact-row:active {
+	background: var(--light-gray);
+}
+.contact-row .c-label {
+	width: 108px;
+	flex-shrink: 0;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--gray);
+}
+.contact-row .c-value {
+	flex: 1;
+	min-width: 0;
+	font-size: 14px;
+	font-weight: 600;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.contact-row .c-copy {
+	display: flex;
+	color: var(--gray);
+	flex-shrink: 0;
+}
+.contact-row .c-copied {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	background: var(--primary-tint);
+	color: var(--primary-strong);
+	font-size: 11.5px;
+	font-weight: 700;
+	border-radius: 10px;
+	padding: 3px 8px;
+	flex-shrink: 0;
+}
 .profile-card .name-row {
 	display: flex;
 	align-items: center;

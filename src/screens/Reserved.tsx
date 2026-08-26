@@ -5,9 +5,9 @@
  */
 import React from 'react';
 
-import { Avatar, IconCheck, IconChevronLeft, StatusBar } from '../ui';
+import { IconCheck, IconChevronLeft, StatusBar } from '../ui';
 import { setGuestState, setSwapState, useSwapState } from '../store';
-import { REQUEST_PREVIEWS } from './HostRequest';
+import { GuestProfileCard, REQUEST_PREVIEWS } from './HostRequest';
 
 const Tick = () => (
 	<span className="tick" aria-hidden>
@@ -42,18 +42,7 @@ export function ReservedScreen({
 			</div>
 
 			<div className="form-content" style={{ paddingTop: 16 }}>
-				<div className="profile-card">
-					<Avatar
-						variant={preview.avatar}
-						initial={preview.initial}
-						size={44}
-						flag={preview.flag}
-					/>
-					<span className="info">
-						<span className="name-row">{guest}</span>
-						<span className="subtitle">{preview.datesValue}</span>
-					</span>
-				</div>
+				<GuestProfileCard guest={guest} subtitle={preview.datesValue} />
 
 				<p className="reserved-note">
 					{guest}'s request is reserved. Once these steps are complete you
