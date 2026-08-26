@@ -2350,6 +2350,21 @@ input {
 	font-weight: 700;
 	margin: 22px 0 12px;
 }
+.trips-subsection-title.toggle {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	width: 100%;
+	text-align: left;
+	color: var(--dark);
+}
+.trips-subsection-title.toggle svg {
+	color: var(--gray);
+	transition: transform 0.18s ease;
+}
+.trips-subsection-title.toggle.open svg {
+	transform: rotate(180deg);
+}
 
 .empty-card {
 	background: var(--light-gray);

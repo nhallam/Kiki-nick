@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 
 import { SentRequest } from '../data';
-import { Avatar, IconAddCircle, StatusBar } from '../ui';
+import { Avatar, IconAddCircle, IconChevronDown, StatusBar } from '../ui';
 import { guestState, useSwapState } from '../store';
 import { TripRequestCard } from './Rank';
 import { TabBar } from './TabBar';
@@ -90,6 +90,8 @@ export function TripsScreen({
 	onOpenRequestListing?: (listingId: number) => void;
 }) {
 	const [tab, setTab] = useState<TripsTab>(initialTab ?? 'staying');
+	// Past trips are collapsed by default — history is a pull, not a push.
+	const [showPast, setShowPast] = useState(false);
 
 	const swap = useSwapState();
 	// Requests still New for the Aug trip (Tash/Sara/Marco are settled).
@@ -249,10 +251,16 @@ export function TripsScreen({
 									onOpenTrip={t.id === 1 ? onOpenTrip : undefined}
 								/>
 							))}
-							<div className="trips-subsection-title">Past trips</div>
-							{PAST_TRIPS.map((t) => (
-								<AwayTripCard key={t.id} trip={t} />
-							))}
+							<button
+								className={`trips-subsection-title toggle${showPast ? ' open' : ''}`}
+								onClick={() => setShowPast((s) => !s)}
+								aria-expanded={showPast}
+							>
+								Past trips
+								<IconChevronDown size={18} />
+							</button>
+							{showPast &&
+								PAST_TRIPS.map((t) => <AwayTripCard key={t.id} trip={t} />)}
 						</div>
 					</div>
 				)}
