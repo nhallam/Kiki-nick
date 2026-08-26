@@ -2312,6 +2312,26 @@ input {
 	gap: 7px;
 	color: var(--primary-strong);
 }
+.check-line .c-status.unpaid {
+	color: var(--gray);
+}
+.check-line .hollow {
+	display: inline-flex;
+	width: 19px;
+	height: 19px;
+	border-radius: 50%;
+	border: 1.5px solid var(--border-medium);
+	flex-shrink: 0;
+}
+.check-line.tappable {
+	width: 100%;
+	font: inherit;
+	text-align: left;
+	border-radius: 8px;
+}
+.check-line.tappable:active {
+	background: var(--light-gray);
+}
 .tick {
 	display: inline-flex;
 	align-items: center;

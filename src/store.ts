@@ -12,12 +12,17 @@ export interface SwapState {
 	aisha: GuestRequestState;
 	/** Reserved checklist: has Ryan signed the rental agreement yet? */
 	hostSigned: boolean;
+	/** Reserved checklist: the stayer's payments (tappable in the demo) */
+	depositPaid: boolean;
+	rentPaid: boolean;
 }
 
 const INITIAL_STATE: SwapState = {
 	melissa: 'new',
 	aisha: 'new',
 	hostSigned: false,
+	depositPaid: false,
+	rentPaid: false,
 };
 
 let state: SwapState = INITIAL_STATE;

@@ -29,7 +29,20 @@ export function ReservedScreen({
 	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
 	const listing = LISTINGS.find((l) => l.listerName === 'Ryan')!;
 	const rentTotal = preview.nights * listing.nightlyRate;
-	const allDone = swap.hostSigned; // the guest's own steps are already done
+	const allDone = swap.hostSigned && swap.depositPaid && swap.rentPaid;
+
+	// Payments are the stayer's steps really — tappable here so the state
+	// change can be demoed from the host's phone.
+	const PayState = ({ paid }: { paid: boolean }) =>
+		paid ? (
+			<span className="c-status">
+				<Tick /> Paid
+			</span>
+		) : (
+			<span className="c-status unpaid">
+				<span className="hollow" aria-hidden /> Unpaid
+			</span>
+		);
 
 	return (
 		<div className="screen">
@@ -81,29 +94,31 @@ export function ReservedScreen({
 						</button>
 					</div>
 
-					{/* Security deposit — amount left, state right */}
+					{/* Security deposit — tap to flip paid state (demo) */}
 					<div className="check-item">
 						<div className="check-title">Security deposit</div>
-						<div className="check-line split">
+						<button
+							className="check-line split tappable"
+							onClick={() => setSwapState({ depositPaid: !swap.depositPaid })}
+						>
 							<span className="c-left">£{listing.securityDeposit}</span>
-							<span className="c-status">
-								<Tick /> Paid
-							</span>
-						</div>
+							<PayState paid={swap.depositPaid} />
+						</button>
 					</div>
 
-					{/* Rent — amount left, state right */}
+					{/* Rent — tap to flip paid state (demo) */}
 					<div className="check-item">
 						<div className="check-title">Rent</div>
 						<div className="check-note">
 							You will receive rent 3 days after {guest} moves in
 						</div>
-						<div className="check-line split">
+						<button
+							className="check-line split tappable"
+							onClick={() => setSwapState({ rentPaid: !swap.rentPaid })}
+						>
 							<span className="c-left">£{rentTotal}</span>
-							<span className="c-status">
-								<Tick /> Paid
-							</span>
-						</div>
+							<PayState paid={swap.rentPaid} />
+						</button>
 					</div>
 				</div>
 			</div>
