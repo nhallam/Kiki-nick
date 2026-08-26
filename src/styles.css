@@ -1022,11 +1022,12 @@ input {
 .contact-row:active {
 	background: var(--light-gray);
 }
-.contact-row .c-label {
-	width: 108px;
+.contact-row .c-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
 	flex-shrink: 0;
-	font-size: 13px;
-	font-weight: 600;
 	color: var(--gray);
 }
 .contact-row .c-value {
@@ -1037,11 +1038,6 @@ input {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-}
-.contact-row .c-copy {
-	display: flex;
-	color: var(--gray);
-	flex-shrink: 0;
 }
 .contact-row .c-copied {
 	display: inline-flex;
