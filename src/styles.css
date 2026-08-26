@@ -2073,11 +2073,14 @@ input {
 	margin-bottom: 34px;
 }
 .confirmed-photo > svg,
-.confirmed-photo > div {
+.confirmed-photo > div,
+.confirmed-photo .confirmed-img {
 	width: 100%;
 	height: 100%;
 	border-radius: 20px;
 	overflow: hidden;
+	object-fit: cover;
+	display: block;
 }
 .confirmed-avatar {
 	position: absolute;

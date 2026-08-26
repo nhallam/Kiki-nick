@@ -4,7 +4,8 @@
  */
 import React from 'react';
 
-import { Avatar, RoomPhoto, StatusBar } from '../ui';
+import { RYAN_ROOM_PHOTO } from '../assets';
+import { Avatar, StatusBar } from '../ui';
 import { HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
 
 export function ConfirmedScreen({
@@ -24,7 +25,11 @@ export function ConfirmedScreen({
 
 			<div className="confirmed-hero">
 				<div className="confirmed-photo">
-					<RoomPhoto variant="jake" />
+					<img
+						className="confirmed-img"
+						src={RYAN_ROOM_PHOTO}
+						alt="Ryan's place"
+					/>
 					<span className="confirmed-avatar">
 						<Avatar
 							variant={preview.avatar}
