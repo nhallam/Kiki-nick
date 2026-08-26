@@ -5,6 +5,7 @@
  */
 import React from 'react';
 
+import { LISTINGS } from '../data';
 import { IconCheck, IconChevronLeft, StatusBar } from '../ui';
 import { setGuestState, setSwapState, useSwapState } from '../store';
 import { GuestProfileCard, REQUEST_PREVIEWS } from './HostRequest';
@@ -26,6 +27,8 @@ export function ReservedScreen({
 }) {
 	const swap = useSwapState();
 	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
+	const listing = LISTINGS.find((l) => l.listerName === 'Ryan')!;
+	const rentTotal = preview.nights * listing.nightlyRate;
 	const allDone = swap.hostSigned; // the guest's own steps are already done
 
 	return (
@@ -50,42 +53,51 @@ export function ReservedScreen({
 				</p>
 
 				<div className="check-card">
-					{/* Rental agreement — both parties have to sign */}
+					{/* Rental agreement — one row per signer */}
 					<div className="check-item">
 						<div className="check-title">Rental agreement</div>
-						<div className="check-line done">
-							<Tick /> {guest} has signed
+						<div className="check-line split">
+							<span className="c-left">{guest}</span>
+							<span className="c-status">
+								<Tick /> Signed
+							</span>
 						</div>
-						{swap.hostSigned ? (
-							<div className="check-line done">
-								<Tick /> You have signed
-							</div>
-						) : (
-							<div className="check-line pending-line">
-								<span>You haven't signed yet</span>
+						<div className="check-line split">
+							<span className="c-left">Ryan</span>
+							{swap.hostSigned ? (
+								<span className="c-status">
+									<Tick /> Signed
+								</span>
+							) : (
 								<button
 									className="sign-btn"
 									onClick={() => setSwapState({ hostSigned: true })}
 								>
 									Sign agreement
 								</button>
-							</div>
-						)}
-					</div>
-
-					{/* Security deposit — binary */}
-					<div className="check-item">
-						<div className="check-title">Security deposit</div>
-						<div className="check-line done">
-							<Tick /> Paid
+							)}
 						</div>
 					</div>
 
-					{/* Rent — binary */}
+					{/* Security deposit — amount left, state right */}
+					<div className="check-item">
+						<div className="check-title">Security deposit</div>
+						<div className="check-line split">
+							<span className="c-left">£{listing.securityDeposit}</span>
+							<span className="c-status">
+								<Tick /> Paid
+							</span>
+						</div>
+					</div>
+
+					{/* Rent — amount left, state right */}
 					<div className="check-item">
 						<div className="check-title">Rent</div>
-						<div className="check-line done">
-							<Tick /> Paid
+						<div className="check-line split">
+							<span className="c-left">£{rentTotal}</span>
+							<span className="c-status">
+								<Tick /> Paid
+							</span>
 						</div>
 					</div>
 				</div>

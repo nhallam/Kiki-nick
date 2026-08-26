@@ -2181,12 +2181,17 @@ input {
 	font-weight: 600;
 	min-height: 30px;
 }
-.check-line.done {
-	color: var(--primary-strong);
-}
-.check-line.pending-line {
+.check-line.split {
 	justify-content: space-between;
-	color: var(--gray);
+}
+.check-line .c-left {
+	color: var(--dark);
+}
+.check-line .c-status {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	color: var(--primary-strong);
 }
 .tick {
 	display: inline-flex;
