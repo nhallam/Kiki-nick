@@ -138,7 +138,7 @@ export function TripsScreen({
 							<div className="trips-section-head">
 								<h2 className="trips-section-title">Matches</h2>
 							</div>
-							{matched ? (
+							{matched && !canHost ? (
 								<div className="req-row match">
 									<Avatar variant="ryan" size={44} flag="🇳🇿" />
 									<span className="tr-body">
@@ -187,7 +187,7 @@ export function TripsScreen({
 								<div className="empty-card">
 									<div className="empty-title">No booking requests yet.</div>
 									<div className="empty-sub">
-										Requests you send to hosts will show up here.
+										Your sent requests will appear here.
 									</div>
 								</div>
 							)}

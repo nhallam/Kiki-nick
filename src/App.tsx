@@ -31,11 +31,14 @@ type Route =
 export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 	// The matching prototype starts both phones on Trips, each on its own
 	// side of the swap; without a persona the app opens on Explore as usual.
+	// Ryan hasn't sent any requests of his own — his Staying tab is empty.
+	const myRequests = persona === 'host' ? [] : EXISTING_REQUESTS;
+
 	const [route, setRoute] = useState<Route>(() =>
 		persona
 			? {
 					name: 'trips',
-					requests: EXISTING_REQUESTS,
+					requests: myRequests,
 					showSuccess: false,
 					newRequest: EXISTING_REQUESTS[0],
 				}
@@ -71,7 +74,7 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 	// Bottom-bar navigation between the two working tabs.
 	const tripsRoute = (): Route => ({
 		name: 'trips',
-		requests: EXISTING_REQUESTS,
+		requests: myRequests,
 		showSuccess: false,
 		newRequest: EXISTING_REQUESTS[0],
 	});
