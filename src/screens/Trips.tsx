@@ -9,6 +9,7 @@ import { SentRequest } from '../data';
 import { IconAddCircle, StatusBar } from '../ui';
 import { TripRequestCard } from './Rank';
 import { TabBar } from './TabBar';
+import { TRIP_REQUESTS } from './TripRequests';
 
 type TripsTab = 'staying' | 'hosting';
 
@@ -17,19 +18,20 @@ interface AwayTrip {
 	nights: number;
 	nightlyRate: number;
 	dates: string;
-	/** Booking requests still awaiting the host's decision */
+	/** Unseen (New) booking requests against these dates */
 	newRequests?: number;
 }
 
-/* Ryan's trips: the same windows as his listing's Available Dates.
-   The August one has Melissa's and Aisha's requests waiting on him. */
+/* Ryan's trips: the same windows as his listing's Available Dates. The
+   count only surfaces requests still marked New — opened or declined
+   ones don't badge. */
 const UPCOMING_TRIPS: AwayTrip[] = [
 	{
 		id: 1,
 		nights: 3,
 		nightlyRate: 67,
 		dates: '26 - 29 Aug',
-		newRequests: 2,
+		newRequests: TRIP_REQUESTS.filter((r) => r.status === 'new').length,
 	},
 	{ id: 4, nights: 7, nightlyRate: 67, dates: '12 - 19 Sep' },
 ];

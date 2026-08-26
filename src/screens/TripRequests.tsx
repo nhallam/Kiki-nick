@@ -16,13 +16,13 @@ interface TripBookingRequest {
 	status?: 'new' | 'inReview' | 'declined';
 }
 
-const TRIP_REQUESTS: TripBookingRequest[] = [
+export const TRIP_REQUESTS: TripBookingRequest[] = [
 	{
 		id: 1,
 		name: 'Melissa',
 		avatar: 'melissa',
 		sub: 'Individual · 26 - 29 Aug · £201 + deposit',
-		status: 'inReview',
+		status: 'new',
 	},
 	{
 		id: 2,
