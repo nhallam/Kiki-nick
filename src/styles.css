@@ -2082,12 +2082,36 @@ input {
 	object-fit: cover;
 	display: block;
 }
+/* Photo deck: the extra shots fan out from behind the lead photo, then
+   the stack swipes like a deck of cards */
+.confirmed-photo.deck {
+	touch-action: pan-y;
+	cursor: grab;
+}
+.confirmed-photo.deck:active {
+	cursor: grabbing;
+}
+.deck-card {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 20px;
+	box-shadow: 0 0 0 3px var(--white);
+	transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.25, 1);
+	user-select: none;
+	-webkit-user-drag: none;
+}
+
 .confirmed-avatar {
 	position: absolute;
 	right: -18px;
 	bottom: -22px;
 	border-radius: 50%;
 	box-shadow: 0 0 0 4px var(--white);
+	z-index: 10;
+	pointer-events: none;
 }
 .confirmed-title {
 	font-size: 28px;
