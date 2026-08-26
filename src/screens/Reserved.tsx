@@ -96,14 +96,14 @@ export function ReservedScreen({
 					{/* Rent — amount left, state right */}
 					<div className="check-item">
 						<div className="check-title">Rent</div>
+						<div className="check-note">
+							You will receive rent 3 days after {guest} moves in
+						</div>
 						<div className="check-line split">
 							<span className="c-left">£{rentTotal}</span>
 							<span className="c-status">
 								<Tick /> Paid
 							</span>
-						</div>
-						<div className="check-note">
-							You will receive rent 3 days after {guest} moves in
 						</div>
 					</div>
 				</div>
