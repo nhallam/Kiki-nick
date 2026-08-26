@@ -77,6 +77,9 @@ export function ReservedScreen({
 								</button>
 							)}
 						</div>
+						<button className="view-agreement-btn">
+							View rental agreement
+						</button>
 					</div>
 
 					{/* Security deposit — amount left, state right */}
@@ -98,6 +101,9 @@ export function ReservedScreen({
 							<span className="c-status">
 								<Tick /> Paid
 							</span>
+						</div>
+						<div className="check-note">
+							You will receive rent 3 days after {guest} moves in
 						</div>
 					</div>
 				</div>
