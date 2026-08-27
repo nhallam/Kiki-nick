@@ -21,7 +21,7 @@ import { MatchDetailScreen } from './screens/MatchDetail';
 
 type Route =
 	| { name: 'explore' }
-	| { name: 'listing'; listing: Listing; from?: 'explore' | 'trips' }
+	| { name: 'listing'; listing: Listing; from?: 'explore' | 'trips' | 'match' }
 	| { name: 'booking'; listing: Listing }
 	| { name: 'sent'; requests: SentRequest[]; newRequest: SentRequest; listerName: string }
 	| { name: 'rank'; requests: SentRequest[]; newRequest: SentRequest }
@@ -98,7 +98,13 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 				<ListingDetailScreen
 					listing={route.listing}
 					onBack={() =>
-						setRoute(route.from === 'trips' ? tripsRoute() : { name: 'explore' })
+						setRoute(
+							route.from === 'match'
+								? { name: 'match' }
+								: route.from === 'trips'
+									? tripsRoute()
+									: { name: 'explore' },
+						)
 					}
 					onRequestToBook={() =>
 						setRoute({ name: 'booking', listing: route.listing })
@@ -203,7 +209,14 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 			);
 		case 'match':
 			return (
-				<MatchDetailScreen persona={persona} onBack={() => setRoute(tripsRoute())} />
+				<MatchDetailScreen
+					persona={persona}
+					onBack={() => setRoute(tripsRoute())}
+					onOpenListing={() => {
+						const ryan = LISTINGS.find((l) => l.listerName === 'Ryan');
+						if (ryan) setRoute({ name: 'listing', listing: ryan, from: 'match' });
+					}}
+				/>
 			);
 	}
 }

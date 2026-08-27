@@ -2271,6 +2271,13 @@ input {
 
 /* ---------- Match detail ---------- */
 
+.match-head-title {
+	flex: 1;
+	text-align: center;
+	font-size: 17px;
+	font-weight: 700;
+}
+
 /* The pair-and-address block doubles as the screen's header */
 .match-header {
 	align-items: flex-start;
@@ -2318,6 +2325,107 @@ input {
 	font-weight: 600;
 	color: var(--gray);
 	margin-top: 2px;
+}
+
+/* Address / listing / contact shortcuts between the hero and timeline */
+.match-links {
+	margin: 16px 20px 0;
+	border: 1px solid var(--border-light);
+	border-radius: 14px;
+	overflow: hidden;
+}
+.match-link {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	padding: 13px 14px;
+	font-size: 14.5px;
+	font-weight: 600;
+	text-align: left;
+	color: var(--dark);
+}
+.match-link + .match-link,
+.match-links .contact-rows {
+	border-top: 1px solid var(--border-light);
+}
+.match-link > svg:first-child {
+	color: var(--gray);
+}
+.ml-text {
+	flex: 1;
+	min-width: 0;
+}
+.match-link > svg:last-child,
+.ml-chev {
+	color: var(--gray);
+}
+.ml-chev {
+	display: inline-flex;
+	transition: transform 0.2s;
+}
+.ml-chev.open {
+	transform: rotate(180deg);
+}
+
+/* iOS-style action sheet for the address */
+.action-sheet {
+	margin-top: auto;
+	width: 100%;
+	padding: 10px 12px 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.as-group {
+	background: var(--white);
+	border-radius: 14px;
+	overflow: hidden;
+}
+.as-option {
+	width: 100%;
+	padding: 15px;
+	font-size: 15.5px;
+	font-weight: 600;
+	color: var(--dark);
+}
+.as-option + .as-option {
+	border-top: 1px solid var(--border-light);
+}
+.as-cancel {
+	background: var(--white);
+	border-radius: 14px;
+	padding: 15px;
+	font-size: 15.5px;
+	font-weight: 700;
+}
+
+/* Host instructions: the address in full, then Ryan's get-in notes */
+.ins-wrap {
+	padding: 20px 24px 28px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+.ins-address {
+	font-size: 19px;
+	font-weight: 800;
+	line-height: 1.35;
+	margin-bottom: 6px;
+}
+.ins-card {
+	border: 1px solid var(--border-light);
+	border-radius: 14px;
+	padding: 14px 16px;
+}
+.ins-title {
+	font-size: 14px;
+	font-weight: 700;
+	margin-bottom: 4px;
+}
+.ins-text {
+	font-size: 14px;
+	line-height: 1.55;
 }
 
 /* Vertical timeline of the stay's events */

@@ -169,15 +169,16 @@ function copyText(text: string) {
 	}
 }
 
-export function GuestProfileCard({
-	guest,
-	subtitle,
+/** Tap-to-copy contact rows — also reused on the match screen. */
+export function ContactRows({
+	email,
+	instagram,
+	phone,
 }: {
-	guest: string;
-	subtitle: string;
+	email: string;
+	instagram: string;
+	phone: string;
 }) {
-	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
-	const [open, setOpen] = useState(false);
 	const [copied, setCopied] = useState<string | null>(null);
 	const timer = useRef<number>();
 
@@ -189,10 +190,42 @@ export function GuestProfileCard({
 	};
 
 	const contacts = [
-		{ label: 'Email', icon: <IconMail />, value: preview.email },
-		{ label: 'Instagram', icon: <IconInsta />, value: preview.instagram },
-		{ label: 'Phone number', icon: <IconPhone />, value: preview.phone },
+		{ label: 'Email', icon: <IconMail />, value: email },
+		{ label: 'Instagram', icon: <IconInsta />, value: instagram },
+		{ label: 'Phone number', icon: <IconPhone />, value: phone },
 	];
+
+	return (
+		<div className="contact-rows">
+			{contacts.map((c) => (
+				<button
+					key={c.label}
+					className="contact-row"
+					aria-label={`Copy ${c.label}`}
+					onClick={() => copy(c.label, c.value)}
+				>
+					<span className="c-icon">{c.icon}</span>
+					<span className="c-value">{c.value}</span>
+					{copied === c.label && (
+						<span className="c-copied">
+							<IconCheck size={11} /> Copied
+						</span>
+					)}
+				</button>
+			))}
+		</div>
+	);
+}
+
+export function GuestProfileCard({
+	guest,
+	subtitle,
+}: {
+	guest: string;
+	subtitle: string;
+}) {
+	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
+	const [open, setOpen] = useState(false);
 
 	return (
 		<div className="profile-card expandable">
@@ -217,24 +250,11 @@ export function GuestProfileCard({
 				</span>
 			</button>
 			{open && (
-				<div className="contact-rows">
-					{contacts.map((c) => (
-						<button
-							key={c.label}
-							className="contact-row"
-							aria-label={`Copy ${c.label}`}
-							onClick={() => copy(c.label, c.value)}
-						>
-							<span className="c-icon">{c.icon}</span>
-							<span className="c-value">{c.value}</span>
-							{copied === c.label && (
-								<span className="c-copied">
-									<IconCheck size={11} /> Copied
-								</span>
-							)}
-						</button>
-					))}
-				</div>
+				<ContactRows
+					email={preview.email}
+					instagram={preview.instagram}
+					phone={preview.phone}
+				/>
 			)}
 		</div>
 	);

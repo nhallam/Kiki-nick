@@ -12,16 +12,37 @@ import React, { useState } from 'react';
 
 import { RYAN_PHOTOS } from '../assets';
 import { LISTINGS } from '../data';
-import { Avatar, IconCheck, IconChevronLeft, StatusBar } from '../ui';
+import {
+	Avatar,
+	IconCheck,
+	IconChevronDown,
+	IconChevronLeft,
+	IconChevronRight,
+	IconHome,
+	IconPersonCircle,
+	IconPin,
+	StatusBar,
+} from '../ui';
 import { setSwapState, useSwapState } from '../store';
-import { REQUEST_PREVIEWS } from './HostRequest';
+import { ContactRows, REQUEST_PREVIEWS } from './HostRequest';
+
+const ADDRESS = '6 Sylvester Path, Hackney, London E8';
+
+/* Ryan's side of the contact swap — Melissa's lives in REQUEST_PREVIEWS. */
+const RYAN_CONTACT = {
+	email: 'ryan.carter@gmail.com',
+	instagram: '@ryan.e8',
+	phone: '+44 7712 555 019',
+};
 
 export function MatchDetailScreen({
 	persona,
 	onBack,
+	onOpenListing,
 }: {
 	persona?: 'guest' | 'host';
 	onBack: () => void;
+	onOpenListing: () => void;
 }) {
 	const swap = useSwapState();
 	const guest = 'Melissa';
@@ -32,6 +53,9 @@ export function MatchDetailScreen({
 
 	const [showPicker, setShowPicker] = useState(false);
 	const [selected, setSelected] = useState<number[]>([]);
+	const [showAddressSheet, setShowAddressSheet] = useState(false);
+	const [showInstructions, setShowInstructions] = useState(false);
+	const [showContact, setShowContact] = useState(false);
 
 	const openPicker = () => {
 		setSelected(swap.afterPhotos);
@@ -155,6 +179,59 @@ export function MatchDetailScreen({
 		</div>
 	);
 
+	// The address action sheet's first option opens this sub-screen: the
+	// address written out plus Ryan's how-to-get-in notes.
+	if (showInstructions) {
+		return (
+			<div className="screen">
+				<StatusBar time="12:13" />
+				<div className="form-header review-head with-back">
+					<button
+						className="icon-btn review-back"
+						onClick={() => setShowInstructions(false)}
+						aria-label="Back"
+					>
+						<IconChevronLeft size={26} />
+					</button>
+					<span className="match-head-title">
+						{isGuest ? "Ryan's instructions" : 'Your instructions'}
+					</span>
+					<span style={{ width: 44 }} />
+				</div>
+				<div className="screen-scroll">
+					<div className="ins-wrap">
+						<div className="ins-address">
+							6 Sylvester Path
+							<br />
+							{listing.area}, {listing.city} E8
+						</div>
+						<div className="ins-card">
+							<div className="ins-title">Finding the apartment</div>
+							<div className="ins-text">
+								The green door between the bakery and the barber, halfway
+								down Sylvester Path. Buzzer 6 has my name on it.
+							</div>
+						</div>
+						<div className="ins-card">
+							<div className="ins-title">Lock box</div>
+							<div className="ins-text">
+								Mounted on the railing just left of the front door. The code
+								is 2608 — inside you'll find the keys.
+							</div>
+						</div>
+						<div className="ins-card">
+							<div className="ins-title">Keys</div>
+							<div className="ins-text">
+								Gold key opens the street door, silver key the flat. Please
+								pop both back in the lock box when you head off.
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="screen">
 			<StatusBar time="12:13" />
@@ -175,14 +252,50 @@ export function MatchDetailScreen({
 					</div>
 					<div className="match-dates">26 - 29 Aug · {preview.nights} nights</div>
 					<div className="match-where">Melissa at Ryan's apartment</div>
-					<div className="match-address">
-						6 Sylvester Path, {listing.area}, {listing.city} E8
-					</div>
 				</div>
 				<span style={{ width: 44 }} />
 			</div>
 
 			<div className="screen-scroll">
+				<div className="match-links">
+					<button className="match-link" onClick={() => setShowAddressSheet(true)}>
+						<IconPin size={18} />
+						<span className="ml-text">{ADDRESS}</span>
+						<IconChevronRight size={18} />
+					</button>
+					<button className="match-link" onClick={onOpenListing}>
+						<IconHome size={18} />
+						<span className="ml-text">View listing</span>
+						<IconChevronRight size={18} />
+					</button>
+					<button
+						className="match-link"
+						onClick={() => setShowContact((o) => !o)}
+						aria-expanded={showContact}
+					>
+						<IconPersonCircle size={18} />
+						<span className="ml-text">Contact details</span>
+						<span className={`ml-chev${showContact ? ' open' : ''}`}>
+							<IconChevronDown size={18} />
+						</span>
+					</button>
+					{/* Contextual: each side sees the other person's details */}
+					{showContact &&
+						(isGuest ? (
+							<ContactRows
+								email={RYAN_CONTACT.email}
+								instagram={RYAN_CONTACT.instagram}
+								phone={RYAN_CONTACT.phone}
+							/>
+						) : (
+							<ContactRows
+								email={preview.email}
+								instagram={preview.instagram}
+								phone={preview.phone}
+							/>
+						))}
+				</div>
+
 				<div className="timeline">
 					{beforeItems.map((item, i) =>
 						renderStatic(
@@ -195,6 +308,45 @@ export function MatchDetailScreen({
 					{renderStatic(refund, true, false)}
 				</div>
 			</div>
+
+			{showAddressSheet && (
+				<div
+					className="sheet-overlay"
+					onClick={() => setShowAddressSheet(false)}
+				>
+					<div className="action-sheet" onClick={(e) => e.stopPropagation()}>
+						<div className="as-group">
+							<button
+								className="as-option"
+								onClick={() => {
+									setShowAddressSheet(false);
+									setShowInstructions(true);
+								}}
+							>
+								{isGuest ? "Show Ryan's instructions" : 'Show your instructions'}
+							</button>
+							<button
+								className="as-option"
+								onClick={() => setShowAddressSheet(false)}
+							>
+								Open in Google Maps
+							</button>
+							<button
+								className="as-option"
+								onClick={() => setShowAddressSheet(false)}
+							>
+								Open in Apple Maps
+							</button>
+						</div>
+						<button
+							className="as-cancel"
+							onClick={() => setShowAddressSheet(false)}
+						>
+							Cancel
+						</button>
+					</div>
+				</div>
+			)}
 
 			{showPicker && (
 				<div className="sheet-overlay" onClick={() => setShowPicker(false)}>
