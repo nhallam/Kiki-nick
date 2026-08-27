@@ -2271,18 +2271,18 @@ input {
 
 /* ---------- Match detail ---------- */
 
-.match-head-title {
-	flex: 1;
-	text-align: center;
-	font-size: 17px;
-	font-weight: 700;
+/* The pair-and-address block doubles as the screen's header */
+.match-header {
+	align-items: flex-start;
+	padding-bottom: 0;
 }
 .match-hero {
+	flex: 1;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	text-align: center;
-	padding: 26px 24px 30px;
+	padding: 6px 12px 20px;
 }
 /* The pair: stayer in front, host behind, overlapping deeply with a white
    stroke keeping the faces legible where they cross */
@@ -2301,7 +2301,7 @@ input {
 	z-index: 2;
 }
 .match-avatar.back {
-	margin-left: -62px; /* ~70% overlap of the 88px faces */
+	margin-left: -26px; /* gentle overlap — both faces stay readable */
 }
 .match-dates {
 	font-size: 16px;
@@ -2322,7 +2322,7 @@ input {
 
 /* Vertical timeline of the stay's events */
 .timeline {
-	padding: 0 28px 28px;
+	padding: 22px 28px 28px;
 }
 .tl-item {
 	position: relative;

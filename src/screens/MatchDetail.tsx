@@ -158,23 +158,19 @@ export function MatchDetailScreen({
 	return (
 		<div className="screen">
 			<StatusBar time="12:13" />
-			<div className="form-header review-head with-back">
+			{/* The pair IS the header — no "Match" title */}
+			<div className="form-header review-head with-back match-header">
 				<button className="icon-btn review-back" onClick={onBack} aria-label="Back">
 					<IconChevronLeft size={26} />
 				</button>
-				<span className="match-head-title">Match</span>
-				<span style={{ width: 44 }} />
-			</div>
-
-			<div className="screen-scroll">
 				<div className="match-hero">
 					<div className="match-avatars">
 						{/* The stayer leads; the host peeks out from behind */}
 						<span className="match-avatar front">
-							<Avatar variant="melissa" size={88} flag="🇦🇺" />
+							<Avatar variant="melissa" size={88} />
 						</span>
 						<span className="match-avatar back">
-							<Avatar variant="ryan" size={88} flag="🇳🇿" />
+							<Avatar variant="ryan" size={88} />
 						</span>
 					</div>
 					<div className="match-dates">26 - 29 Aug · {preview.nights} nights</div>
@@ -183,7 +179,10 @@ export function MatchDetailScreen({
 						6 Sylvester Path, {listing.area}, {listing.city} E8
 					</div>
 				</div>
+				<span style={{ width: 44 }} />
+			</div>
 
+			<div className="screen-scroll">
 				<div className="timeline">
 					{beforeItems.map((item, i) =>
 						renderStatic(
