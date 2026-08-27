@@ -10,6 +10,7 @@ export type GuestRequestState = 'new' | 'reserved' | 'confirmed' | 'declined';
 export interface SwapState {
 	melissa: GuestRequestState;
 	aisha: GuestRequestState;
+	tash: GuestRequestState;
 	/** Reserved checklist: has each party signed the rental agreement? */
 	guestSigned: boolean;
 	hostSigned: boolean;
@@ -21,11 +22,14 @@ export interface SwapState {
 	/** Payment-confirmation screenshots Melissa uploaded (index into her roll) */
 	depositShot: number | null;
 	rentShot: number | null;
+	/** Epoch ms when the 48h completion window closes (set on reserve) */
+	reservedDeadline: number | null;
 }
 
 const INITIAL_STATE: SwapState = {
 	melissa: 'new',
 	aisha: 'new',
+	tash: 'new',
 	guestSigned: false,
 	hostSigned: false,
 	depositPaid: false,
@@ -33,6 +37,7 @@ const INITIAL_STATE: SwapState = {
 	afterPhotos: [],
 	depositShot: null,
 	rentShot: null,
+	reservedDeadline: null,
 };
 
 let state: SwapState = INITIAL_STATE;
@@ -62,11 +67,39 @@ export function useSwapState(): SwapState {
 	return useSyncExternalStore(subscribe, getSwapState);
 }
 
-/** Request state for a guest by display name ('Melissa' / 'Aisha'). */
+/** Guests the host can act on, keyed by display name. */
+const GUEST_KEYS: Record<string, 'melissa' | 'aisha' | 'tash'> = {
+	Melissa: 'melissa',
+	Aisha: 'aisha',
+	Tash: 'tash',
+};
+
+/** Request state for a guest by display name ('Melissa' / 'Aisha' / 'Tash'). */
 export const guestState = (swap: SwapState, guest: string): GuestRequestState =>
-	guest === 'Melissa' ? swap.melissa : guest === 'Aisha' ? swap.aisha : 'new';
+	GUEST_KEYS[guest] ? swap[GUEST_KEYS[guest]] : 'new';
 
 export function setGuestState(guest: string, s: GuestRequestState) {
-	if (guest === 'Melissa') setSwapState({ melissa: s });
-	else if (guest === 'Aisha') setSwapState({ aisha: s });
+	if (GUEST_KEYS[guest]) setSwapState({ [GUEST_KEYS[guest]]: s });
+}
+
+/** Accepting starts the 48-hour completion window. */
+export function reserveGuest(guest: string) {
+	setGuestState(guest, 'reserved');
+	// Start a touch under 48h so the countdown reads "47:59:xx" immediately
+	setSwapState({ reservedDeadline: Date.now() + 48 * 3600_000 - 45_000 });
+}
+
+/** Either party backing out during the window: the reservation unwinds and
+    the request returns to the host's inbox (keeps the demo re-runnable). */
+export function withdrawReservation(guest: string) {
+	setGuestState(guest, 'new');
+	setSwapState({
+		guestSigned: false,
+		hostSigned: false,
+		depositPaid: false,
+		rentPaid: false,
+		depositShot: null,
+		rentShot: null,
+		reservedDeadline: null,
+	});
 }

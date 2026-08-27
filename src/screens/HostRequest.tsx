@@ -13,7 +13,7 @@ import {
 	IconChevronLeft,
 	StatusBar,
 } from '../ui';
-import { guestState, setGuestState, useSwapState } from '../store';
+import { guestState, reserveGuest, setGuestState, useSwapState } from '../store';
 import { ReviewSummaryCard } from './ReviewRequest';
 
 interface RequestPreview {
@@ -27,6 +27,8 @@ interface RequestPreview {
 	/** e.g. 'second' — which Kiki stay this booking is for them */
 	stayOrdinal: string;
 	nights: number;
+	/** Aug day-of-month range, for the overlapping-reservation rule */
+	range: [number, number];
 	datesValue: string;
 	guestsLabel: string;
 	intro: string;
@@ -34,6 +36,12 @@ interface RequestPreview {
 	email: string;
 	instagram: string;
 	phone: string;
+	/** Group bookings: the second guest shown alongside the lead */
+	partner?: { name: string; avatar: string; initial?: string };
+	/** e.g. 'Tash & Jordan' — used wherever the lead name alone won't do */
+	displayName?: string;
+	/** 'her' / 'their' — for the celebration copy */
+	pronoun?: string;
 }
 
 export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
@@ -46,6 +54,7 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		fullName: 'Melissa Hart',
 		stayOrdinal: 'second',
 		nights: 3,
+		range: [26, 29],
 		datesValue: '26 - 29 Aug 2026 · 3 nights',
 		guestsLabel: '1 guest · Melissa',
 		intro:
@@ -66,6 +75,7 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		fullName: 'Aisha Khan',
 		stayOrdinal: 'first',
 		nights: 2,
+		range: [27, 29],
 		datesValue: '27 - 29 Aug 2026 · 2 nights',
 		guestsLabel: '1 guest · Aisha',
 		intro:
@@ -76,7 +86,36 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		instagram: '@aisha.designs',
 		phone: '+44 7700 900412',
 	},
+	// The group booking (flagged for 3.2): a couple travelling together.
+	Tash: {
+		avatar: 'tash',
+		initial: 'T',
+		flag: '🇳🇿',
+		occupation: 'Photographer',
+		age: 30,
+		hometown: 'Wellington, NZ',
+		fullName: 'Tash & Jordan Reeves',
+		stayOrdinal: 'first',
+		nights: 3,
+		range: [26, 29],
+		datesValue: '26 - 29 Aug 2026 · 3 nights',
+		guestsLabel: '2 guests · Tash & Jordan',
+		intro:
+			"Kia ora Ryan! We're Tash and Jordan, a couple from Wellington over for a friend's wedding. We're easy-going, tidy, and out exploring most days — your place looks like the perfect base.",
+		questions:
+			'Is the sofa bed comfy enough if one of us is jet-lagged? And any good coffee nearby?',
+		email: 'tash.reeves@gmail.com',
+		instagram: '@tash.shoots',
+		phone: '+64 21 555 380',
+		partner: { name: 'Jordan', avatar: 'generic', initial: 'J' },
+		displayName: 'Tash & Jordan',
+		pronoun: 'their',
+	},
 };
+
+/** Do two requests fight over the same dates? (day-of-Aug ranges) */
+export const rangesOverlap = (a: [number, number], b: [number, number]) =>
+	a[0] < b[1] && b[0] < a[1];
 
 /* ---------- Host flow stepper: Booking request → Reserved → Confirmed ---------- */
 
@@ -208,15 +247,32 @@ export function GuestProfileCard({
 				onClick={() => setOpen((o) => !o)}
 				aria-expanded={open}
 			>
-				<Avatar
-					variant={preview.avatar}
-					initial={preview.initial}
-					size={44}
-					flag={preview.flag}
-				/>
+				{preview.partner ? (
+					/* Group booking: both guests up front, gently overlapped */
+					<span className="pair-avatars">
+						<Avatar
+							variant={preview.avatar}
+							initial={preview.initial}
+							size={44}
+							flag={preview.flag}
+						/>
+						<Avatar
+							variant={preview.partner.avatar}
+							initial={preview.partner.initial}
+							size={44}
+						/>
+					</span>
+				) : (
+					<Avatar
+						variant={preview.avatar}
+						initial={preview.initial}
+						size={44}
+						flag={preview.flag}
+					/>
+				)}
 				<span className="info">
 					{/* No inline flag — the avatar already carries one. */}
-					<span className="name-row">{guest}</span>
+					<span className="name-row">{preview.displayName ?? guest}</span>
 					<span className="subtitle">{subtitle}</span>
 				</span>
 				<span className={`profile-chev${open ? ' open' : ''}`}>
@@ -252,11 +308,16 @@ export function HostRequestScreen({
 
 	const swap = useSwapState();
 	const [confirmDecline, setConfirmDecline] = useState(false);
-	// Only one request can be reserved at a time for these dates.
-	const otherReserved =
-		['Melissa', 'Aisha'].some(
-			(g) => g !== guest && guestState(swap, g) !== 'new' && guestState(swap, g) !== 'declined',
-		);
+	// Only one reservation per overlapping date range; requests for other
+	// dates are unaffected.
+	const otherReserved = Object.keys(REQUEST_PREVIEWS).some(
+		(g) =>
+			g !== guest &&
+			guestState(swap, g) !== 'new' &&
+			guestState(swap, g) !== 'declined' &&
+			rangesOverlap(REQUEST_PREVIEWS[g].range, preview.range),
+	);
+	const who = preview.displayName ?? guest;
 
 	return (
 		<div className="screen">
@@ -276,7 +337,8 @@ export function HostRequestScreen({
 
 				{/* One line, not a paragraph — the flagged text-heavy header */}
 				<p className="reserved-note">
-					Accepting reserves {guest}'s stay — declining lets her know.
+					Accepting reserves {who}'s stay — declining lets{' '}
+					{preview.partner ? 'them' : 'her'} know.
 				</p>
 
 				<ReviewSummaryCard
@@ -297,7 +359,7 @@ export function HostRequestScreen({
 			<div className="form-footer">
 				{otherReserved && (
 					<div className="footer-note">
-						You already have a reserved guest for these dates.
+						You already have a reserved guest for overlapping dates.
 					</div>
 				)}
 				<div className="request-actions">
@@ -311,7 +373,7 @@ export function HostRequestScreen({
 						className="btn-primary"
 						disabled={otherReserved}
 						onClick={() => {
-							setGuestState(guest, 'reserved');
+							reserveGuest(guest);
 							onReserved();
 						}}
 					>
@@ -323,9 +385,9 @@ export function HostRequestScreen({
 			{confirmDecline && (
 				<div className="sheet-overlay" onClick={() => setConfirmDecline(false)}>
 					<div className="dialog-card" onClick={(e) => e.stopPropagation()}>
-						<div className="dialog-title">Decline {guest}'s request?</div>
+						<div className="dialog-title">Decline {who}'s request?</div>
 						<div className="dialog-sub">
-							We'll send {guest} a notification to let them know their
+							We'll send {who} a notification to let them know their
 							request wasn't successful.
 						</div>
 						<div className="dialog-actions">

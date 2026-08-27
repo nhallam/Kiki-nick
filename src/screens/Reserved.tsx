@@ -1,14 +1,22 @@
 /**
- * The one reserved booking for a trip: the stayer's completion checklist
- * (rental agreement, deposit, rent). Only one request can be in this state
- * at a time; when everything is done the host can confirm the booking.
+ * The reserved booking's completion checklist (rental agreement, deposit,
+ * rent), inside the 48-hour window. Only one request can hold overlapping
+ * dates; the booking confirms itself once all three steps are done, and
+ * either party can withdraw until both signatures are in.
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { LISTINGS } from '../data';
 import { IconCheck, IconChevronLeft, StatusBar } from '../ui';
-import { setGuestState, setSwapState, useSwapState } from '../store';
+import {
+	guestState,
+	setGuestState,
+	setSwapState,
+	useSwapState,
+	withdrawReservation,
+} from '../store';
 import { GuestProfileCard, HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
+import { ReserveTimer } from './ReserveTimer';
 
 const Tick = () => (
 	<span className="tick" aria-hidden>
@@ -95,9 +103,29 @@ export function ReservedScreen({
 	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
 	const listing = LISTINGS.find((l) => l.listerName === 'Ryan')!;
 	const rentTotal = preview.nights * listing.nightlyRate;
-	const allDone =
-		swap.guestSigned && swap.hostSigned && swap.depositPaid && swap.rentPaid;
+	const who = preview.displayName ?? guest;
+	// The 3 steps: agreement (both signatures), deposit, rent
+	const stepsDone =
+		(swap.guestSigned && swap.hostSigned ? 1 : 0) +
+		(swap.depositPaid ? 1 : 0) +
+		(swap.rentPaid ? 1 : 0);
+	const allDone = stepsDone === 3;
+	const bothSigned = swap.guestSigned && swap.hostSigned;
+	const state = guestState(swap, guest);
 	const [showAgreement, setShowAgreement] = useState(false);
+	const [confirmWithdraw, setConfirmWithdraw] = useState(false);
+
+	// No manual Confirm any more: 3 of 3 confirms the booking by itself.
+	useEffect(() => {
+		if (state === 'reserved' && allDone) {
+			const t = window.setTimeout(() => setGuestState(guest, 'confirmed'), 700);
+			return () => window.clearTimeout(t);
+		}
+	}, [state, allDone, guest]);
+	useEffect(() => {
+		if (state === 'confirmed') onConfirmed();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [state]);
 
 	// Payments are the stayer's steps really — tappable here so the state
 	// change can be demoed from the host's phone.
@@ -125,11 +153,13 @@ export function ReservedScreen({
 			</div>
 
 			<div className="form-content" style={{ paddingTop: 16 }}>
+				<ReserveTimer note="to complete the steps" />
+
 				<GuestProfileCard guest={guest} subtitle={preview.datesValue} />
 
 				<p className="reserved-note">
-					{guest}'s request is reserved. Once these steps are complete you
-					can confirm the booking.
+					{who}'s request is reserved. The booking confirms automatically
+					once all steps are done.
 				</p>
 
 				<div className="check-card">
@@ -142,7 +172,7 @@ export function ReservedScreen({
 							className="check-line split tappable"
 							onClick={() => setSwapState({ guestSigned: !swap.guestSigned })}
 						>
-							<span className="c-left">{guest}</span>
+							<span className="c-left">{who}</span>
 							{swap.guestSigned ? (
 								<span className="c-status">
 									<Tick /> Signed
@@ -191,7 +221,7 @@ export function ReservedScreen({
 					<div className="check-item">
 						<div className="check-title">Rent</div>
 						<div className="check-note">
-							You will receive rent 3 days after {guest} moves in
+							You will receive rent 3 days after {who} moves in
 						</div>
 						<button
 							className="check-line split tappable"
@@ -205,20 +235,60 @@ export function ReservedScreen({
 			</div>
 
 			<div className="form-footer">
-				<button
-					className="btn-primary"
-					disabled={!allDone}
-					onClick={() => {
-						setGuestState(guest, 'confirmed');
-						onConfirmed();
-					}}
-				>
-					Confirm Request
-				</button>
+				<div className="steps-progress">
+					<span className="sp-count">{stepsDone} of 3 steps complete</span>
+					<span className="sp-note">
+						{allDone
+							? 'Confirming the booking…'
+							: 'Confirms automatically at 3 of 3'}
+					</span>
+				</div>
+				{bothSigned ? (
+					<div className="withdraw-locked">
+						Both parties have signed — the reservation can no longer be
+						withdrawn.
+					</div>
+				) : (
+					<button
+						className="withdraw-btn"
+						onClick={() => setConfirmWithdraw(true)}
+					>
+						Withdraw reservation
+					</button>
+				)}
 			</div>
 
 			{showAgreement && (
 				<AgreementModal guest={guest} onClose={() => setShowAgreement(false)} />
+			)}
+
+			{confirmWithdraw && (
+				<div className="sheet-overlay" onClick={() => setConfirmWithdraw(false)}>
+					<div className="dialog-card" onClick={(e) => e.stopPropagation()}>
+						<div className="dialog-title">Withdraw this reservation?</div>
+						<div className="dialog-sub">
+							{who}'s request returns to your inbox and they'll be
+							notified. Anything already signed or paid is undone.
+						</div>
+						<div className="dialog-actions">
+							<button
+								className="btn-dialog-cancel"
+								onClick={() => setConfirmWithdraw(false)}
+							>
+								Cancel
+							</button>
+							<button
+								className="btn-dialog-danger"
+								onClick={() => {
+									withdrawReservation(guest);
+									onBack();
+								}}
+							>
+								Withdraw
+							</button>
+						</div>
+					</div>
+				</div>
 			)}
 		</div>
 	);

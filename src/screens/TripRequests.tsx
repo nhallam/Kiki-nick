@@ -66,12 +66,13 @@ export const TRIP_REQUESTS: TripBookingRequest[] = [
 		status: 'new',
 	},
 	{
+		// The group booking — live like Melissa's and Aisha's (v3.2)
 		id: 3,
 		name: 'Tash',
 		avatar: 'tash',
 		initial: 'T',
 		sub: '2 guests · 26 - 29 Aug · £201 + deposit',
-		status: 'declined',
+		status: 'new',
 	},
 	{
 		id: 4,
@@ -149,12 +150,24 @@ export function TripRequestsScreen({
 								: status === 'new' && REQUEST_PREVIEWS[r.name]
 									? () => onOpenRequest(r.name)
 									: undefined;
+					const partner = REQUEST_PREVIEWS[r.name]?.partner;
 					return (
 						<button key={r.id} className="req-row" onClick={onOpen}>
-							<Avatar variant={r.avatar} initial={r.initial} size={44} />
+							{partner ? (
+								<span className="pair-avatars">
+									<Avatar variant={r.avatar} initial={r.initial} size={44} />
+									<Avatar
+										variant={partner.avatar}
+										initial={partner.initial}
+										size={44}
+									/>
+								</span>
+							) : (
+								<Avatar variant={r.avatar} initial={r.initial} size={44} />
+							)}
 							<span className="tr-body">
 								<span className="tr-title">
-									{r.name}
+									{REQUEST_PREVIEWS[r.name]?.displayName ?? r.name}
 									{status === 'new' && <span className="new-badge">New</span>}
 									{status === 'inReview' && (
 										<span className="review-badge">In review</span>

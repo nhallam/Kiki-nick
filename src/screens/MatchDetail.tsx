@@ -173,8 +173,9 @@ export function MatchDetailScreen({
 			done: true,
 			thumb: RYAN_PHOTOS[1],
 		},
-		{ title: 'Move-in', sub: 'Wednesday 26 Aug', done: false },
-		{ title: 'Move-out', sub: 'Saturday 29 Aug', done: false },
+		/* No manual action — these complete by themselves on the day */
+		{ title: 'Move-in', sub: 'Wednesday 26 Aug · automatic', done: false },
+		{ title: 'Move-out', sub: 'Saturday 29 Aug · automatic', done: false },
 	];
 
 	const refund: StaticItem = {

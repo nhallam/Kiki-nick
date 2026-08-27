@@ -19,6 +19,7 @@ export function ConfirmedScreen({
 	onDone: () => void;
 }) {
 	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
+	const who = preview.displayName ?? guest;
 
 	return (
 		<div className="screen">
@@ -33,24 +34,46 @@ export function ConfirmedScreen({
 			</div>
 
 			<div className="confirmed-hero">
-				<span className="guest-hero-avatar">
-					<Avatar
-						variant={preview.avatar}
-						initial={preview.initial}
-						size={132}
-						flag={preview.flag}
-					/>
-				</span>
+				{preview.partner ? (
+					/* Group booking: both stayers share the spotlight */
+					<span className="pair-avatars hero">
+						<span className="guest-hero-avatar">
+							<Avatar
+								variant={preview.avatar}
+								initial={preview.initial}
+								size={104}
+								flag={preview.flag}
+							/>
+						</span>
+						<span className="guest-hero-avatar">
+							<Avatar
+								variant={preview.partner.avatar}
+								initial={preview.partner.initial}
+								size={104}
+							/>
+						</span>
+					</span>
+				) : (
+					<span className="guest-hero-avatar">
+						<Avatar
+							variant={preview.avatar}
+							initial={preview.initial}
+							size={132}
+							flag={preview.flag}
+						/>
+					</span>
+				)}
 				<h1 className="confirmed-title">Awesome!</h1>
 				<p className="confirmed-sub">
-					{guest} will be staying in your place for {preview.nights} nights
+					{who} will be staying in your place for {preview.nights} nights
 					in August!
 				</p>
 				<span className="guest-hometown">
 					<IconPin size={15} /> {preview.hometown}
 				</span>
 				<span className="stay-badge">
-					This is her {preview.stayOrdinal} stay in a Kiki!
+					This is {preview.pronoun ?? 'her'} {preview.stayOrdinal} stay in a
+					Kiki!
 				</span>
 			</div>
 

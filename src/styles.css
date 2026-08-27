@@ -2456,6 +2456,94 @@ input {
 	color: var(--dark);
 }
 
+/* 48-hour completion window: live countdown, shown while reserved */
+.timer-banner {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 14px;
+	padding: 10px 14px;
+	border-radius: 12px;
+	background: var(--pending-tint);
+	border: 1px solid var(--pending);
+	color: var(--pending);
+}
+.timer-clock {
+	display: inline-flex;
+}
+.timer-value {
+	font-size: 15px;
+	font-weight: 800;
+	font-variant-numeric: tabular-nums;
+}
+.timer-note {
+	font-size: 13px;
+	font-weight: 600;
+}
+
+/* "2 of 3 steps complete — will auto-confirm" */
+.steps-progress {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2px;
+	margin-bottom: 10px;
+	text-align: center;
+}
+.sp-count {
+	font-size: 15px;
+	font-weight: 800;
+}
+.sp-note {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--gray);
+}
+
+/* Withdrawal: available until both signatures are in */
+.withdraw-btn {
+	display: block;
+	width: 100%;
+	padding: 12px;
+	text-align: center;
+	font-size: 14.5px;
+	font-weight: 700;
+	color: var(--error);
+}
+.withdraw-locked {
+	padding: 10px 12px;
+	text-align: center;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--gray);
+}
+
+/* Group bookings: lead + partner, gently overlapped */
+.pair-avatars {
+	display: inline-flex;
+	align-items: center;
+	flex-shrink: 0;
+}
+.pair-avatars .avatar + .avatar,
+.pair-avatars .guest-hero-avatar + .guest-hero-avatar {
+	margin-left: -14px;
+}
+.pair-avatars .avatar {
+	box-shadow: 0 0 0 2px var(--white);
+	border-radius: 50%;
+}
+.pair-avatars.hero {
+	margin-bottom: 0;
+}
+.pair-avatars.hero .guest-hero-avatar + .guest-hero-avatar {
+	margin-left: -30px;
+}
+
+/* Completed matches under History keep a quieter look */
+.req-row.match.past {
+	cursor: default;
+}
+
 /* Guest steps: the listing context row + payment upload states */
 .guest-steps-listing {
 	display: flex;

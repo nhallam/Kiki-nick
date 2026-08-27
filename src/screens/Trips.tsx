@@ -95,11 +95,13 @@ export function TripsScreen({
 	const [tab, setTab] = useState<TripsTab>(initialTab ?? 'staying');
 	// Past trips are collapsed by default — history is a pull, not a push.
 	const [showPast, setShowPast] = useState(false);
+	const [showHistory, setShowHistory] = useState(false);
 
 	const swap = useSwapState();
-	// Requests still New for the Aug trip (Tash/Sara/Marco are settled).
+	// Requests still New for the Aug trip (Sara/Marco are settled).
+	const LIVE_GUESTS = ['Melissa', 'Aisha', 'Tash'];
 	const newCount = TRIP_REQUESTS.filter(
-		(r) => guestState(swap, r.name) === 'new' && (r.name === 'Melissa' || r.name === 'Aisha'),
+		(r) => guestState(swap, r.name) === 'new' && LIVE_GUESTS.includes(r.name),
 	).length;
 	const matched = swap.melissa === 'confirmed';
 
@@ -237,6 +239,39 @@ export function TripsScreen({
 										When you have a match, you'll be able to see it here.
 									</div>
 								</div>
+							)}
+							{/* Finished stays fold away under History */}
+							<button
+								className={`trips-subsection-title toggle${showHistory ? ' open' : ''}`}
+								onClick={() => setShowHistory((s) => !s)}
+								aria-expanded={showHistory}
+							>
+								History
+								<IconChevronDown size={18} />
+							</button>
+							{showHistory && (
+								<>
+									<div className="req-row match past">
+										<Avatar variant="generic" initial="L" size={44} />
+										<span className="tr-body">
+											<span className="tr-title">
+												Lena
+												<span className="declined-badge">Completed</span>
+											</span>
+											<span className="tr-sub">20 - 30 Jul · 10 nights · £660 + deposit</span>
+										</span>
+									</div>
+									<div className="req-row match past">
+										<Avatar variant="generic" initial="P" size={44} />
+										<span className="tr-body">
+											<span className="tr-title">
+												Priya
+												<span className="declined-badge">Completed</span>
+											</span>
+											<span className="tr-sub">09 - 22 Aug · 13 nights · £585 + deposit</span>
+										</span>
+									</div>
+								</>
 							)}
 						</div>
 

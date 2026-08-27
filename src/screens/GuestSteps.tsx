@@ -7,15 +7,21 @@
  * When Ryan confirms, this same route becomes her celebration: the fan-out
  * photo deck of the place she's about to stay in.
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { PAY_SHOTS, RYAN_PHOTOS } from '../assets';
 import { LISTINGS } from '../data';
 import { IconCheck, IconChevronLeft, RoomPhoto, StatusBar } from '../ui';
-import { setSwapState, useSwapState } from '../store';
+import {
+	setGuestState,
+	setSwapState,
+	useSwapState,
+	withdrawReservation,
+} from '../store';
 import { HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
 import { PhotoDeck } from './PhotoDeck';
 import { AgreementModal } from './Reserved';
+import { ReserveTimer } from './ReserveTimer';
 
 const Tick = () => (
 	<span className="tick" aria-hidden>
@@ -41,9 +47,26 @@ export function GuestStepsScreen({
 	const rentTotal = preview.nights * listing.nightlyRate;
 
 	const [showAgreement, setShowAgreement] = useState(false);
+	const [confirmWithdraw, setConfirmWithdraw] = useState(false);
 	// Which payment is being uploaded ('deposit' | 'rent'), plus selection
 	const [uploadFor, setUploadFor] = useState<'deposit' | 'rent' | null>(null);
 	const [picked, setPicked] = useState<number | null>(null);
+
+	// The 3 steps: agreement (both signatures), deposit, rent
+	const stepsDone =
+		(swap.guestSigned && swap.hostSigned ? 1 : 0) +
+		(swap.depositPaid ? 1 : 0) +
+		(swap.rentPaid ? 1 : 0);
+	const bothSigned = swap.guestSigned && swap.hostSigned;
+
+	// Auto-confirm can complete from either phone — whoever finishes the
+	// last step tips it over.
+	useEffect(() => {
+		if (swap.melissa === 'reserved' && stepsDone === 3) {
+			const t = window.setTimeout(() => setGuestState(guest, 'confirmed'), 700);
+			return () => window.clearTimeout(t);
+		}
+	}, [swap.melissa, stepsDone, guest]);
 
 	const openUpload = (which: 'deposit' | 'rent') => {
 		setPicked(which === 'deposit' ? swap.depositShot : swap.rentShot);
@@ -135,6 +158,8 @@ export function GuestStepsScreen({
 			</div>
 
 			<div className="form-content" style={{ paddingTop: 16 }}>
+				<ReserveTimer note="to complete your steps" />
+
 				{/* The place this is all for */}
 				<div className="guest-steps-listing">
 					<span className="gsl-thumb">
@@ -147,8 +172,8 @@ export function GuestStepsScreen({
 				</div>
 
 				<p className="reserved-note">
-					Ryan reserved your dates! Complete these steps and he can confirm
-					your stay.
+					Ryan reserved your dates! Your booking confirms automatically once
+					all steps are done.
 				</p>
 
 				<div className="check-card">
@@ -207,13 +232,61 @@ export function GuestStepsScreen({
 					</div>
 				</div>
 
-				<p className="reserved-note">
-					Once everything's complete, Ryan confirms the booking.
-				</p>
+				<div className="steps-progress">
+					<span className="sp-count">{stepsDone} of 3 steps complete</span>
+					<span className="sp-note">
+						{stepsDone === 3
+							? 'Confirming your booking…'
+							: 'Confirms automatically at 3 of 3'}
+					</span>
+				</div>
+
+				{bothSigned ? (
+					<div className="withdraw-locked">
+						Both parties have signed — the reservation can no longer be
+						withdrawn.
+					</div>
+				) : (
+					<button
+						className="withdraw-btn"
+						onClick={() => setConfirmWithdraw(true)}
+					>
+						Withdraw my request
+					</button>
+				)}
 			</div>
 
 			{showAgreement && (
 				<AgreementModal guest={guest} onClose={() => setShowAgreement(false)} />
+			)}
+
+			{confirmWithdraw && (
+				<div className="sheet-overlay" onClick={() => setConfirmWithdraw(false)}>
+					<div className="dialog-card" onClick={(e) => e.stopPropagation()}>
+						<div className="dialog-title">Withdraw your request?</div>
+						<div className="dialog-sub">
+							Your reservation is cancelled and Ryan will be notified.
+							Anything already signed or paid is undone.
+						</div>
+						<div className="dialog-actions">
+							<button
+								className="btn-dialog-cancel"
+								onClick={() => setConfirmWithdraw(false)}
+							>
+								Cancel
+							</button>
+							<button
+								className="btn-dialog-danger"
+								onClick={() => {
+									withdrawReservation(guest);
+									onBack();
+								}}
+							>
+								Withdraw
+							</button>
+						</div>
+					</div>
+				</div>
 			)}
 
 			{uploadFor && (
