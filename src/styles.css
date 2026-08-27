@@ -2430,6 +2430,26 @@ input {
 	line-height: 1.55;
 }
 
+/* Sign-off from the Kiki team at the very bottom of the match page */
+.match-farewell {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	padding: 10px 24px 36px;
+}
+.mf-logo {
+	width: 46px;
+	height: auto;
+	margin-bottom: 10px;
+}
+.mf-text {
+	font-size: 13.5px;
+	font-weight: 600;
+	color: var(--gray);
+	line-height: 1.55;
+}
+
 /* Vertical timeline of the stay's events */
 .timeline {
 	padding: 22px 28px 28px;

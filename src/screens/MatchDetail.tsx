@@ -10,7 +10,7 @@
  */
 import React, { useState } from 'react';
 
-import { RYAN_PHOTOS } from '../assets';
+import { KIKI_LOGO, RYAN_PHOTOS } from '../assets';
 import { LISTINGS } from '../data';
 import {
 	Avatar,
@@ -307,6 +307,15 @@ export function MatchDetailScreen({
 					)}
 					{afterStep}
 					{renderStatic(refund, true, false)}
+				</div>
+
+				<div className="match-farewell">
+					<img className="mf-logo" src={KIKI_LOGO} alt="Kiki" />
+					<div className="mf-text">
+						Have a great stay!
+						<br />
+						From Toby and the Kiki Team
+					</div>
 				</div>
 			</div>
 
