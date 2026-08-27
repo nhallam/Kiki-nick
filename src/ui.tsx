@@ -5,6 +5,8 @@
  */
 import React from 'react';
 
+import { MELISSA_PHOTO, RYAN_PHOTO } from './assets';
+
 /* ---------- Icons (24x24 viewBox, stroke-based, Ionicons-ish) ---------- */
 
 type IconProps = { size?: number; color?: string; strokeWidth?: number };
@@ -284,53 +286,28 @@ const AVATAR_GRADIENTS: Record<string, string> = {
 	generic: 'linear-gradient(135deg, #9ca3af 0%, #6b7280 100%)',
 };
 
-/* Illustrated profile photos for the matching-flow personas. Flat SVG
-   faces, same self-drawn approach as the room photos. */
+/* Real profile photos for the matching-flow personas, embedded like the
+   room photos so the single-file build stays self-contained. */
 const MelissaFace = () => (
-	<svg viewBox="0 0 80 80" width="100%" height="100%" aria-hidden>
-		<rect width="80" height="80" fill="#f2a65a" />
-		{/* hair behind the face */}
-		<path d="M14 46 C10 20 26 8 40 8 C54 8 70 20 66 46 C66 60 60 70 58 74 L22 74 C20 70 14 60 14 46 Z" fill="#6d4230" />
-		{/* neck + shoulders */}
-		<rect x="33" y="52" width="14" height="12" fill="#eab287" />
-		<path d="M12 80 C14 68 26 62 40 62 C54 62 66 68 68 80 Z" fill="#127a6e" />
-		{/* face */}
-		<circle cx="40" cy="38" r="17" fill="#f6c39b" />
-		{/* fringe */}
-		<path d="M23 36 C23 20 32 14 40 14 C48 14 57 20 57 36 C52 28 46 25 40 25 C34 25 28 28 23 36 Z" fill="#7a4b33" />
-		{/* eyes + brows */}
-		<circle cx="33.5" cy="38" r="1.9" fill="#2f2a26" />
-		<circle cx="46.5" cy="38" r="1.9" fill="#2f2a26" />
-		<path d="M30 33.4 C32 32 35 32 36.8 33" stroke="#5a4634" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-		<path d="M43.2 33 C45 32 48 32 50 33.4" stroke="#5a4634" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-		{/* smile */}
-		<path d="M34 45 C37 48.4 43 48.4 46 45" stroke="#a8562e" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-		{/* earrings */}
-		<circle cx="23.5" cy="42" r="1.4" fill="#f4d06f" />
-		<circle cx="56.5" cy="42" r="1.4" fill="#f4d06f" />
-	</svg>
+	<img
+		src={MELISSA_PHOTO}
+		alt=""
+		width="100%"
+		height="100%"
+		style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+		draggable={false}
+	/>
 );
 
 const RyanFace = () => (
-	<svg viewBox="0 0 80 80" width="100%" height="100%" aria-hidden>
-		<rect width="80" height="80" fill="#7fb6a4" />
-		{/* neck + shoulders */}
-		<rect x="33" y="52" width="14" height="12" fill="#d9a377" />
-		<path d="M12 80 C14 68 26 62 40 62 C54 62 66 68 68 80 Z" fill="#2f4a72" />
-		{/* face */}
-		<circle cx="40" cy="38" r="17" fill="#e8b48c" />
-		{/* short hair */}
-		<path d="M23 38 C22 22 31 15 40 15 C49 15 58 22 57 38 C56 28 52 23 40 23 C28 23 24 28 23 38 Z" fill="#33271f" />
-		{/* beard */}
-		<path d="M25 42 C26 54 32 57 40 57 C48 57 54 54 55 42 C54 52 48 53.6 40 53.6 C32 53.6 26 52 25 42 Z" fill="#3c2e23" />
-		{/* eyes + brows */}
-		<circle cx="33.5" cy="37" r="1.9" fill="#241f1a" />
-		<circle cx="46.5" cy="37" r="1.9" fill="#241f1a" />
-		<path d="M30 32.4 C32 31 35 31 36.8 32" stroke="#33271f" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-		<path d="M43.2 32 C45 31 48 31 50 32.4" stroke="#33271f" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-		{/* smile inside the beard */}
-		<path d="M35 47.5 C38 49.8 42 49.8 45 47.5" stroke="#8a5a3a" strokeWidth="1.7" fill="none" strokeLinecap="round" />
-	</svg>
+	<img
+		src={RYAN_PHOTO}
+		alt=""
+		width="100%"
+		height="100%"
+		style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+		draggable={false}
+	/>
 );
 
 /* Which face "me" resolves to — the host phone provides "ryan". */
