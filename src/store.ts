@@ -16,6 +16,8 @@ export interface SwapState {
 	/** Reserved checklist: the stayer's payments (tappable in the demo) */
 	depositPaid: boolean;
 	rentPaid: boolean;
+	/** Move-out condition photos Melissa uploaded (indices into her roll) */
+	afterPhotos: number[];
 }
 
 const INITIAL_STATE: SwapState = {
@@ -25,6 +27,7 @@ const INITIAL_STATE: SwapState = {
 	hostSigned: false,
 	depositPaid: false,
 	rentPaid: false,
+	afterPhotos: [],
 };
 
 let state: SwapState = INITIAL_STATE;

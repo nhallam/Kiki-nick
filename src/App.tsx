@@ -202,6 +202,8 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 				/>
 			);
 		case 'match':
-			return <MatchDetailScreen onBack={() => setRoute(tripsRoute())} />;
+			return (
+				<MatchDetailScreen persona={persona} onBack={() => setRoute(tripsRoute())} />
+			);
 	}
 }

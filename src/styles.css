@@ -2313,6 +2313,12 @@ input {
 	color: var(--gray);
 	margin-top: 4px;
 }
+.match-address {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--gray);
+	margin-top: 2px;
+}
 
 /* Vertical timeline of the stay's events */
 .timeline {
@@ -2372,6 +2378,110 @@ input {
 	font-size: 13px;
 	font-weight: 600;
 	color: var(--gray);
+}
+/* One small photo stands in for the whole condition-photo set */
+.tl-thumb {
+	position: relative;
+	width: 52px;
+	height: 52px;
+	margin-top: 8px;
+	border-radius: 10px;
+	overflow: hidden;
+	padding: 0;
+	cursor: pointer;
+}
+.tl-thumb:disabled {
+	cursor: default;
+}
+.tl-thumb.static {
+	display: block;
+	cursor: default;
+}
+.tl-thumb img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+.tl-thumb-count {
+	position: absolute;
+	right: 3px;
+	bottom: 3px;
+	padding: 1px 5px;
+	border-radius: 8px;
+	background: rgba(0, 0, 0, 0.55);
+	color: var(--white);
+	font-size: 10.5px;
+	font-weight: 700;
+}
+.tl-add-btn {
+	align-self: flex-start;
+	margin-top: 8px;
+	padding: 8px 16px;
+	border-radius: 18px;
+	background: var(--primary);
+	color: var(--white);
+	font-size: 13.5px;
+	font-weight: 700;
+}
+
+/* Photo-select sheet for Melissa's condition photos */
+.photo-picker {
+	width: min(340px, calc(100% - 32px));
+	background: var(--white);
+	border-radius: 20px;
+	padding: 20px;
+}
+.pp-title {
+	font-size: 17px;
+	font-weight: 800;
+}
+.pp-sub {
+	font-size: 13.5px;
+	font-weight: 600;
+	color: var(--gray);
+	margin-top: 3px;
+}
+.pp-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+	margin: 16px 0 18px;
+}
+.pp-cell {
+	position: relative;
+	aspect-ratio: 4 / 3;
+	border-radius: 12px;
+	overflow: hidden;
+	padding: 0;
+	border: 2px solid transparent;
+}
+.pp-cell.selected {
+	border-color: var(--primary);
+}
+.pp-cell img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+.pp-check {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(255, 255, 255, 0.85);
+	border: 1.5px solid var(--border-medium);
+	color: var(--white);
+}
+.pp-cell.selected .pp-check {
+	background: var(--primary);
+	border-color: var(--primary);
 }
 
 /* ---------- Host actions on a request ---------- */
