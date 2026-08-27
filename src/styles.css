@@ -2476,8 +2476,18 @@ input {
 	color: var(--disabled-text);
 	cursor: default;
 }
-.reply-sent {
+.reply-bubble {
 	margin-top: 10px;
+	padding: 10px 14px;
+	background: var(--primary-tint);
+	border-radius: 12px 12px 12px 4px;
+	font-size: 14px;
+	line-height: 1.5;
+	color: var(--dark);
+	white-space: pre-wrap;
+}
+.reply-sent {
+	margin-top: 6px;
 	font-size: 13.5px;
 	font-weight: 700;
 	color: var(--primary-strong);

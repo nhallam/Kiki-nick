@@ -646,9 +646,14 @@ export function ReviewSummaryCard({
 										<p>{questions}</p>
 										{replyTo &&
 											(replySent ? (
-												<div className="reply-sent">
-													✓ Reply sent to {replyTo}
-												</div>
+												<>
+													{/* The sent reply stays visible — it's part of
+													    the conversation, not a form to clear */}
+													<div className="reply-bubble">{reply}</div>
+													<div className="reply-sent">
+														✓ Reply sent to {replyTo}
+													</div>
+												</>
 											) : (
 												<div className="reply-box">
 													<textarea
