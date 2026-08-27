@@ -82,9 +82,7 @@ export function ReservedScreen({
 									<Tick /> Signed
 								</span>
 							) : (
-								<span className="c-status unpaid">
-									<span className="hollow" aria-hidden /> Waiting to be signed
-								</span>
+								<span className="c-status unpaid">Waiting to be signed</span>
 							)}
 						</button>
 						<div className="check-line split">
