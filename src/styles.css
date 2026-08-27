@@ -2328,6 +2328,107 @@ input {
 	color: var(--white);
 }
 
+/* ---------- Reply to the booker's question (host side) ---------- */
+
+.reply-box {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 10px;
+}
+.reply-input {
+	width: 100%;
+	min-height: 66px;
+	border: 1px solid var(--border-medium);
+	border-radius: 10px;
+	padding: 10px 12px;
+	font-size: 14px;
+	line-height: 1.45;
+	resize: vertical;
+	color: var(--dark);
+}
+.reply-input:focus {
+	outline: none;
+	border-color: var(--primary);
+	box-shadow: 0 0 0 1px var(--primary);
+}
+.reply-btn {
+	align-self: flex-end;
+}
+.reply-btn:disabled {
+	background: var(--disabled-bg);
+	color: var(--disabled-text);
+	cursor: default;
+}
+.reply-sent {
+	margin-top: 10px;
+	font-size: 13.5px;
+	font-weight: 700;
+	color: var(--primary-strong);
+}
+
+/* ---------- Rental agreement modal ---------- */
+
+.sheet-overlay .agreement-modal {
+	margin: auto 20px;
+	width: calc(100% - 40px);
+	max-height: 82%;
+	display: flex;
+	flex-direction: column;
+}
+.agreement-doc {
+	background: var(--white);
+	border-radius: 16px;
+	padding: 20px 18px;
+	overflow-y: auto;
+	font-size: 13.5px;
+	line-height: 1.55;
+	color: var(--dark);
+}
+.agreement-doc p {
+	margin-bottom: 12px;
+}
+.agreement-heading {
+	font-size: 17px;
+	font-weight: 800;
+	margin-bottom: 2px;
+}
+.agreement-ref {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--gray);
+	margin-bottom: 14px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid var(--border-light);
+}
+.agreement-clause {
+	margin-bottom: 10px;
+}
+.agreement-signatures {
+	display: flex;
+	gap: 12px;
+	margin-top: 16px;
+	padding-top: 14px;
+	border-top: 1px dashed var(--border-medium);
+}
+.agreement-sig {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+.sig-name {
+	font-weight: 700;
+}
+.sig-state {
+	font-size: 12.5px;
+	font-weight: 600;
+	color: var(--gray);
+}
+.sig-state.done {
+	color: var(--primary-strong);
+}
+
 /* ---------- Reserved checklist ---------- */
 
 .reserved-note {

@@ -10,7 +10,8 @@ export type GuestRequestState = 'new' | 'reserved' | 'confirmed' | 'declined';
 export interface SwapState {
 	melissa: GuestRequestState;
 	aisha: GuestRequestState;
-	/** Reserved checklist: has Ryan signed the rental agreement yet? */
+	/** Reserved checklist: has each party signed the rental agreement? */
+	guestSigned: boolean;
 	hostSigned: boolean;
 	/** Reserved checklist: the stayer's payments (tappable in the demo) */
 	depositPaid: boolean;
@@ -20,6 +21,7 @@ export interface SwapState {
 const INITIAL_STATE: SwapState = {
 	melissa: 'new',
 	aisha: 'new',
+	guestSigned: false,
 	hostSigned: false,
 	depositPaid: false,
 	rentPaid: false,

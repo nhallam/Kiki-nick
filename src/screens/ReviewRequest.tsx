@@ -512,6 +512,8 @@ export function ReviewSummaryCard({
 	onEditGuests,
 	intro,
 	questions,
+	introDefaultOpen,
+	replyTo,
 }: {
 	listing: Listing;
 	hasDates: boolean;
@@ -525,9 +527,15 @@ export function ReviewSummaryCard({
 	/** When set, the card grows an Intro & Questions row (confirm page). */
 	intro?: string;
 	questions?: string;
+	/** Host side: the note is news, so open it straight away. */
+	introDefaultOpen?: boolean;
+	/** Host side: who a reply to the questions goes to. Enables the reply box. */
+	replyTo?: string;
 }) {
-	// Hidden by default — the note was written moments ago.
-	const [showIntro, setShowIntro] = useState(false);
+	// Hidden by default on the guest's own confirm — they just wrote it.
+	const [showIntro, setShowIntro] = useState(introDefaultOpen ?? false);
+	const [reply, setReply] = useState('');
+	const [replySent, setReplySent] = useState(false);
 	return (
 		<div className="review-card">
 			<div className="review-listing">
@@ -634,6 +642,28 @@ export function ReviewSummaryCard({
 											Questions
 										</div>
 										<p>{questions}</p>
+										{replyTo &&
+											(replySent ? (
+												<div className="reply-sent">
+													✓ Reply sent to {replyTo}
+												</div>
+											) : (
+												<div className="reply-box">
+													<textarea
+														className="reply-input"
+														placeholder={`Reply to ${replyTo}…`}
+														value={reply}
+														onChange={(e) => setReply(e.target.value)}
+													/>
+													<button
+														className="sign-btn reply-btn"
+														disabled={!reply.trim()}
+														onClick={() => setReplySent(true)}
+													>
+														Reply
+													</button>
+												</div>
+											))}
 									</>
 								)}
 							</div>

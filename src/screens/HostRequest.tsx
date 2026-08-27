@@ -23,6 +23,7 @@ interface RequestPreview {
 	occupation: string;
 	age: number;
 	hometown: string;
+	fullName: string;
 	/** e.g. 'second' — which Kiki stay this booking is for them */
 	stayOrdinal: string;
 	nights: number;
@@ -42,6 +43,7 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		occupation: 'Marketing Manager',
 		age: 28,
 		hometown: 'Melbourne, Australia',
+		fullName: 'Melissa Hart',
 		stayOrdinal: 'second',
 		nights: 3,
 		datesValue: '26th Aug – 29th Aug 2026 · 3 nights',
@@ -51,7 +53,7 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		questions:
 			'Is it okay to use the balcony in the evenings, and is there somewhere to lock a bike?',
 		email: 'melissa.hart@gmail.com',
-		instagram: '@melissa.insydney',
+		instagram: '@melissa.inmelbourne',
 		phone: '+61 412 555 083',
 	},
 	Aisha: {
@@ -61,6 +63,7 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		occupation: 'Product Designer',
 		age: 29,
 		hometown: 'Manchester, UK',
+		fullName: 'Aisha Khan',
 		stayOrdinal: 'first',
 		nights: 2,
 		datesValue: '27th Aug – 29th Aug 2026 · 2 nights',
@@ -293,6 +296,8 @@ export function HostRequestScreen({
 					total={total}
 					intro={preview.intro}
 					questions={preview.questions}
+					introDefaultOpen
+					replyTo={guest}
 				/>
 			</div>
 
