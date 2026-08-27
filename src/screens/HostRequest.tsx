@@ -3,7 +3,7 @@
  * summary-card UI as the guest-side booking request (2.4). One entry per
  * requester who can be previewed from the trip's request list.
  */
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import { LISTINGS } from '../data';
 import {
@@ -110,7 +110,7 @@ export function HostFlowSteps({
 	);
 }
 
-/* ---------- Expandable guest card with tap-to-copy contact details ---------- */
+/* ---------- Expandable guest card with contact actions ---------- */
 
 const contactIconProps = {
 	width: 17,
@@ -145,31 +145,8 @@ const IconPhone = () => (
 	</svg>
 );
 
-function copyText(text: string) {
-	// Clipboard API needs a secure context; fall back to the classic
-	// hidden-textarea trick so copying also works inside the gallery iframe.
-	const fallback = () => {
-		const ta = document.createElement('textarea');
-		ta.value = text;
-		ta.style.position = 'fixed';
-		ta.style.opacity = '0';
-		document.body.appendChild(ta);
-		ta.select();
-		try {
-			document.execCommand('copy');
-		} catch {
-			/* prototype: feedback still shows */
-		}
-		document.body.removeChild(ta);
-	};
-	if (navigator.clipboard?.writeText) {
-		navigator.clipboard.writeText(text).catch(fallback);
-	} else {
-		fallback();
-	}
-}
-
-/** Tap-to-copy contact rows — also reused on the match screen. */
+/** Contact rows — each opens the right app: mail, Instagram, or the dialler.
+    (Was tap-to-copy; per client review, taps should act, not copy.) */
 export function ContactRows({
 	email,
 	instagram,
@@ -179,39 +156,36 @@ export function ContactRows({
 	instagram: string;
 	phone: string;
 }) {
-	const [copied, setCopied] = useState<string | null>(null);
-	const timer = useRef<number>();
-
-	const copy = (label: string, value: string) => {
-		copyText(value);
-		setCopied(label);
-		window.clearTimeout(timer.current);
-		timer.current = window.setTimeout(() => setCopied(null), 1600);
-	};
-
 	const contacts = [
-		{ label: 'Email', icon: <IconMail />, value: email },
-		{ label: 'Instagram', icon: <IconInsta />, value: instagram },
-		{ label: 'Phone number', icon: <IconPhone />, value: phone },
+		{ label: 'Email', icon: <IconMail />, value: email, href: `mailto:${email}` },
+		{
+			label: 'Instagram',
+			icon: <IconInsta />,
+			value: instagram,
+			href: `https://instagram.com/${instagram.replace(/^@/, '')}`,
+		},
+		{
+			label: 'Call',
+			icon: <IconPhone />,
+			value: phone,
+			href: `tel:${phone.replace(/\s+/g, '')}`,
+		},
 	];
 
 	return (
 		<div className="contact-rows">
 			{contacts.map((c) => (
-				<button
+				<a
 					key={c.label}
 					className="contact-row"
-					aria-label={`Copy ${c.label}`}
-					onClick={() => copy(c.label, c.value)}
+					aria-label={c.label}
+					href={c.href}
+					target={c.href.startsWith('http') ? '_blank' : undefined}
+					rel="noreferrer"
 				>
 					<span className="c-icon">{c.icon}</span>
 					<span className="c-value">{c.value}</span>
-					{copied === c.label && (
-						<span className="c-copied">
-							<IconCheck size={11} /> Copied
-						</span>
-					)}
-				</button>
+				</a>
 			))}
 		</div>
 	);
@@ -300,10 +274,9 @@ export function HostRequestScreen({
 				{/* Who it's from — same subtitle as the Reserved screen's card */}
 				<GuestProfileCard guest={guest} subtitle={preview.datesValue} />
 
+				{/* One line, not a paragraph — the flagged text-heavy header */}
 				<p className="reserved-note">
-					{guest} has requested to book your place. Review the request,
-					then accept it to reserve their stay — or decline and we'll
-					let them know.
+					Accepting reserves {guest}'s stay — declining lets her know.
 				</p>
 
 				<ReviewSummaryCard

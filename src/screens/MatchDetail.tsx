@@ -25,6 +25,23 @@ import {
 } from '../ui';
 import { setSwapState, useSwapState } from '../store';
 import { ContactRows, REQUEST_PREVIEWS } from './HostRequest';
+import { AgreementModal } from './Reserved';
+
+const IconKey = ({ size = 18 }: { size?: number }) => (
+	<svg
+		width={size}
+		height={size}
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<circle cx="7.5" cy="15.5" r="4.5" />
+		<path d="M10.7 12.3L21 2M15 8l3 3M18 5l3 3" />
+	</svg>
+);
 
 const ADDRESS = '6 Sylvester Path, Hackney, London E8';
 
@@ -56,6 +73,7 @@ export function MatchDetailScreen({
 	const [showAddressSheet, setShowAddressSheet] = useState(false);
 	const [showInstructions, setShowInstructions] = useState(false);
 	const [showContact, setShowContact] = useState(false);
+	const [showAgreement, setShowAgreement] = useState(false);
 
 	const openPicker = () => {
 		setSelected(swap.afterPhotos);
@@ -120,6 +138,7 @@ export function MatchDetailScreen({
 		sub: string;
 		done: boolean;
 		thumb?: string;
+		actions?: React.ReactNode;
 	}
 
 	const beforeItems: StaticItem[] = [
@@ -127,6 +146,14 @@ export function MatchDetailScreen({
 			title: 'Rental agreement',
 			sub: isGuest ? 'Signed by you and Ryan' : `Signed by you and ${guest}`,
 			done: swap.guestSigned && swap.hostSigned,
+			actions: (
+				<span className="tl-actions">
+					<button className="tl-action-btn" onClick={() => setShowAgreement(true)}>
+						View
+					</button>
+					<button className="tl-action-btn">Download PDF</button>
+				</span>
+			),
 		},
 		{
 			title: 'Deposit paid',
@@ -177,12 +204,13 @@ export function MatchDetailScreen({
 						<img src={item.thumb} alt="" />
 					</span>
 				)}
+				{item.actions}
 			</span>
 		</div>
 	);
 
-	// The address action sheet's first option opens this sub-screen: the
-	// address written out plus Ryan's how-to-get-in notes.
+	// Check-in guide: its own section (no longer hidden behind the address
+	// tap) — the address written out, Ryan's notes, and photos of the way in.
 	if (showInstructions) {
 		return (
 			<div className="screen">
@@ -195,9 +223,7 @@ export function MatchDetailScreen({
 					>
 						<IconChevronLeft size={26} />
 					</button>
-					<span className="match-head-title">
-						{isGuest ? "Ryan's instructions" : 'Your instructions'}
-					</span>
+					<span className="match-head-title">Check-in</span>
 					<span style={{ width: 44 }} />
 				</div>
 				<div className="screen-scroll">
@@ -213,6 +239,8 @@ export function MatchDetailScreen({
 								The green door between the bakery and the barber, halfway
 								down Sylvester Path. Buzzer 6 has my name on it.
 							</div>
+							{/* nobody checks in without a photo of the door */}
+							<img className="ins-photo" src={RYAN_PHOTOS[3]} alt="The street entrance" />
 						</div>
 						<div className="ins-card">
 							<div className="ins-title">Lock box</div>
@@ -227,6 +255,15 @@ export function MatchDetailScreen({
 								Gold key opens the street door, silver key the flat. Please
 								pop both back in the lock box when you head off.
 							</div>
+						</div>
+						<div className="ins-card">
+							<div className="ins-title">Inside the flat</div>
+							<div className="ins-text">
+								Spare towels and sheets are in the hallway cupboard, top
+								shelf. Wifi details are on the fridge. Help yourself to
+								anything in the spice rack.
+							</div>
+							<img className="ins-photo" src={RYAN_PHOTOS[2]} alt="The living room" />
 						</div>
 					</div>
 				</div>
@@ -264,6 +301,11 @@ export function MatchDetailScreen({
 					<button className="match-link" onClick={() => setShowAddressSheet(true)}>
 						<IconPin size={18} />
 						<span className="ml-text">{ADDRESS}</span>
+						<IconChevronRight size={18} />
+					</button>
+					<button className="match-link" onClick={() => setShowInstructions(true)}>
+						<IconKey size={18} />
+						<span className="ml-text">Check-in</span>
 						<IconChevronRight size={18} />
 					</button>
 					<button className="match-link" onClick={onOpenListing}>
@@ -326,17 +368,9 @@ export function MatchDetailScreen({
 					className="sheet-overlay"
 					onClick={() => setShowAddressSheet(false)}
 				>
+					{/* Maps only — check-in has its own section now */}
 					<div className="action-sheet" onClick={(e) => e.stopPropagation()}>
 						<div className="as-group">
-							<button
-								className="as-option"
-								onClick={() => {
-									setShowAddressSheet(false);
-									setShowInstructions(true);
-								}}
-							>
-								{isGuest ? "Show Ryan's instructions" : 'Show your instructions'}
-							</button>
 							<button
 								className="as-option"
 								onClick={() => setShowAddressSheet(false)}
@@ -358,6 +392,10 @@ export function MatchDetailScreen({
 						</button>
 					</div>
 				</div>
+			)}
+
+			{showAgreement && (
+				<AgreementModal guest={guest} onClose={() => setShowAgreement(false)} />
 			)}
 
 			{showPicker && (
