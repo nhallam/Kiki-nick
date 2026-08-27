@@ -1417,6 +1417,17 @@ input {
 .review-row.intro-row .intro-text {
 	margin-top: -6px;
 }
+/* Host view: no toggle, so the text spans the whole card width */
+.review-row.intro-row.pinned-open > span {
+	width: 100%;
+}
+.review-row.intro-row.pinned-open .review-row-label {
+	line-height: 1.4;
+	margin-bottom: 8px;
+}
+.review-row.intro-row.pinned-open .intro-text {
+	margin-top: 0;
+}
 .review-row.intro-row .intro-text p {
 	font-size: 14.5px;
 	line-height: 21px;

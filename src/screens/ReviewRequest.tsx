@@ -630,9 +630,11 @@ export function ReviewSummaryCard({
 			)}
 
 			{intro && (
-				<div className="review-row intro-row">
+				<div className={`review-row intro-row${introDefaultOpen ? ' pinned-open' : ''}`}>
 					<span>
-						<div className="review-row-label">Intro &amp; Questions</div>
+						<div className="review-row-label">
+							{introDefaultOpen ? 'Intro message' : 'Intro & Questions'}
+						</div>
 						{showIntro && (
 							<div className="review-row-value intro-text">
 								<p>{intro}</p>
@@ -669,12 +671,15 @@ export function ReviewSummaryCard({
 							</div>
 						)}
 					</span>
-					<button
-						className="review-change"
-						onClick={() => setShowIntro((v) => !v)}
-					>
-						{showIntro ? 'Hide' : 'Show'}
-					</button>
+					{/* Host view keeps the note pinned open — no toggle at all */}
+					{!introDefaultOpen && (
+						<button
+							className="review-change"
+							onClick={() => setShowIntro((v) => !v)}
+						>
+							{showIntro ? 'Hide' : 'Show'}
+						</button>
+					)}
 				</div>
 			)}
 		</div>
