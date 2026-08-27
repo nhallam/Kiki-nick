@@ -194,6 +194,7 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 			return (
 				<ConfirmedScreen
 					guest={route.guest}
+					onBack={() => setRoute({ name: 'reserved', guest: route.guest })}
 					onDone={() => setRoute(tripsRoute())}
 				/>
 			);

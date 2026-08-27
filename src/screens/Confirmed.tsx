@@ -6,14 +6,16 @@
  */
 import React from 'react';
 
-import { Avatar, IconPin, StatusBar } from '../ui';
+import { Avatar, IconChevronLeft, IconPin, StatusBar } from '../ui';
 import { HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
 
 export function ConfirmedScreen({
 	guest,
+	onBack,
 	onDone,
 }: {
 	guest: string;
+	onBack: () => void;
 	onDone: () => void;
 }) {
 	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
@@ -21,8 +23,14 @@ export function ConfirmedScreen({
 	return (
 		<div className="screen">
 			<StatusBar time="12:13" />
-
-			<HostFlowSteps current={3} complete />
+			{/* Same header chrome as the other two stages — back + stepper */}
+			<div className="form-header review-head with-back">
+				<button className="icon-btn review-back" onClick={onBack} aria-label="Back">
+					<IconChevronLeft size={26} />
+				</button>
+				<HostFlowSteps current={3} complete />
+				<span style={{ width: 44 }} />
+			</div>
 
 			<div className="confirmed-hero">
 				<span className="guest-hero-avatar">
