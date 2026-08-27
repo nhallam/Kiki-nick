@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 
 import { SentRequest } from '../data';
-import { Avatar, IconChevronDown, StatusBar } from '../ui';
+import { Avatar, IconChevronDown, IconChevronRight, StatusBar } from '../ui';
 import { guestState, useSwapState } from '../store';
 import { TripRequestCard } from './Rank';
 import { TabBar } from './TabBar';
@@ -76,6 +76,7 @@ export function TripsScreen({
 	canHost,
 	onNavigate,
 	onOpenTrip,
+	onOpenMatch,
 	onOpenRequestListing,
 }: {
 	requests: SentRequest[];
@@ -86,6 +87,8 @@ export function TripsScreen({
 	onNavigate?: (tab: 'explore' | 'trips') => void;
 	/** Open a trip's detail (dates + its booking requests) */
 	onOpenTrip?: () => void;
+	/** Open the confirmed match's detail (avatars + stay timeline) */
+	onOpenMatch?: () => void;
 	/** Open the listing a sent request points at */
 	onOpenRequestListing?: (listingId: number) => void;
 }) {
@@ -141,7 +144,7 @@ export function TripsScreen({
 								<h2 className="trips-section-title">Matches</h2>
 							</div>
 							{matched && !canHost ? (
-								<div className="req-row match">
+								<button className="req-row match" onClick={onOpenMatch}>
 									<Avatar variant="ryan" size={44} flag="🇳🇿" />
 									<span className="tr-body">
 										<span className="tr-title">
@@ -150,7 +153,8 @@ export function TripsScreen({
 										</span>
 										<span className="tr-sub">26 - 29 Aug · 3 nights · Hackney, London</span>
 									</span>
-								</div>
+									<IconChevronRight size={18} />
+								</button>
 							) : (
 								<div className="empty-card">
 									<div className="empty-title">You don't have any matches yet.</div>
@@ -215,7 +219,7 @@ export function TripsScreen({
 								<h2 className="trips-section-title">Matches</h2>
 							</div>
 							{matched ? (
-								<div className="req-row match">
+								<button className="req-row match" onClick={onOpenMatch}>
 									<Avatar variant="melissa" size={44} flag="🇦🇺" />
 									<span className="tr-body">
 										<span className="tr-title">
@@ -224,7 +228,8 @@ export function TripsScreen({
 										</span>
 										<span className="tr-sub">26 - 29 Aug · 3 nights · £201 + deposit</span>
 									</span>
-								</div>
+									<IconChevronRight size={18} />
+								</button>
 							) : (
 								<div className="empty-card">
 									<div className="empty-title">You don't have any matches yet.</div>

@@ -17,6 +17,7 @@ import { TripRequestsScreen } from './screens/TripRequests';
 import { HostRequestScreen } from './screens/HostRequest';
 import { ReservedScreen } from './screens/Reserved';
 import { ConfirmedScreen } from './screens/Confirmed';
+import { MatchDetailScreen } from './screens/MatchDetail';
 
 type Route =
 	| { name: 'explore' }
@@ -28,7 +29,8 @@ type Route =
 	| { name: 'tripRequests' }
 	| { name: 'hostRequest'; guest: string }
 	| { name: 'reserved'; guest: string }
-	| { name: 'confirmed'; guest: string };
+	| { name: 'confirmed'; guest: string }
+	| { name: 'match' };
 
 export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 	// The matching prototype starts both phones on Trips, each on its own
@@ -157,6 +159,7 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 					canHost={persona === 'host'}
 					onNavigate={navigate}
 					onOpenTrip={() => setRoute({ name: 'tripRequests' })}
+					onOpenMatch={() => setRoute({ name: 'match' })}
 					onOpenRequestListing={(listingId) => {
 						const listing = LISTINGS.find((l) => l.id === listingId);
 						if (listing) setRoute({ name: 'listing', listing, from: 'trips' });
@@ -198,5 +201,7 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 					onDone={() => setRoute(tripsRoute())}
 				/>
 			);
+		case 'match':
+			return <MatchDetailScreen onBack={() => setRoute(tripsRoute())} />;
 	}
 }

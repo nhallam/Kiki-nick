@@ -2264,9 +2264,114 @@ input {
 	white-space: nowrap;
 }
 
-/* Matches section entry — a settled req-row, not a button */
+/* Matches section entry — opens the match detail */
 .req-row.match {
-	cursor: default;
+	cursor: pointer;
+}
+
+/* ---------- Match detail ---------- */
+
+.match-head-title {
+	flex: 1;
+	text-align: center;
+	font-size: 17px;
+	font-weight: 700;
+}
+.match-hero {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	padding: 26px 24px 30px;
+}
+/* The pair: stayer in front, host behind, overlapping deeply with a white
+   stroke keeping the faces legible where they cross */
+.match-avatars {
+	display: flex;
+	align-items: center;
+	margin-bottom: 18px;
+}
+.match-avatar {
+	display: inline-flex;
+	border-radius: 50%;
+	box-shadow: 0 0 0 4px var(--white);
+}
+.match-avatar.front {
+	position: relative;
+	z-index: 2;
+}
+.match-avatar.back {
+	margin-left: -62px; /* ~70% overlap of the 88px faces */
+}
+.match-dates {
+	font-size: 16px;
+	font-weight: 700;
+}
+.match-where {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--gray);
+	margin-top: 4px;
+}
+
+/* Vertical timeline of the stay's events */
+.timeline {
+	padding: 0 28px 28px;
+}
+.tl-item {
+	position: relative;
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+	padding-bottom: 26px;
+}
+.tl-item:last-child {
+	padding-bottom: 6px;
+}
+.tl-line {
+	position: absolute;
+	left: 12px;
+	top: 26px;
+	bottom: 0;
+	width: 2px;
+	background: var(--border-light);
+}
+.tl-line.done {
+	background: var(--primary-strong);
+}
+.tl-dot {
+	position: relative;
+	z-index: 1;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 26px;
+	height: 26px;
+	flex-shrink: 0;
+	border-radius: 50%;
+	background: var(--white);
+	border: 2px solid var(--border-medium);
+	color: var(--white);
+}
+.tl-dot.done {
+	background: var(--primary-strong);
+	border-color: var(--primary-strong);
+}
+.tl-body {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding-top: 2px;
+	min-width: 0;
+}
+.tl-title {
+	font-size: 15px;
+	font-weight: 700;
+}
+.tl-sub {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--gray);
 }
 
 /* ---------- Host actions on a request ---------- */
