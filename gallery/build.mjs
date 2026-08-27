@@ -88,7 +88,16 @@ const VERSIONS = [
 		section: 'mf-round3',
 		blurb:
 			'Guest and host side by side: Melissa books, Ryan hosts. Both phones are live and independent.',
-		branch: 'matching-v30',
+		branch: 'matching-v30-base',
+		wide: true,
+	},
+	{
+		id: 'match31',
+		label: '3.1',
+		section: 'mf-round3',
+		blurb:
+			'Adds the Match screen: stay timeline with condition photos, host instructions, contacts — plus real profile photos.',
+		branch: 'matching-v31',
 		wide: true,
 	},
 	{
