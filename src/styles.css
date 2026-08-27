@@ -2427,6 +2427,7 @@ input {
 
 /* Photo-select sheet for Melissa's condition photos */
 .photo-picker {
+	margin: auto; /* centres in the column overlay, unlike the bottom sheets */
 	width: min(340px, calc(100% - 32px));
 	background: var(--white);
 	border-radius: 20px;
