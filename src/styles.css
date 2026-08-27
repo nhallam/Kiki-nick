@@ -2278,18 +2278,20 @@ input {
 	font-weight: 700;
 }
 
-/* The pair-and-address block doubles as the screen's header */
-.match-header {
-	align-items: flex-start;
-	padding-bottom: 0;
+/* The back arrow floats over the page; everything else scrolls away */
+.match-float-back {
+	position: absolute;
+	top: 58px;
+	left: 8px;
+	z-index: 5;
+	background: var(--white);
 }
 .match-hero {
-	flex: 1;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	text-align: center;
-	padding: 6px 12px 20px;
+	padding: 8px 56px 4px;
 }
 /* The pair: stayer in front, host behind, overlapping deeply with a white
    stroke keeping the faces legible where they cross */

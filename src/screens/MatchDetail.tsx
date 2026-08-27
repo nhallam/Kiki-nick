@@ -235,11 +235,16 @@ export function MatchDetailScreen({
 	return (
 		<div className="screen">
 			<StatusBar time="12:13" />
-			{/* The pair IS the header — no "Match" title */}
-			<div className="form-header review-head with-back match-header">
-				<button className="icon-btn review-back" onClick={onBack} aria-label="Back">
-					<IconChevronLeft size={26} />
-				</button>
+			{/* Only the back arrow stays put — the hero scrolls away with the page */}
+			<button
+				className="icon-btn review-back match-float-back"
+				onClick={onBack}
+				aria-label="Back"
+			>
+				<IconChevronLeft size={26} />
+			</button>
+
+			<div className="screen-scroll">
 				<div className="match-hero">
 					<div className="match-avatars">
 						{/* The stayer leads; the host peeks out from behind */}
@@ -253,10 +258,6 @@ export function MatchDetailScreen({
 					<div className="match-dates">26 - 29 Aug · {preview.nights} nights</div>
 					<div className="match-where">Melissa at Ryan's apartment</div>
 				</div>
-				<span style={{ width: 44 }} />
-			</div>
-
-			<div className="screen-scroll">
 				<div className="match-links">
 					<button className="match-link" onClick={() => setShowAddressSheet(true)}>
 						<IconPin size={18} />
