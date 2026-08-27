@@ -916,17 +916,12 @@ export function ReviewRequestScreen({
 					</>
 				)}
 				{page === 3 && (
-					<>
-						<button
-							className="btn-primary"
-							onClick={() => onSubmitted(formData)}
-						>
-							Send booking request
-						</button>
-						<div className="footer-caption">
-							{listing.listerName} only sees your request once you send it.
-						</div>
-					</>
+					<button
+						className="btn-primary"
+						onClick={() => onSubmitted(formData)}
+					>
+						Send booking request
+					</button>
 				)}
 			</div>
 
