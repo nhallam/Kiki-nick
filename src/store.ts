@@ -18,6 +18,9 @@ export interface SwapState {
 	rentPaid: boolean;
 	/** Move-out condition photos Melissa uploaded (indices into her roll) */
 	afterPhotos: number[];
+	/** Payment-confirmation screenshots Melissa uploaded (index into her roll) */
+	depositShot: number | null;
+	rentShot: number | null;
 }
 
 const INITIAL_STATE: SwapState = {
@@ -28,6 +31,8 @@ const INITIAL_STATE: SwapState = {
 	depositPaid: false,
 	rentPaid: false,
 	afterPhotos: [],
+	depositShot: null,
+	rentShot: null,
 };
 
 let state: SwapState = INITIAL_STATE;

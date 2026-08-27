@@ -16,6 +16,72 @@ const Tick = () => (
 	</span>
 );
 
+/** The placeholder rental agreement document — shared by both phones. */
+export function AgreementModal({
+	guest,
+	onClose,
+}: {
+	guest: string;
+	onClose: () => void;
+}) {
+	const swap = useSwapState();
+	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
+	const listing = LISTINGS.find((l) => l.listerName === 'Ryan')!;
+	const rentTotal = preview.nights * listing.nightlyRate;
+
+	return (
+		<div className="sheet-overlay" onClick={onClose}>
+			<div className="agreement-modal" onClick={(e) => e.stopPropagation()}>
+				<div className="agreement-doc">
+					<div className="agreement-heading">Short-stay Rental Agreement</div>
+					<div className="agreement-ref">
+						Kiki booking #KI-2026-0826 · Draft for signature
+					</div>
+					<p>
+						This agreement is made between <b>Ryan Carter</b> ("the Host") of
+						Ryan's Apartment, Hackney, London and <b>{preview.fullName}</b>{' '}
+						("the Stayer") of {preview.hometown}.
+					</p>
+					<div className="agreement-clause">
+						<b>1. Stay.</b> The Host grants the Stayer use of the whole
+						apartment from 26 August 2026 to 29 August 2026 (3 nights).
+					</div>
+					<div className="agreement-clause">
+						<b>2. Payment.</b> Rent of £{rentTotal} and a refundable security
+						deposit of £{listing.securityDeposit} are held by Kiki and released
+						per the payment schedule.
+					</div>
+					<div className="agreement-clause">
+						<b>3. Care of the home.</b> The Stayer agrees to treat the home
+						with care, follow the house guide, and report any damage promptly.
+					</div>
+					<div className="agreement-clause">
+						<b>4. Cancellation.</b> Cancellations follow Kiki's standard
+						policy in force at the time of booking.
+					</div>
+					<div className="agreement-signatures">
+						<div className="agreement-sig">
+							<span className="sig-name">{guest}</span>
+							<span className={swap.guestSigned ? 'sig-state done' : 'sig-state'}>
+								{swap.guestSigned ? '✓ Signed' : 'Not yet signed'}
+							</span>
+						</div>
+						<div className="agreement-sig">
+							<span className="sig-name">Ryan</span>
+							<span className={swap.hostSigned ? 'sig-state done' : 'sig-state'}>
+								{swap.hostSigned ? '✓ Signed' : 'Not yet signed'}
+							</span>
+						</div>
+					</div>
+				</div>
+				<button className="btn-primary" style={{ marginTop: 14 }} onClick={onClose}>
+					Close
+				</button>
+			</div>
+		</div>
+	);
+}
+
 export function ReservedScreen({
 	guest,
 	onBack,
@@ -151,63 +217,7 @@ export function ReservedScreen({
 			</div>
 
 			{showAgreement && (
-				<div className="sheet-overlay" onClick={() => setShowAgreement(false)}>
-					<div
-						className="agreement-modal"
-						onClick={(e) => e.stopPropagation()}
-					>
-						<div className="agreement-doc">
-							<div className="agreement-heading">Short-stay Rental Agreement</div>
-							<div className="agreement-ref">
-								Kiki booking #KI-2026-0826 · Draft for signature
-							</div>
-							<p>
-								This agreement is made between <b>Ryan Carter</b> ("the
-								Host") of Ryan's Apartment, Hackney, London and{' '}
-								<b>{preview.fullName}</b> ("the Stayer") of {preview.hometown}.
-							</p>
-							<div className="agreement-clause">
-								<b>1. Stay.</b> The Host grants the Stayer use of the whole
-								apartment from 26 August 2026 to 29 August 2026 (3 nights).
-							</div>
-							<div className="agreement-clause">
-								<b>2. Payment.</b> Rent of £{rentTotal} and a refundable
-								security deposit of £{listing.securityDeposit} are held by
-								Kiki and released per the payment schedule.
-							</div>
-							<div className="agreement-clause">
-								<b>3. Care of the home.</b> The Stayer agrees to treat the
-								home with care, follow the house guide, and report any damage
-								promptly.
-							</div>
-							<div className="agreement-clause">
-								<b>4. Cancellation.</b> Cancellations follow Kiki's standard
-								policy in force at the time of booking.
-							</div>
-							<div className="agreement-signatures">
-								<div className="agreement-sig">
-									<span className="sig-name">{guest}</span>
-									<span className={swap.guestSigned ? 'sig-state done' : 'sig-state'}>
-										{swap.guestSigned ? '✓ Signed' : 'Not yet signed'}
-									</span>
-								</div>
-								<div className="agreement-sig">
-									<span className="sig-name">Ryan</span>
-									<span className={swap.hostSigned ? 'sig-state done' : 'sig-state'}>
-										{swap.hostSigned ? '✓ Signed' : 'Not yet signed'}
-									</span>
-								</div>
-							</div>
-						</div>
-						<button
-							className="btn-primary"
-							style={{ marginTop: 14 }}
-							onClick={() => setShowAgreement(false)}
-						>
-							Close
-						</button>
-					</div>
-				</div>
+				<AgreementModal guest={guest} onClose={() => setShowAgreement(false)} />
 			)}
 		</div>
 	);

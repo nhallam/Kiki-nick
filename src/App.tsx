@@ -18,6 +18,8 @@ import { HostRequestScreen } from './screens/HostRequest';
 import { ReservedScreen } from './screens/Reserved';
 import { ConfirmedScreen } from './screens/Confirmed';
 import { MatchDetailScreen } from './screens/MatchDetail';
+import { GuestStepsScreen } from './screens/GuestSteps';
+import { getSwapState } from './store';
 
 type Route =
 	| { name: 'explore' }
@@ -30,7 +32,8 @@ type Route =
 	| { name: 'hostRequest'; guest: string }
 	| { name: 'reserved'; guest: string }
 	| { name: 'confirmed'; guest: string }
-	| { name: 'match' };
+	| { name: 'match' }
+	| { name: 'guestSteps' };
 
 export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 	// The matching prototype starts both phones on Trips, each on its own
@@ -167,6 +170,13 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 					onOpenTrip={() => setRoute({ name: 'tripRequests' })}
 					onOpenMatch={() => setRoute({ name: 'match' })}
 					onOpenRequestListing={(listingId) => {
+						// Once Ryan reserves (or confirms) Melissa's request, her card
+						// leads to her steps rather than back to the listing.
+						const s = getSwapState().melissa;
+						if (listingId === 2 && (s === 'reserved' || s === 'confirmed')) {
+							setRoute({ name: 'guestSteps' });
+							return;
+						}
 						const listing = LISTINGS.find((l) => l.id === listingId);
 						if (listing) setRoute({ name: 'listing', listing, from: 'trips' });
 					}}
@@ -216,6 +226,13 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 						const ryan = LISTINGS.find((l) => l.listerName === 'Ryan');
 						if (ryan) setRoute({ name: 'listing', listing: ryan, from: 'match' });
 					}}
+				/>
+			);
+		case 'guestSteps':
+			return (
+				<GuestStepsScreen
+					onBack={() => setRoute(tripsRoute())}
+					onOpenMatch={() => setRoute({ name: 'match' })}
 				/>
 			);
 	}

@@ -1,18 +1,14 @@
 /**
- * ARCHIVED — not currently mounted anywhere.
- *
- * Fan-out photo deck built for the confirmation screen: the extra shots of
- * the place fan out from behind the lead photo shortly after load, then the
- * stack swipes like a deck of cards. Parked here to be reused on the
- * GUEST side's confirmation later (Melissa seeing Ryan's place), where a
- * place-first celebration makes sense. The host side celebrates the stayer
- * instead. Uses .confirmed-photo/.deck-card styles in styles.css.
+ * Fan-out photo deck for the guest-side confirmation: the extra shots of
+ * Ryan's place fan out from behind the lead photo shortly after load, then
+ * the stack swipes like a deck of cards. The host avatar peeks over the
+ * corner — a place-first celebration for the person staying.
+ * Uses .confirmed-photo/.deck-card styles in styles.css.
  */
 import React, { useEffect, useRef, useState } from 'react';
 
 import { RYAN_PHOTOS } from '../assets';
 import { Avatar } from '../ui';
-import { REQUEST_PREVIEWS } from './HostRequest';
 
 const N = RYAN_PHOTOS.length;
 
@@ -25,8 +21,13 @@ const FAN_POSE = [
 	'rotate(12deg) translate(26px, 6px)',
 ];
 
-export function PhotoDeck({ guest }: { guest: string }) {
-	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
+export function PhotoDeck({
+	avatar = 'ryan',
+	flag = '🇳🇿',
+}: {
+	avatar?: string;
+	flag?: string;
+}) {
 	const [fanned, setFanned] = useState(false);
 	const [index, setIndex] = useState(0); // which photo is on top
 	const [drag, setDrag] = useState<number | null>(null);
@@ -106,12 +107,7 @@ export function PhotoDeck({ guest }: { guest: string }) {
 				);
 			})}
 			<span className="confirmed-avatar">
-				<Avatar
-					variant={preview.avatar}
-					initial={preview.initial}
-					size={64}
-					flag={preview.flag}
-				/>
+				<Avatar variant={avatar} size={64} flag={flag} />
 			</span>
 		</div>
 	);

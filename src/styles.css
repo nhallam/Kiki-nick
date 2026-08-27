@@ -2430,6 +2430,55 @@ input {
 	line-height: 1.55;
 }
 
+/* Guest steps: the listing context row + payment upload states */
+.guest-steps-listing {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 14px;
+}
+.gsl-thumb {
+	width: 56px;
+	height: 56px;
+	border-radius: 12px;
+	overflow: hidden;
+	flex-shrink: 0;
+	display: block;
+}
+.gsl-thumb > svg,
+.gsl-thumb > img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+.gsl-body {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	min-width: 0;
+}
+.gsl-title {
+	font-size: 16px;
+	font-weight: 700;
+}
+.gsl-sub {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--gray);
+}
+.pay-upload-state {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+.tl-thumb.pay-thumb {
+	margin-top: 0;
+	width: 40px;
+	height: 40px;
+	border-radius: 8px;
+}
+
 /* Sign-off from the Kiki team at the very bottom of the match page */
 .match-farewell {
 	display: flex;
