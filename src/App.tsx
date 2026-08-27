@@ -100,6 +100,12 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 			return (
 				<ListingDetailScreen
 					listing={route.listing}
+					ownListing={persona === 'host' && route.listing.listerName === 'Ryan'}
+					requestDeclined={
+						persona === 'guest' &&
+						route.listing.id === 2 &&
+						getSwapState().melissa === 'declined'
+					}
 					onBack={() =>
 						setRoute(
 							route.from === 'match'
@@ -188,6 +194,7 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 					onBack={() => setRoute(tripsRoute())}
 					onOpenRequest={(guest) => setRoute({ name: 'hostRequest', guest })}
 					onOpenReserved={(guest) => setRoute({ name: 'reserved', guest })}
+					onOpenMatch={() => setRoute({ name: 'match' })}
 				/>
 			);
 		case 'hostRequest':

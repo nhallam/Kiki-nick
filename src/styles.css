@@ -3921,6 +3921,15 @@ input {
 	color: var(--pending);
 	border: 1.5px solid rgba(138, 90, 0, 0.28);
 }
+.cta-btn.own,
+.cta-btn.declined {
+	display: inline-flex;
+	align-items: center;
+	background: var(--light-gray);
+	color: var(--gray);
+	border: 1.5px solid var(--border-medium);
+	cursor: default;
+}
 
 /* ---------- Avatars & photos ---------- */
 

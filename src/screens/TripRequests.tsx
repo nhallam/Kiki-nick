@@ -54,7 +54,7 @@ export const TRIP_REQUESTS: TripBookingRequest[] = [
 		id: 1,
 		name: 'Melissa',
 		avatar: 'melissa',
-		sub: 'Individual · 26 - 29 Aug · £201 + deposit',
+		sub: '1 guest · 26 - 29 Aug · £201 + deposit',
 		status: 'new',
 	},
 	{
@@ -62,7 +62,7 @@ export const TRIP_REQUESTS: TripBookingRequest[] = [
 		name: 'Aisha',
 		avatar: 'aisha',
 		initial: 'A',
-		sub: 'Individual · 27 - 29 Aug · £134 + deposit',
+		sub: '1 guest · 27 - 29 Aug · £134 + deposit',
 		status: 'new',
 	},
 	{
@@ -70,7 +70,7 @@ export const TRIP_REQUESTS: TripBookingRequest[] = [
 		name: 'Tash',
 		avatar: 'tash',
 		initial: 'T',
-		sub: 'Couple · 26 - 29 Aug · £201 + deposit',
+		sub: '2 guests · 26 - 29 Aug · £201 + deposit',
 		status: 'declined',
 	},
 	{
@@ -78,7 +78,7 @@ export const TRIP_REQUESTS: TripBookingRequest[] = [
 		name: 'Sara',
 		avatar: 'sara',
 		initial: 'S',
-		sub: 'Individual · 26 - 28 Aug · £134 + deposit',
+		sub: '1 guest · 26 - 28 Aug · £134 + deposit',
 		status: 'declined',
 	},
 	{
@@ -86,7 +86,7 @@ export const TRIP_REQUESTS: TripBookingRequest[] = [
 		name: 'Marco',
 		avatar: 'marco',
 		initial: 'M',
-		sub: 'Couple · 26 - 29 Aug · £201 + deposit',
+		sub: '2 guests · 26 - 29 Aug · £201 + deposit',
 		status: 'declined',
 	},
 ];
@@ -95,12 +95,15 @@ export function TripRequestsScreen({
 	onBack,
 	onOpenRequest,
 	onOpenReserved,
+	onOpenMatch,
 }: {
 	onBack: () => void;
 	/** Open a request's preview screen; only requesters with preview data */
 	onOpenRequest: (guest: string) => void;
 	/** Open the reserved booking's checklist */
 	onOpenReserved: (guest: string) => void;
+	/** A confirmed booking is a match — its row opens the match screen */
+	onOpenMatch: () => void;
 }) {
 	const swap = useSwapState();
 	// Melissa's and Aisha's statuses are live (the host acts on them);
@@ -139,11 +142,13 @@ export function TripRequestsScreen({
 				{TRIP_REQUESTS.map((r) => {
 					const status = statusOf(r);
 					const onOpen =
-						status === 'reserved' || status === 'confirmed'
-							? () => onOpenReserved(r.name)
-							: status === 'new' && REQUEST_PREVIEWS[r.name]
-								? () => onOpenRequest(r.name)
-								: undefined;
+						status === 'confirmed'
+							? onOpenMatch
+							: status === 'reserved'
+								? () => onOpenReserved(r.name)
+								: status === 'new' && REQUEST_PREVIEWS[r.name]
+									? () => onOpenRequest(r.name)
+									: undefined;
 					return (
 						<button key={r.id} className="req-row" onClick={onOpen}>
 							<Avatar variant={r.avatar} initial={r.initial} size={44} />

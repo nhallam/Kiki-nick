@@ -46,8 +46,8 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		fullName: 'Melissa Hart',
 		stayOrdinal: 'second',
 		nights: 3,
-		datesValue: '26th Aug – 29th Aug 2026 · 3 nights',
-		guestsLabel: 'Just Melissa',
+		datesValue: '26 - 29 Aug 2026 · 3 nights',
+		guestsLabel: '1 guest · Melissa',
 		intro:
 			"Hi Ryan! I'm Melissa, a marketing manager from Melbourne over in London for a work sprint. I'm tidy, quiet, and out most of the day — your balcony sold me. Happy to answer anything before you decide.",
 		questions:
@@ -66,8 +66,8 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		fullName: 'Aisha Khan',
 		stayOrdinal: 'first',
 		nights: 2,
-		datesValue: '27th Aug – 29th Aug 2026 · 2 nights',
-		guestsLabel: 'Just Aisha',
+		datesValue: '27 - 29 Aug 2026 · 2 nights',
+		guestsLabel: '1 guest · Aisha',
 		intro:
 			"Hi Ryan! I'm Aisha, a product designer from Manchester in London for a client workshop. I keep things spotless and mostly need a quiet desk in the evenings — your place looks perfect for it.",
 		questions:

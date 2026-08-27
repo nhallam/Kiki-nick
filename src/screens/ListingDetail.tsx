@@ -43,10 +43,16 @@ export function ListingDetailScreen({
 	listing,
 	onBack,
 	onRequestToBook,
+	ownListing,
+	requestDeclined,
 }: {
 	listing: Listing;
 	onBack: () => void;
 	onRequestToBook: () => void;
+	/** The host looking at their own place — no booking CTA */
+	ownListing?: boolean;
+	/** The viewer's request for this place was declined */
+	requestDeclined?: boolean;
 }) {
 	return (
 		<div className="screen">
@@ -193,7 +199,11 @@ export function ListingDetailScreen({
 						<div className="price">£{listing.nightlyRate} / night</div>
 					</span>
 				</span>
-				{(listing.requestedWindows ?? []).length > 0 ? (
+				{ownListing ? (
+					<span className="cta-btn own">Your listing</span>
+				) : requestDeclined ? (
+					<span className="cta-btn declined">Request declined</span>
+				) : (listing.requestedWindows ?? []).length > 0 ? (
 					<span className="cta-btn sent">
 						<IconCheck size={16} /> Request sent
 					</span>

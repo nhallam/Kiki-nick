@@ -152,7 +152,8 @@ export function ReservedScreen({
 							)}
 						</button>
 						<div className="check-line split">
-							<span className="c-left">Ryan</span>
+							{/* The host's own row on his own phone — "You", like Melissa's */}
+						<span className="c-left">You</span>
 							{swap.hostSigned ? (
 								<span className="c-status">
 									<Tick /> Signed

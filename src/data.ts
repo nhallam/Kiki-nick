@@ -261,7 +261,7 @@ export const EXISTING_REQUESTS: SentRequest[] = [
 		id: 902,
 		listingId: 2,
 		title: "Ryan's Apartment in Hackney, London",
-		dates: '26 Aug - 29 Aug',
+		dates: '26 - 29 Aug',
 		nightlyRate: 67,
 		status: 'In review by host',
 		photoVariant: 'jake',

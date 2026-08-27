@@ -125,7 +125,7 @@ export function MatchDetailScreen({
 	const beforeItems: StaticItem[] = [
 		{
 			title: 'Rental agreement',
-			sub: `Signed by ${guest} and Ryan`,
+			sub: isGuest ? 'Signed by you and Ryan' : `Signed by you and ${guest}`,
 			done: swap.guestSigned && swap.hostSigned,
 		},
 		{
@@ -135,12 +135,14 @@ export function MatchDetailScreen({
 		},
 		{
 			title: 'Rent paid',
-			sub: `£${rentTotal} · paid to Ryan 3 days after move-in`,
+			sub: isGuest
+				? `£${rentTotal} · paid to Ryan 3 days after move-in`
+				: `£${rentTotal} · paid to you 3 days after move-in`,
 			done: swap.rentPaid,
 		},
 		{
 			title: 'Condition photos · before',
-			sub: 'Added by Ryan before move-in',
+			sub: isGuest ? 'Added by Ryan before move-in' : 'Added by you before move-in',
 			done: true,
 			thumb: RYAN_PHOTOS[1],
 		},
