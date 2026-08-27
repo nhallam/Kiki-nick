@@ -162,7 +162,7 @@ export function ReservedScreen({
 									className="sign-btn"
 									onClick={() => setSwapState({ hostSigned: true })}
 								>
-									Sign agreement
+									Tap to sign agreement
 								</button>
 							)}
 						</div>

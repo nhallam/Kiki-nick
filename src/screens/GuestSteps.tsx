@@ -166,7 +166,7 @@ export function GuestStepsScreen({
 									className="sign-btn"
 									onClick={() => setSwapState({ guestSigned: true })}
 								>
-									Sign agreement
+									Tap to sign agreement
 								</button>
 							)}
 						</div>

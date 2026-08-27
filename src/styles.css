@@ -2920,7 +2920,7 @@ input {
 	flex-shrink: 0;
 }
 .sign-btn {
-	background: var(--primary-strong);
+	background: var(--primary);
 	color: var(--white);
 	font-size: 13.5px;
 	font-weight: 700;
