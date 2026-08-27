@@ -101,6 +101,15 @@ const VERSIONS = [
 		wide: true,
 	},
 	{
+		id: 'match32',
+		label: '3.2',
+		section: 'mf-round3',
+		blurb:
+			'Client-review round: 48h reservation timer, withdrawal rules, auto-confirm, check-in section, group bookings.',
+		branch: 'matching-v32',
+		wide: true,
+	},
+	{
 		id: 'option3',
 		label: '1.3',
 		section: 'br-round1',
