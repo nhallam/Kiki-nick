@@ -516,6 +516,7 @@ export function ReviewSummaryCard({
 	replyTo,
 	rightAlign,
 	headerSlot,
+	flat,
 }: {
 	listing: Listing;
 	hasDates: boolean;
@@ -537,13 +538,17 @@ export function ReviewSummaryCard({
 	rightAlign?: boolean;
 	/** Replaces the listing header — e.g. the guest, on the host's own place */
 	headerSlot?: React.ReactNode;
+	/** No card chrome — full-width content, keeping only the divider lines */
+	flat?: boolean;
 }) {
 	// Hidden by default on the guest's own confirm — they just wrote it.
 	const [showIntro, setShowIntro] = useState(introDefaultOpen ?? false);
 	const [reply, setReply] = useState('');
 	const [replySent, setReplySent] = useState(false);
 	return (
-		<div className={`review-card${rightAlign ? ' right-align' : ''}`}>
+		<div
+			className={`review-card${rightAlign ? ' right-align' : ''}${flat ? ' flat' : ''}`}
+		>
 			{headerSlot ? (
 				<div className="review-guest-head">{headerSlot}</div>
 			) : (

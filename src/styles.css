@@ -1305,6 +1305,14 @@ input {
 	color: var(--primary-dark);
 	font-weight: 600;
 }
+/* Flat variant: no card chrome, content spans the full width — only the
+   divider lines between sections remain */
+.review-card.flat {
+	border: none;
+	border-radius: 0;
+	padding: 0;
+}
+
 /* Guest-led header inside the summary card (host's own listing needs no
    intro): the profile row + contact rows align to the card's padding */
 .review-guest-head .profile-main {

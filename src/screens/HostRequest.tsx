@@ -367,6 +367,7 @@ export function HostRequestScreen({
 					introDefaultOpen
 					replyTo={guest}
 					rightAlign
+					flat
 				/>
 			</div>
 
