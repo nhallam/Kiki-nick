@@ -221,7 +221,7 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 				<ConfirmedScreen
 					guest={route.guest}
 					onBack={() => setRoute({ name: 'reserved', guest: route.guest })}
-					onDone={() => setRoute(tripsRoute())}
+					onDone={() => setRoute({ name: 'match' })}
 				/>
 			);
 		case 'match':
