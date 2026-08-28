@@ -3014,6 +3014,17 @@ input {
 	border-radius: 14px;
 	background: var(--white);
 }
+/* Flat variant: full-width checklist, divider lines only */
+.check-card.flat {
+	border: none;
+	border-radius: 0;
+}
+.check-card.flat .check-item {
+	padding: 14px 0;
+}
+.check-card.flat .check-item:first-child {
+	border-top: 1px solid var(--border-light);
+}
 .check-item {
 	padding: 14px 16px;
 }

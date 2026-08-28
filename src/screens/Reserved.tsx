@@ -15,7 +15,7 @@ import {
 	useSwapState,
 	withdrawReservation,
 } from '../store';
-import { GuestProfileCard, HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
+import { GuestProfileHeader, HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
 import { ReserveTimer } from './ReserveTimer';
 
 const Tick = () => (
@@ -155,14 +155,12 @@ export function ReservedScreen({
 			<div className="form-content" style={{ paddingTop: 16 }}>
 				<ReserveTimer note="to complete the steps" />
 
-				<GuestProfileCard guest={guest} subtitle={preview.datesValue} />
+				{/* Flat like the request screen: no card chrome, dividers only */}
+				<div className="review-guest-head">
+					<GuestProfileHeader guest={guest} subtitle={preview.datesValue} />
+				</div>
 
-				<p className="reserved-note">
-					{who}'s request is reserved. The booking confirms automatically
-					once all steps are done.
-				</p>
-
-				<div className="check-card">
+				<div className="check-card flat">
 					{/* Rental agreement — one row per signer */}
 					<div className="check-item">
 						<div className="check-title">Rental agreement</div>
@@ -240,7 +238,7 @@ export function ReservedScreen({
 					<span className="sp-note">
 						{allDone
 							? 'Confirming the booking…'
-							: 'Confirms automatically at 3 of 3'}
+							: 'The booking confirms automatically once all steps are done.'}
 					</span>
 				</div>
 				{bothSigned ? (
