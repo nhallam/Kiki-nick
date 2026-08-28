@@ -1,9 +1,11 @@
 /**
  * Shared primitives: inline SVG icons, avatars, placeholder room photos,
- * status bar and tab bar. Everything is self-drawn (no external assets) so the
+ * status bar and tab bar. Everything is embedded (no external requests) so the
  * single-file build has zero network dependencies.
  */
 import React from 'react';
+
+import { MELISSA_PHOTO, RYAN_PHOTO } from './assets';
 
 /* ---------- Icons (24x24 viewBox, stroke-based, Ionicons-ish) ---------- */
 
@@ -282,6 +284,13 @@ const AVATAR_GRADIENTS: Record<string, string> = {
 	generic: 'linear-gradient(135deg, #9ca3af 0%, #6b7280 100%)',
 };
 
+/* The two leads get real photos: the user is Melissa, the host is Ryan
+   (the 'ieva' variant key is kept so call sites don't change). */
+const PHOTO_AVATARS: Record<string, string> = {
+	me: MELISSA_PHOTO,
+	ieva: RYAN_PHOTO,
+};
+
 export function Avatar({
 	variant = 'generic',
 	initial,
@@ -293,6 +302,26 @@ export function Avatar({
 	size?: number;
 	flag?: string;
 }) {
+	const photo = PHOTO_AVATARS[variant];
+	if (photo) {
+		return (
+			<span className="avatar" style={{ width: size, height: size, fontSize: size * 0.42 }}>
+				<span className="img" style={{ overflow: 'hidden' }}>
+					<img
+						src={photo}
+						alt=""
+						style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+						draggable={false}
+					/>
+				</span>
+				{flag && (
+					<span className="flag" aria-hidden style={{ fontSize: Math.max(12, size * 0.3) }}>
+						{flag}
+					</span>
+				)}
+			</span>
+		);
+	}
 	return (
 		<span className="avatar" style={{ width: size, height: size, fontSize: size * 0.42 }}>
 			<span className="img" style={{ background: AVATAR_GRADIENTS[variant] ?? AVATAR_GRADIENTS.generic }}>

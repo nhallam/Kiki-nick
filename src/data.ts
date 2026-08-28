@@ -1,7 +1,7 @@
 /**
  * Mock data for the prototype, mirroring the shapes the real flow gets from
  * bookingRequestApi.getInfoForBookingRequest / getBookingRequestsForUser.
- * Dates match the reference screenshots (Ieva's Room, 21–26 Aug 2026).
+ * Dates match the reference screenshots (Ryan's Room, 21–26 Aug 2026).
  */
 
 export interface Listing {
@@ -45,8 +45,8 @@ export type PhotoVariant = 'ieva' | 'tash' | 'jake' | 'nina';
 export const LISTINGS: Listing[] = [
 	{
 		id: 1,
-		listerName: 'Ieva',
-		title: "Ieva's Room",
+		listerName: 'Ryan',
+		title: "Ryan's Room",
 		area: 'Homerton',
 		city: 'London',
 		nightlyRate: 35,
@@ -60,18 +60,18 @@ export const LISTINGS: Listing[] = [
 		],
 		openToCouples: false,
 		securityDeposit: 160,
-		nationalityFlag: '🇱🇹',
+		nationalityFlag: '🇳🇿',
 		description:
 			'A bright, spacious room with a king-size bed, large windows, and a private en-suite bathroom with a shower and toilet. The flat is clean and minimal and feels really calm. You will have the whole place to yourself while I am away, perfect for exploring East London.',
 		favouritedBy: 1,
 		vouchedForBy: 'Sara',
 		photoVariant: 'ieva',
-		hostAge: 27,
-		hostGender: 'Female',
-		hostNationality: 'Lithuanian',
-		hostHometown: 'Vilnius, Lithuania',
+		hostAge: 31,
+		hostGender: 'Male',
+		hostNationality: 'New Zealander',
+		hostHometown: 'Wellington, NZ',
 		hostJob: 'Product designer',
-		instagram: 'ieva.kas',
+		instagram: 'ryan.e8',
 	},
 	{
 		// Long availability (76 nights) so the 45+ day split-payment path is
@@ -188,11 +188,11 @@ export interface UserProfile {
 
 export const MY_PROFILE: UserProfile = {
 	id: 101,
-	name: 'Reviewer 1 Tester',
-	shortName: 'Reviewer',
-	occupation: 'Kiki Tester',
-	age: 26,
-	nationalityFlag: '🇬🇧',
+	name: 'Melissa Hart',
+	shortName: 'Melissa',
+	occupation: 'Marketing Manager',
+	age: 28,
+	nationalityFlag: '🇦🇺',
 	type: 'user',
 };
 
@@ -204,11 +204,11 @@ export const MY_PROFILES: UserProfile[] = [
 	MY_PROFILE,
 	{
 		id: 103,
-		name: 'Reviewer 1 Tester',
-		shortName: 'Reviewer',
+		name: 'Melissa Hart',
+		shortName: 'Melissa',
 		occupation: 'Product Designer',
-		age: 26,
-		nationalityFlag: '🇬🇧',
+		age: 28,
+		nationalityFlag: '🇦🇺',
 		type: 'user',
 	},
 ];
