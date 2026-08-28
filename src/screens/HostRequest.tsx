@@ -230,7 +230,9 @@ export function ContactRows({
 	);
 }
 
-export function GuestProfileCard({
+/** The guest header row + expandable contacts, without its own card chrome —
+    so it can sit inside another card (the host's request summary). */
+export function GuestProfileHeader({
 	guest,
 	subtitle,
 }: {
@@ -241,7 +243,7 @@ export function GuestProfileCard({
 	const [open, setOpen] = useState(false);
 
 	return (
-		<div className="profile-card expandable">
+		<>
 			<button
 				className="profile-main"
 				onClick={() => setOpen((o) => !o)}
@@ -286,6 +288,21 @@ export function GuestProfileCard({
 					phone={preview.phone}
 				/>
 			)}
+		</>
+	);
+}
+
+/** Standalone card version (Reserved screen and the guest's steps). */
+export function GuestProfileCard({
+	guest,
+	subtitle,
+}: {
+	guest: string;
+	subtitle: string;
+}) {
+	return (
+		<div className="profile-card expandable">
+			<GuestProfileHeader guest={guest} subtitle={subtitle} />
 		</div>
 	);
 }
@@ -332,17 +349,19 @@ export function HostRequestScreen({
 			</div>
 
 			<div className="form-content" style={{ paddingTop: 16 }}>
-				{/* Who it's from — same subtitle as the Reserved screen's card */}
-				<GuestProfileCard guest={guest} subtitle={preview.datesValue} />
-
 				{/* One line, not a paragraph — the flagged text-heavy header */}
-				<p className="reserved-note">
+				<p className="reserved-note" style={{ marginTop: 0 }}>
 					Accepting reserves {who}'s stay — declining lets{' '}
 					{preview.partner ? 'them' : 'her'} know.
 				</p>
 
+				{/* The host knows their own apartment — the card leads with the
+				    guest instead, expandable to their contact details */}
 				<ReviewSummaryCard
 					listing={listing}
+					headerSlot={
+						<GuestProfileHeader guest={guest} subtitle={preview.datesValue} />
+					}
 					hasDates
 					datesValue={preview.datesValue}
 					guestsLabel={preview.guestsLabel}

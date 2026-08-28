@@ -515,6 +515,7 @@ export function ReviewSummaryCard({
 	introDefaultOpen,
 	replyTo,
 	rightAlign,
+	headerSlot,
 }: {
 	listing: Listing;
 	hasDates: boolean;
@@ -534,6 +535,8 @@ export function ReviewSummaryCard({
 	replyTo?: string;
 	/** Values sit on the right of each row instead of under the label */
 	rightAlign?: boolean;
+	/** Replaces the listing header — e.g. the guest, on the host's own place */
+	headerSlot?: React.ReactNode;
 }) {
 	// Hidden by default on the guest's own confirm — they just wrote it.
 	const [showIntro, setShowIntro] = useState(introDefaultOpen ?? false);
@@ -541,15 +544,19 @@ export function ReviewSummaryCard({
 	const [replySent, setReplySent] = useState(false);
 	return (
 		<div className={`review-card${rightAlign ? ' right-align' : ''}`}>
-			<div className="review-listing">
-				<div className="review-thumb">
-					<RoomPhoto variant={listing.photoVariant} />
+			{headerSlot ? (
+				<div className="review-guest-head">{headerSlot}</div>
+			) : (
+				<div className="review-listing">
+					<div className="review-thumb">
+						<RoomPhoto variant={listing.photoVariant} />
+					</div>
+					<div className="review-listing-info">
+						<div className="review-listing-title">{listing.title}</div>
+						<div className="review-listing-sub">£{listing.nightlyRate} / night</div>
+					</div>
 				</div>
-				<div className="review-listing-info">
-					<div className="review-listing-title">{listing.title}</div>
-					<div className="review-listing-sub">£{listing.nightlyRate} / night</div>
-				</div>
-			</div>
+			)}
 
 			<div className="review-row">
 				<span>

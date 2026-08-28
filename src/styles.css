@@ -976,7 +976,8 @@ input {
 	background: var(--white);
 	text-align: left;
 }
-.profile-card .info {
+.profile-card .info,
+.review-guest-head .info {
 	flex: 1;
 	margin-left: 14px;
 	min-width: 0;
@@ -1053,14 +1054,16 @@ input {
 	padding: 3px 8px;
 	flex-shrink: 0;
 }
-.profile-card .name-row {
+.profile-card .name-row,
+.review-guest-head .name-row {
 	display: flex;
 	align-items: center;
 	gap: 8px;
 	font-size: 16px;
 	font-weight: 600;
 }
-.profile-card .subtitle {
+.profile-card .subtitle,
+.review-guest-head .subtitle {
 	font-size: 13px;
 	color: var(--gray);
 	margin-top: 2px;
@@ -1302,6 +1305,19 @@ input {
 	color: var(--primary-dark);
 	font-weight: 600;
 }
+/* Guest-led header inside the summary card (host's own listing needs no
+   intro): the profile row + contact rows align to the card's padding */
+.review-guest-head .profile-main {
+	padding: 14px 0;
+	min-height: 68px;
+}
+.review-guest-head .contact-rows {
+	border-top: 1px solid var(--border-light);
+}
+.review-guest-head .contact-row {
+	padding: 10px 0;
+}
+
 /* Right-aligned variant: label left, value on the right of the same row */
 .review-card.right-align .review-row:not(.intro-row) > span {
 	flex: 1;
