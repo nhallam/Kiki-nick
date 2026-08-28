@@ -349,12 +349,6 @@ export function HostRequestScreen({
 			</div>
 
 			<div className="form-content" style={{ paddingTop: 16 }}>
-				{/* One line, not a paragraph — the flagged text-heavy header */}
-				<p className="reserved-note" style={{ marginTop: 0 }}>
-					Accepting reserves {who}'s stay — declining lets{' '}
-					{preview.partner ? 'them' : 'her'} know.
-				</p>
-
 				{/* The host knows their own apartment — the card leads with the
 				    guest instead, expandable to their contact details */}
 				<ReviewSummaryCard
@@ -377,9 +371,15 @@ export function HostRequestScreen({
 			</div>
 
 			<div className="form-footer">
-				{otherReserved && (
+				{otherReserved ? (
 					<div className="footer-note">
 						You already have a reserved guest for overlapping dates.
+					</div>
+				) : (
+					/* The one-liner sits with the actions it explains */
+					<div className="footer-note">
+						Accepting reserves {who}'s stay — declining lets{' '}
+						{preview.partner ? 'them' : 'her'} know.
 					</div>
 				)}
 				<div className="request-actions">
