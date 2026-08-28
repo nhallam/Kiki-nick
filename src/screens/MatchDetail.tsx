@@ -249,6 +249,16 @@ export function MatchDetailScreen({
 								Mounted on the railing just left of the front door. The code
 								is 2608 — inside you'll find the keys.
 							</div>
+							{/* placeholder video: finding and opening the lock box */}
+							<div className="ins-video" aria-label="Video: opening the lock box">
+								<img src={RYAN_PHOTOS[1]} alt="" />
+								<span className="iv-play" aria-hidden>
+									<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+										<path d="M8 5v14l11-7z" />
+									</svg>
+								</span>
+								<span className="iv-dur">0:14</span>
+							</div>
 						</div>
 						<div className="ins-card">
 							<div className="ins-title">Keys</div>
@@ -264,7 +274,16 @@ export function MatchDetailScreen({
 								shelf. Wifi details are on the fridge. Help yourself to
 								anything in the spice rack.
 							</div>
-							<img className="ins-photo" src={RYAN_PHOTOS[2]} alt="The living room" />
+							{/* placeholder video: a quick tour of the flat */}
+							<div className="ins-video" aria-label="Video: tour of the flat">
+								<img src={RYAN_PHOTOS[2]} alt="" />
+								<span className="iv-play" aria-hidden>
+									<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+										<path d="M8 5v14l11-7z" />
+									</svg>
+								</span>
+								<span className="iv-dur">0:31</span>
+							</div>
 						</div>
 					</div>
 				</div>
