@@ -353,6 +353,7 @@ export function HostRequestScreen({
 					questions={preview.questions}
 					introDefaultOpen
 					replyTo={guest}
+					rightAlign
 				/>
 			</div>
 

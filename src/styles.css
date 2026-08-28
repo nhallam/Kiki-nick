@@ -1302,6 +1302,20 @@ input {
 	color: var(--primary-dark);
 	font-weight: 600;
 }
+/* Right-aligned variant: label left, value on the right of the same row */
+.review-card.right-align .review-row:not(.intro-row) > span {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 14px;
+}
+.review-card.right-align .review-row:not(.intro-row) .review-row-value {
+	margin-top: 0;
+	text-align: right;
+}
+
 .review-change {
 	flex-shrink: 0;
 	background: var(--light-gray);

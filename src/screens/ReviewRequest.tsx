@@ -514,6 +514,7 @@ export function ReviewSummaryCard({
 	questions,
 	introDefaultOpen,
 	replyTo,
+	rightAlign,
 }: {
 	listing: Listing;
 	hasDates: boolean;
@@ -531,13 +532,15 @@ export function ReviewSummaryCard({
 	introDefaultOpen?: boolean;
 	/** Host side: who a reply to the questions goes to. Enables the reply box. */
 	replyTo?: string;
+	/** Values sit on the right of each row instead of under the label */
+	rightAlign?: boolean;
 }) {
 	// Hidden by default on the guest's own confirm — they just wrote it.
 	const [showIntro, setShowIntro] = useState(introDefaultOpen ?? false);
 	const [reply, setReply] = useState('');
 	const [replySent, setReplySent] = useState(false);
 	return (
-		<div className="review-card">
+		<div className={`review-card${rightAlign ? ' right-align' : ''}`}>
 			<div className="review-listing">
 				<div className="review-thumb">
 					<RoomPhoto variant={listing.photoVariant} />
