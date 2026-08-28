@@ -2845,6 +2845,10 @@ input {
 	text-align: center;
 	margin-bottom: 10px;
 }
+.footer-note.soft {
+	font-weight: 400;
+	line-height: 1.5;
+}
 
 /* Small centred confirm dialog over the sheet overlay */
 .sheet-overlay .dialog-card {

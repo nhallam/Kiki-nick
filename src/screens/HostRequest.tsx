@@ -377,10 +377,11 @@ export function HostRequestScreen({
 						You already have a reserved guest for overlapping dates.
 					</div>
 				) : (
-					/* The one-liner sits with the actions it explains */
-					<div className="footer-note">
-						Accepting reserves {who}'s stay — declining lets{' '}
-						{preview.partner ? 'them' : 'her'} know.
+					/* Sits with the actions it explains — quiet, two lines */
+					<div className="footer-note soft">
+						Accepting reserves {who}'s stay.
+						<br />
+						Declining lets {preview.partner ? 'them' : 'her'} know.
 					</div>
 				)}
 				<div className="request-actions">
