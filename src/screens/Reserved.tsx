@@ -15,7 +15,7 @@ import {
 	useSwapState,
 	withdrawReservation,
 } from '../store';
-import { GuestProfileHeader, HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
+import { HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
 import { ReserveTimer } from './ReserveTimer';
 
 const Tick = () => (
@@ -155,11 +155,9 @@ export function ReservedScreen({
 			<div className="form-content" style={{ paddingTop: 0 }}>
 				<ReserveTimer note="to complete the steps" />
 
-				{/* Flat like the request screen: no card chrome, dividers only */}
-				<div className="review-guest-head">
-					<GuestProfileHeader guest={guest} subtitle={preview.datesValue} />
-				</div>
-
+				{/* Flat like the request screen: no card chrome, dividers only.
+				    No guest header — the checklist is about the steps, and the
+				    guest's details live on the request and match screens. */}
 				<div className="check-card flat">
 					{/* Rental agreement — one row per signer */}
 					<div className="check-item">
