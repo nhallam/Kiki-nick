@@ -149,7 +149,7 @@ export function GuestStepsScreen({
 	return (
 		<div className="screen">
 			<StatusBar time="12:13" />
-			<div className="form-header review-head with-back">
+			<div className="form-header review-head with-back no-rule">
 				<button className="icon-btn review-back" onClick={onBack} aria-label="Back">
 					<IconChevronLeft size={26} />
 				</button>
@@ -157,7 +157,7 @@ export function GuestStepsScreen({
 				<span style={{ width: 44 }} />
 			</div>
 
-			<div className="form-content" style={{ paddingTop: 16 }}>
+			<div className="form-content" style={{ paddingTop: 0 }}>
 				<ReserveTimer note="to complete your steps" />
 
 				{/* The place this is all for */}
