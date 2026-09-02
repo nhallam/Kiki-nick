@@ -201,31 +201,31 @@ export function ReservedScreen({
 						</button>
 					</div>
 
-					{/* Security deposit — tap to flip paid state (demo) */}
+					{/* Both payments under one header — tap a row to flip its
+					    paid state (demo) */}
 					<div className="check-item">
-						<div className="check-title">Security deposit</div>
+						<div className="check-title">Payments</div>
 						<button
 							className="check-line split tappable"
 							onClick={() => setSwapState({ depositPaid: !swap.depositPaid })}
 						>
-							<span className="c-left">£{listing.securityDeposit}</span>
+							<span className="c-left">
+								Security deposit <span className="c-amount">£{listing.securityDeposit}</span>
+							</span>
 							<PayState paid={swap.depositPaid} />
 						</button>
-					</div>
-
-					{/* Rent — tap to flip paid state (demo) */}
-					<div className="check-item">
-						<div className="check-title">Rent</div>
-						<div className="check-note">
-							You will receive rent 3 days after {who} moves in
-						</div>
 						<button
 							className="check-line split tappable"
 							onClick={() => setSwapState({ rentPaid: !swap.rentPaid })}
 						>
-							<span className="c-left">£{rentTotal}</span>
+							<span className="c-left">
+								Rent <span className="c-amount">£{rentTotal}</span>
+							</span>
 							<PayState paid={swap.rentPaid} />
 						</button>
+						<div className="check-note">
+							You will receive the rent 3 days after {who} moves in.
+						</div>
 					</div>
 				</div>
 			</div>

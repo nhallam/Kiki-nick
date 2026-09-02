@@ -3177,6 +3177,11 @@ input {
 .check-line .c-left {
 	color: var(--dark);
 }
+.check-line .c-amount {
+	color: var(--gray);
+	font-weight: 500;
+	margin-left: 4px;
+}
 .check-line .c-status {
 	display: inline-flex;
 	align-items: center;
