@@ -3149,9 +3149,7 @@ input {
 .check-card.flat .check-item {
 	padding: 14px 0;
 }
-.check-card.flat .check-item:first-child {
-	border-top: 1px solid var(--border-light);
-}
+/* No leading divider — the timer banner above separates on its own */
 .check-item {
 	padding: 14px 16px;
 }
