@@ -22,8 +22,13 @@ interface RequestPreview {
 	flag: string;
 	occupation: string;
 	age: number;
+	gender: string;
+	/** Completed Kiki swaps (guest or host) — the trust badge on the booker card */
+	kikiMatches: number;
 	hometown: string;
 	fullName: string;
+	/** Overrides "{gender}, {age}" on the booker card (group bookings) */
+	personLine?: string;
 	/** e.g. 'second' — which Kiki stay this booking is for them */
 	stayOrdinal: string;
 	nights: number;
@@ -50,6 +55,8 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		flag: '🇦🇺',
 		occupation: 'Marketing Manager',
 		age: 28,
+		gender: 'Female',
+		kikiMatches: 4,
 		hometown: 'Melbourne, Australia',
 		fullName: 'Melissa Hart',
 		stayOrdinal: 'second',
@@ -71,6 +78,8 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		flag: '🇬🇧',
 		occupation: 'Product Designer',
 		age: 29,
+		gender: 'Female',
+		kikiMatches: 0,
 		hometown: 'Manchester, UK',
 		fullName: 'Aisha Khan',
 		stayOrdinal: 'first',
@@ -93,8 +102,11 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		flag: '🇳🇿',
 		occupation: 'Photographer',
 		age: 30,
+		gender: 'Female',
+		kikiMatches: 2,
 		hometown: 'Wellington, NZ',
 		fullName: 'Tash & Jordan Reeves',
+		personLine: 'Couple, 30 & 32',
 		stayOrdinal: 'first',
 		nights: 3,
 		range: [26, 29],
@@ -292,6 +304,64 @@ export function GuestProfileHeader({
 	);
 }
 
+/** The booker summary card at the top of the host's request review: who is
+    asking to stay, at a glance — name, match count, and the profile basics.
+    Tapping it reveals their contact details. */
+export function BookerCard({ guest }: { guest: string }) {
+	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
+	const [open, setOpen] = useState(false);
+	const matchesLabel =
+		preview.kikiMatches === 0
+			? 'First Kiki match'
+			: `${preview.kikiMatches} Kiki matches`;
+
+	return (
+		<div className="booker-card">
+			<button
+				className="booker-main"
+				onClick={() => setOpen((o) => !o)}
+				aria-expanded={open}
+			>
+				<span className="booker-info">
+					<span className="booker-name">
+						{preview.fullName}
+						<span className="booker-flag">{preview.flag}</span>
+					</span>
+					<span className="booker-matches">{matchesLabel}</span>
+					<span className="booker-line">
+						{preview.personLine ?? `${preview.gender}, ${preview.age}`}
+					</span>
+					<span className="booker-line">{preview.occupation}</span>
+					<span className="booker-line">Grew up in {preview.hometown}</span>
+				</span>
+				{preview.partner ? (
+					<span className="pair-avatars booker">
+						<Avatar
+							variant={preview.avatar}
+							initial={preview.initial}
+							size={72}
+						/>
+						<Avatar
+							variant={preview.partner.avatar}
+							initial={preview.partner.initial}
+							size={72}
+						/>
+					</span>
+				) : (
+					<Avatar variant={preview.avatar} initial={preview.initial} size={88} />
+				)}
+			</button>
+			{open && (
+				<ContactRows
+					email={preview.email}
+					instagram={preview.instagram}
+					phone={preview.phone}
+				/>
+			)}
+		</div>
+	);
+}
+
 /** Standalone card version (Reserved screen and the guest's steps). */
 export function GuestProfileCard({
 	guest,
@@ -349,13 +419,12 @@ export function HostRequestScreen({
 			</div>
 
 			<div className="form-content" style={{ paddingTop: 16 }}>
-				{/* The host knows their own apartment — the card leads with the
-				    guest instead, expandable to their contact details */}
+				{/* The host knows their own apartment — the screen leads with who
+				    is asking: the booker card, expandable to contact details */}
+				<BookerCard guest={guest} />
 				<ReviewSummaryCard
 					listing={listing}
-					headerSlot={
-						<GuestProfileHeader guest={guest} subtitle={preview.datesValue} />
-					}
+					noHeader
 					hasDates
 					datesValue={preview.datesValue}
 					guestsLabel={preview.guestsLabel}

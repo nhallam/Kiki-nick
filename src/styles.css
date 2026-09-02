@@ -1313,6 +1313,68 @@ input {
 	padding: 0;
 }
 
+/* Booker card: who is asking to stay, at a glance — sits above the flat
+   request summary on the host's review. Tapping reveals contact rows. */
+.booker-card {
+	border: 1px solid var(--border-light);
+	border-radius: 16px;
+	padding: 16px;
+	background: var(--white);
+	margin-bottom: 10px;
+}
+.booker-main {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 14px;
+	width: 100%;
+	text-align: left;
+}
+.booker-info {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	min-width: 0;
+}
+.booker-name {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 19px;
+	font-weight: 700;
+	line-height: 1.25;
+}
+.booker-flag {
+	font-size: 17px;
+}
+.booker-matches {
+	border: 1.5px solid var(--primary);
+	color: var(--primary);
+	border-radius: 999px;
+	padding: 4px 13px;
+	font-size: 13.5px;
+	font-weight: 600;
+	margin: 8px 0 10px;
+}
+.booker-line {
+	font-size: 14.5px;
+	line-height: 1.55;
+	color: var(--dark);
+}
+.booker-card .avatar {
+	flex-shrink: 0;
+}
+.pair-avatars.booker .avatar + .avatar {
+	margin-left: -22px;
+}
+.booker-card .contact-rows {
+	margin-top: 12px;
+	padding-bottom: 0;
+}
+.booker-card .contact-row {
+	padding: 10px 0;
+}
+
 /* Guest-led header inside the summary card (host's own listing needs no
    intro): the profile row + contact rows align to the card's padding */
 .review-guest-head .profile-main {

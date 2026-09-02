@@ -516,6 +516,7 @@ export function ReviewSummaryCard({
 	replyTo,
 	rightAlign,
 	headerSlot,
+	noHeader,
 	flat,
 }: {
 	listing: Listing;
@@ -538,6 +539,8 @@ export function ReviewSummaryCard({
 	rightAlign?: boolean;
 	/** Replaces the listing header — e.g. the guest, on the host's own place */
 	headerSlot?: React.ReactNode;
+	/** No header at all — something above the card already sets the scene */
+	noHeader?: boolean;
 	/** No card chrome — full-width content, keeping only the divider lines */
 	flat?: boolean;
 }) {
@@ -549,7 +552,7 @@ export function ReviewSummaryCard({
 		<div
 			className={`review-card${rightAlign ? ' right-align' : ''}${flat ? ' flat' : ''}`}
 		>
-			{headerSlot ? (
+			{noHeader ? null : headerSlot ? (
 				<div className="review-guest-head">{headerSlot}</div>
 			) : (
 				<div className="review-listing">
