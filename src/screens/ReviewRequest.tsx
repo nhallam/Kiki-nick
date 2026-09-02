@@ -596,23 +596,18 @@ export function ReviewSummaryCard({
 				)}
 			</div>
 
-			<div className="review-row">
-				<span>
-					<div className="review-row-label">Total price</div>
-					<div className="review-row-value">
-						{hasDates ? (
-							<>
-								£{total}{' '}
-								<span className="review-row-note">
-									incl. £{listing.securityDeposit} refundable deposit
-								</span>
-							</>
-						) : (
+			{/* With dates set, the price breakdown below already ends in a Total —
+			    this row only earns its place as the "add dates" prompt. */}
+			{!hasDates && (
+				<div className="review-row">
+					<span>
+						<div className="review-row-label">Total price</div>
+						<div className="review-row-value">
 							<span className="review-row-empty">Add dates to see the price</span>
-						)}
-					</div>
-				</span>
-			</div>
+						</div>
+					</span>
+				</div>
+			)}
 
 			{/* Always open — nothing here is worth a tap to reveal. */}
 			{hasDates && (
