@@ -425,7 +425,7 @@ export function HostRequestScreen({
 				<span style={{ width: 44 }} />
 			</div>
 
-			<div className="form-content" style={{ paddingTop: 16 }}>
+			<div className="form-content" style={{ paddingTop: 0 }}>
 				{/* The host knows their own apartment — the screen leads with who
 				    is asking: the booker card, expandable to contact details */}
 				<BookerCard guest={guest} />
