@@ -1458,6 +1458,11 @@ input {
 .review-head.with-back {
 	padding-left: 6px;
 }
+/* Host request review: the booker card sets the content apart on its own,
+   so the header needs no rule under it */
+.review-head.no-rule {
+	border-bottom: none;
+}
 .review-back {
 	margin-right: 2px;
 }

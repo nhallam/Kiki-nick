@@ -417,7 +417,7 @@ export function HostRequestScreen({
 		<div className="screen">
 			<StatusBar time="12:13" />
 			{/* The stepper is the heading — it names the stage and shows progress */}
-			<div className="form-header review-head with-back">
+			<div className="form-header review-head with-back no-rule">
 				<button className="icon-btn review-back" onClick={onBack} aria-label="Back">
 					<IconChevronLeft size={26} />
 				</button>
