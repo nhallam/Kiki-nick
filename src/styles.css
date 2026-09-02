@@ -1312,6 +1312,10 @@ input {
 	border-radius: 0;
 	padding: 0;
 }
+/* No leading divider — the booker card above already closes the section */
+.review-card.flat > .review-row:first-child {
+	border-top: none;
+}
 
 /* Booker card: who is asking to stay, at a glance — sits above the flat
    request summary on the host's review. Tapping reveals contact rows. */
@@ -1321,14 +1325,22 @@ input {
 	padding: 16px;
 	background: var(--white);
 	margin-bottom: 10px;
+	/* The one card on this screen that floats — it's the headline, the rest
+	   of the content is flat */
+	box-shadow: 0 4px 14px rgba(31, 41, 55, 0.1);
 }
 .booker-main {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	width: 100%;
+	text-align: left;
+}
+.booker-top {
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
 	gap: 14px;
-	width: 100%;
-	text-align: left;
 }
 .booker-info {
 	display: flex;
@@ -1348,13 +1360,10 @@ input {
 	font-size: 17px;
 }
 .booker-matches {
-	border: 1.5px solid var(--primary);
 	color: var(--primary);
-	border-radius: 999px;
-	padding: 4px 13px;
-	font-size: 13.5px;
+	font-size: 14px;
 	font-weight: 600;
-	margin: 8px 0 10px;
+	margin: 5px 0 7px;
 }
 .booker-line {
 	font-size: 14.5px;

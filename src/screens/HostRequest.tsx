@@ -322,34 +322,41 @@ export function BookerCard({ guest }: { guest: string }) {
 				onClick={() => setOpen((o) => !o)}
 				aria-expanded={open}
 			>
-				<span className="booker-info">
-					<span className="booker-name">
-						{preview.fullName}
-						<span className="booker-flag">{preview.flag}</span>
+				<span className="booker-top">
+					<span className="booker-info">
+						<span className="booker-name">
+							{preview.fullName}
+							<span className="booker-flag">{preview.flag}</span>
+						</span>
+						<span className="booker-matches">{matchesLabel}</span>
+						<span className="booker-line">
+							{preview.personLine ?? `${preview.gender}, ${preview.age}`}
+						</span>
+						<span className="booker-line">{preview.occupation}</span>
 					</span>
-					<span className="booker-matches">{matchesLabel}</span>
-					<span className="booker-line">
-						{preview.personLine ?? `${preview.gender}, ${preview.age}`}
-					</span>
-					<span className="booker-line">{preview.occupation}</span>
-					<span className="booker-line">Grew up in {preview.hometown}</span>
-				</span>
-				{preview.partner ? (
-					<span className="pair-avatars booker">
+					{preview.partner ? (
+						<span className="pair-avatars booker">
+							<Avatar
+								variant={preview.avatar}
+								initial={preview.initial}
+								size={72}
+							/>
+							<Avatar
+								variant={preview.partner.avatar}
+								initial={preview.partner.initial}
+								size={72}
+							/>
+						</span>
+					) : (
 						<Avatar
 							variant={preview.avatar}
 							initial={preview.initial}
-							size={72}
+							size={88}
 						/>
-						<Avatar
-							variant={preview.partner.avatar}
-							initial={preview.partner.initial}
-							size={72}
-						/>
-					</span>
-				) : (
-					<Avatar variant={preview.avatar} initial={preview.initial} size={88} />
-				)}
+					)}
+				</span>
+				{/* Full-width line — free to run under the photo */}
+				<span className="booker-line">Grew up in {preview.hometown}</span>
 			</button>
 			{open && (
 				<ContactRows
