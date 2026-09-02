@@ -306,10 +306,9 @@ export function GuestProfileHeader({
 
 /** The booker summary card at the top of the host's request review: who is
     asking to stay, at a glance — name, match count, and the profile basics.
-    Tapping it reveals their contact details. */
+    (Contact details live in their own section at the foot of the page.) */
 export function BookerCard({ guest }: { guest: string }) {
 	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
-	const [open, setOpen] = useState(false);
 	const matchesLabel =
 		preview.kikiMatches === 0
 			? 'First Kiki match'
@@ -317,11 +316,7 @@ export function BookerCard({ guest }: { guest: string }) {
 
 	return (
 		<div className="booker-card">
-			<button
-				className="booker-main"
-				onClick={() => setOpen((o) => !o)}
-				aria-expanded={open}
-			>
+			<div className="booker-main">
 				<span className="booker-top">
 					<span className="booker-info">
 						<span className="booker-name">
@@ -357,14 +352,7 @@ export function BookerCard({ guest }: { guest: string }) {
 				</span>
 				{/* Full-width line — free to run under the photo */}
 				<span className="booker-line">Grew up in {preview.hometown}</span>
-			</button>
-			{open && (
-				<ContactRows
-					email={preview.email}
-					instagram={preview.instagram}
-					phone={preview.phone}
-				/>
-			)}
+			</div>
 		</div>
 	);
 }
@@ -445,6 +433,16 @@ export function HostRequestScreen({
 					rightAlign
 					flat
 				/>
+
+				{/* Contacts sit last — reference material, not part of the decision */}
+				<div className="contact-section">
+					<div className="contact-section-title">Contact details</div>
+					<ContactRows
+						email={preview.email}
+						instagram={preview.instagram}
+						phone={preview.phone}
+					/>
+				</div>
 			</div>
 
 			<div className="form-footer">
