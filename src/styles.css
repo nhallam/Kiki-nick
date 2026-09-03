@@ -3257,7 +3257,8 @@ input {
 	line-height: 1.35;
 }
 .agree-doc .ad-status.signed {
-	color: var(--primary-strong);
+	/* Same token as the .doc-check badge so the two greens read as one */
+	color: var(--primary);
 	font-weight: 600;
 }
 .agree-doc .ad-status.action {
