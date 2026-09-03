@@ -1397,6 +1397,7 @@ input {
 .contact-section .contact-row .c-value {
 	margin-left: auto;
 	text-align: right;
+	font-weight: 400;
 }
 .contact-row .c-label {
 	font-size: 14.5px;
@@ -3052,7 +3053,8 @@ input {
 	box-shadow: 0 0 0 1px var(--primary);
 }
 .reply-btn {
-	align-self: flex-end;
+	align-self: stretch;
+	width: 100%;
 }
 .reply-btn:disabled {
 	background: var(--disabled-bg);
