@@ -3191,6 +3191,22 @@ input {
 	font-weight: 600;
 	margin-bottom: 10px;
 }
+/* Section title with a text action on the right (e.g. View agreement) */
+.check-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+.check-head .check-title {
+	margin-bottom: 0;
+}
+.check-link {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--primary-dark);
+	padding: 2px 0;
+}
 .check-line {
 	display: flex;
 	align-items: center;
@@ -3300,6 +3316,13 @@ input {
 	font-weight: 600;
 	color: var(--dark);
 }
+.pc-payer {
+	display: block;
+	font-size: 12.5px;
+	font-weight: 500;
+	color: var(--gray);
+	margin: 1px 0 2px;
+}
 .pc-sig {
 	display: block;
 }
@@ -3317,6 +3340,10 @@ input {
 	flex-shrink: 0;
 	font-size: 13px;
 	font-weight: 600;
+}
+.pay-cheque .c-status.paid {
+	/* Same token as the .doc-check badge, matching the Signed labels */
+	color: var(--primary);
 }
 .pay-cheque .doc-check {
 	right: -7px;

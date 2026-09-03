@@ -18,12 +18,6 @@ import {
 import { HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
 import { ReserveTimer } from './ReserveTimer';
 
-const Tick = () => (
-	<span className="tick" aria-hidden>
-		<IconCheck size={11} />
-	</span>
-);
-
 /** Little document illustration for the agreement tiles — a page with text
     lines and a signature rule; signing draws the squiggle and a check badge. */
 function DocIllustration({ signed }: { signed: boolean }) {
@@ -73,13 +67,9 @@ function DocIllustration({ signed }: { signed: boolean }) {
 
 const PayState = ({ paid }: { paid: boolean }) =>
 	paid ? (
-		<span className="c-status">
-			<Tick /> Paid
-		</span>
+		<span className="c-status paid">Paid</span>
 	) : (
-		<span className="c-status unpaid">
-			<span className="hollow" aria-hidden /> Unpaid
-		</span>
+		<span className="c-status unpaid">Unpaid</span>
 	);
 
 /** A payment drawn as a small cheque: the name written on it, a signature
@@ -87,11 +77,14 @@ const PayState = ({ paid }: { paid: boolean }) =>
     squiggle and stamps a check badge — same language as the agreement docs. */
 function PayCheque({
 	label,
+	payer,
 	amount,
 	paid,
 	onToggle,
 }: {
 	label: string;
+	/** Who the money comes from — written under the title, like a cheque's drawer */
+	payer: string;
 	amount: number;
 	paid: boolean;
 	onToggle: () => void;
@@ -100,6 +93,7 @@ function PayCheque({
 		<button className={`pay-cheque${paid ? ' paid' : ''}`} onClick={onToggle}>
 			<span className="pc-main">
 				<span className="pc-name">{label}</span>
+				<span className="pc-payer">{payer}</span>
 				<svg
 					className="pc-sig"
 					width="86"
@@ -264,7 +258,15 @@ export function ReservedScreen({
 				<div className="check-card flat">
 					{/* Rental agreement — one row per signer */}
 					<div className="check-item">
-						<div className="check-title">Rental agreement</div>
+						<div className="check-head">
+							<div className="check-title">Rental agreement</div>
+							<button
+								className="check-link"
+								onClick={() => setShowAgreement(true)}
+							>
+								View agreement
+							</button>
+						</div>
 						{/* One document per signer, side by side. The guest's tile is
 						    tappable so her signature can be demoed from this phone;
 						    tapping your own unsigned tile signs it. */}
@@ -296,12 +298,6 @@ export function ReservedScreen({
 								)}
 							</button>
 						</div>
-						<button
-							className="view-agreement-btn"
-							onClick={() => setShowAgreement(true)}
-						>
-							View rental agreement
-						</button>
 					</div>
 
 					{/* Both payments under one header, as cheques stacked
@@ -311,6 +307,7 @@ export function ReservedScreen({
 						<div className="pay-cheques">
 							<PayCheque
 								label="Security deposit"
+								payer={who}
 								amount={listing.securityDeposit}
 								paid={swap.depositPaid}
 								onToggle={() =>
@@ -319,6 +316,7 @@ export function ReservedScreen({
 							/>
 							<PayCheque
 								label="Rent"
+								payer={who}
 								amount={rentTotal}
 								paid={swap.rentPaid}
 								onToggle={() => setSwapState({ rentPaid: !swap.rentPaid })}
