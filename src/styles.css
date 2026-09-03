@@ -3257,9 +3257,6 @@ input {
 	line-height: 1.35;
 }
 .agree-doc .ad-status.signed {
-	display: inline-flex;
-	align-items: center;
-	gap: 5px;
 	color: var(--primary-strong);
 	font-weight: 600;
 }

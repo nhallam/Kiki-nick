@@ -276,9 +276,7 @@ export function ReservedScreen({
 								<DocIllustration signed={swap.guestSigned} />
 								<span className="ad-name">{who}</span>
 								{swap.guestSigned ? (
-									<span className="ad-status signed">
-										<Tick /> Signed
-									</span>
+									<span className="ad-status signed">Signed</span>
 								) : (
 									<span className="ad-status">Waiting to be signed</span>
 								)}
@@ -292,9 +290,7 @@ export function ReservedScreen({
 								<DocIllustration signed={swap.hostSigned} />
 								<span className="ad-name">You</span>
 								{swap.hostSigned ? (
-									<span className="ad-status signed">
-										<Tick /> Signed
-									</span>
+									<span className="ad-status signed">Signed</span>
 								) : (
 									<span className="ad-status action">Tap to sign</span>
 								)}
