@@ -1393,6 +1393,11 @@ input {
 .contact-section .contact-row {
 	padding: 10px 0;
 }
+/* Icon anchors left, the value reads from the right — like the summary rows */
+.contact-section .contact-row .c-value {
+	margin-left: auto;
+	text-align: right;
+}
 
 /* Guest-led header inside the summary card (host's own listing needs no
    intro): the profile row + contact rows align to the card's padding */

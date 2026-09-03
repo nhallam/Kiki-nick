@@ -158,8 +158,6 @@ export function GuestStepsScreen({
 			</div>
 
 			<div className="form-content" style={{ paddingTop: 0 }}>
-				<ReserveTimer note="to complete your steps" />
-
 				{/* The place this is all for */}
 				<div className="guest-steps-listing">
 					<span className="gsl-thumb">
@@ -232,6 +230,8 @@ export function GuestStepsScreen({
 					</div>
 				</div>
 
+				{/* The deadline sits with the progress it counts down to */}
+				<ReserveTimer note="to complete your steps" />
 				<div className="steps-progress">
 					<span className="sp-count">{stepsDone} of 3 steps complete</span>
 					<span className="sp-note">

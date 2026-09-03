@@ -153,8 +153,6 @@ export function ReservedScreen({
 			</div>
 
 			<div className="form-content" style={{ paddingTop: 0 }}>
-				<ReserveTimer note="to complete the steps" />
-
 				{/* Flat like the request screen: no card chrome, dividers only.
 				    No guest header — the checklist is about the steps, and the
 				    guest's details live on the request and match screens. */}
@@ -231,6 +229,8 @@ export function ReservedScreen({
 			</div>
 
 			<div className="form-footer">
+				{/* The deadline sits with the progress it counts down to */}
+				<ReserveTimer note="to complete the steps" />
 				<div className="steps-progress">
 					<span className="sp-count">{stepsDone} of 3 steps complete</span>
 					<span className="sp-note">
