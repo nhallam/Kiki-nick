@@ -675,10 +675,11 @@ export function ReviewSummaryCard({
 														value={reply}
 														onChange={(e) => setReply(e.target.value)}
 													/>
+													{/* Secondary outline — clearly tappable, but the page's
+													    main CTA stays Accept and Reserve */}
 													<button
-														className="sign-btn reply-btn"
-														disabled={!reply.trim()}
-														onClick={() => setReplySent(true)}
+														className="reply-btn"
+														onClick={() => reply.trim() && setReplySent(true)}
 													>
 														Reply
 													</button>
