@@ -3196,6 +3196,63 @@ input {
 	font-weight: 500;
 	margin-left: 4px;
 }
+
+/* Rental agreement as two side-by-side signature documents */
+.agreement-docs {
+	display: flex;
+	gap: 12px;
+	margin: 6px 0 12px;
+}
+.agree-doc {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 3px;
+	padding: 6px 0 2px;
+	text-align: center;
+}
+.doc-illo {
+	position: relative;
+	display: inline-flex;
+	margin-bottom: 6px;
+}
+.doc-check {
+	position: absolute;
+	right: -7px;
+	bottom: -5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	background: var(--primary);
+	color: var(--white);
+	box-shadow: 0 0 0 2.5px var(--white);
+}
+.agree-doc .ad-name {
+	font-size: 14.5px;
+	font-weight: 600;
+	color: var(--dark);
+}
+.agree-doc .ad-status {
+	font-size: 12.5px;
+	font-weight: 500;
+	color: var(--gray);
+	line-height: 1.35;
+}
+.agree-doc .ad-status.signed {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	color: var(--primary-strong);
+	font-weight: 600;
+}
+.agree-doc .ad-status.action {
+	color: var(--primary-dark);
+	font-weight: 600;
+}
 .check-line .c-status {
 	display: inline-flex;
 	align-items: center;

@@ -24,6 +24,53 @@ const Tick = () => (
 	</span>
 );
 
+/** Little document illustration for the agreement tiles — a page with text
+    lines and a signature rule; signing draws the squiggle and a check badge. */
+function DocIllustration({ signed }: { signed: boolean }) {
+	return (
+		<span className={`doc-illo${signed ? ' signed' : ''}`} aria-hidden>
+			<svg width="66" height="80" viewBox="0 0 66 80" fill="none">
+				<rect
+					x="1.5"
+					y="1.5"
+					width="63"
+					height="77"
+					rx="9"
+					fill="var(--white)"
+					stroke={signed ? 'var(--primary)' : '#ddd'}
+					strokeWidth="1.5"
+				/>
+				<rect x="12" y="15" width="30" height="4" rx="2" fill="#e2e5e9" />
+				<rect x="12" y="26" width="42" height="3.5" rx="1.75" fill="#eceef1" />
+				<rect x="12" y="35" width="42" height="3.5" rx="1.75" fill="#eceef1" />
+				<rect x="12" y="44" width="28" height="3.5" rx="1.75" fill="#eceef1" />
+				<line
+					x1="12"
+					y1="66"
+					x2="54"
+					y2="66"
+					stroke="#d3d7dc"
+					strokeWidth="1.5"
+					strokeDasharray="3 3"
+				/>
+				{signed && (
+					<path
+						d="M14 62 c4 -7 8 3 13 -4 s9 2 13 -5 s9 4 12 -2"
+						stroke="var(--primary-dark)"
+						strokeWidth="2"
+						strokeLinecap="round"
+					/>
+				)}
+			</svg>
+			{signed && (
+				<span className="doc-check">
+					<IconCheck size={12} />
+				</span>
+			)}
+		</span>
+	);
+}
+
 /** The placeholder rental agreement document — shared by both phones. */
 export function AgreementModal({
 	guest,
@@ -163,36 +210,40 @@ export function ReservedScreen({
 					{/* Rental agreement — one row per signer */}
 					<div className="check-item">
 						<div className="check-title">Rental agreement</div>
-						{/* The stayer's signature is theirs to give — tappable here so
-						    the state change can be demoed from the host's phone. */}
-						<button
-							className="check-line split tappable"
-							onClick={() => setSwapState({ guestSigned: !swap.guestSigned })}
-						>
-							<span className="c-left">{who}</span>
-							{swap.guestSigned ? (
-								<span className="c-status">
-									<Tick /> Signed
-								</span>
-							) : (
-								<span className="c-status unpaid">Waiting to be signed</span>
-							)}
-						</button>
-						<div className="check-line split">
-							{/* The host's own row on his own phone — "You", like Melissa's */}
-						<span className="c-left">You</span>
-							{swap.hostSigned ? (
-								<span className="c-status">
-									<Tick /> Signed
-								</span>
-							) : (
-								<button
-									className="sign-btn"
-									onClick={() => setSwapState({ hostSigned: true })}
-								>
-									Tap to sign agreement
-								</button>
-							)}
+						{/* One document per signer, side by side. The guest's tile is
+						    tappable so her signature can be demoed from this phone;
+						    tapping your own unsigned tile signs it. */}
+						<div className="agreement-docs">
+							<button
+								className="agree-doc"
+								onClick={() => setSwapState({ guestSigned: !swap.guestSigned })}
+							>
+								<DocIllustration signed={swap.guestSigned} />
+								<span className="ad-name">{who}</span>
+								{swap.guestSigned ? (
+									<span className="ad-status signed">
+										<Tick /> Signed
+									</span>
+								) : (
+									<span className="ad-status">Waiting to be signed</span>
+								)}
+							</button>
+							<button
+								className="agree-doc"
+								onClick={() =>
+									!swap.hostSigned && setSwapState({ hostSigned: true })
+								}
+							>
+								<DocIllustration signed={swap.hostSigned} />
+								<span className="ad-name">You</span>
+								{swap.hostSigned ? (
+									<span className="ad-status signed">
+										<Tick /> Signed
+									</span>
+								) : (
+									<span className="ad-status action">Tap to sign</span>
+								)}
+							</button>
 						</div>
 						<button
 							className="view-agreement-btn"
