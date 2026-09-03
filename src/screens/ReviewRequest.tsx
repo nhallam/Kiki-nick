@@ -651,13 +651,9 @@ export function ReviewSummaryCard({
 						{showIntro && (
 							<div className="review-row-value intro-text">
 								{introDefaultOpen && replyTo ? (
-									/* Host view: the note reads as a letter — paper tile
-									   with a handwritten sign-off */
+									/* Host view: the note sits on its own paper tile */
 									<div className="letter">
 										<p>{intro}</p>
-										<div className="letter-sig" aria-hidden>
-											{replyTo}
-										</div>
 									</div>
 								) : (
 									<p>{intro}</p>
