@@ -1574,6 +1574,28 @@ input {
 	margin-top: 12px;
 }
 
+/* The intro as a letter: same paper language as the docs and cheques,
+   closed with a handwritten sign-off */
+.letter {
+	background: #f4f5f7;
+	border: 1.5px solid #ddd;
+	border-radius: 10px;
+	padding: 16px 16px 12px;
+	margin-top: 2px;
+}
+.letter p {
+	margin: 0;
+}
+.letter-sig {
+	margin-top: 10px;
+	text-align: right;
+	font-family: 'Snell Roundhand', 'Segoe Script', 'Bradley Hand', cursive;
+	font-size: 21px;
+	line-height: 1.2;
+	color: var(--dark);
+	transform: rotate(-2deg);
+}
+
 .preview-section-head {
 	display: flex;
 	align-items: center;

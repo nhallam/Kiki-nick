@@ -650,7 +650,18 @@ export function ReviewSummaryCard({
 						</div>
 						{showIntro && (
 							<div className="review-row-value intro-text">
-								<p>{intro}</p>
+								{introDefaultOpen && replyTo ? (
+									/* Host view: the note reads as a letter — paper tile
+									   with a handwritten sign-off */
+									<div className="letter">
+										<p>{intro}</p>
+										<div className="letter-sig" aria-hidden>
+											{replyTo}
+										</div>
+									</div>
+								) : (
+									<p>{intro}</p>
+								)}
 								{questions && (
 									<>
 										<div className="review-row-label questions-label">
