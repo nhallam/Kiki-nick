@@ -36,14 +36,14 @@ function DocIllustration({ signed }: { signed: boolean }) {
 					width="63"
 					height="77"
 					rx="9"
-					fill="var(--white)"
+					fill="#f4f5f7"
 					stroke={signed ? 'var(--primary)' : '#ddd'}
 					strokeWidth="1.5"
 				/>
-				<rect x="12" y="15" width="30" height="4" rx="2" fill="#e2e5e9" />
-				<rect x="12" y="26" width="42" height="3.5" rx="1.75" fill="#eceef1" />
-				<rect x="12" y="35" width="42" height="3.5" rx="1.75" fill="#eceef1" />
-				<rect x="12" y="44" width="28" height="3.5" rx="1.75" fill="#eceef1" />
+				<rect x="12" y="15" width="30" height="4" rx="2" fill="#d5dade" />
+				<rect x="12" y="26" width="42" height="3.5" rx="1.75" fill="#e1e4e8" />
+				<rect x="12" y="35" width="42" height="3.5" rx="1.75" fill="#e1e4e8" />
+				<rect x="12" y="44" width="28" height="3.5" rx="1.75" fill="#e1e4e8" />
 				<line
 					x1="12"
 					y1="66"

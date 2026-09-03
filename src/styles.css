@@ -3271,7 +3271,7 @@ input {
 	padding: 12px 14px;
 	border: 1.5px solid #ddd;
 	border-radius: 10px;
-	background: var(--white);
+	background: #f4f5f7;
 	text-align: left;
 }
 .pay-cheque.paid {
@@ -3300,7 +3300,7 @@ input {
 	font-size: 14.5px;
 	font-weight: 700;
 	color: var(--dark);
-	background: #fafbfc;
+	background: var(--white);
 }
 .pay-cheque .c-status {
 	flex-shrink: 0;
