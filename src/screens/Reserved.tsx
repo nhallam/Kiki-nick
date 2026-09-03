@@ -71,6 +71,73 @@ function DocIllustration({ signed }: { signed: boolean }) {
 	);
 }
 
+const PayState = ({ paid }: { paid: boolean }) =>
+	paid ? (
+		<span className="c-status">
+			<Tick /> Paid
+		</span>
+	) : (
+		<span className="c-status unpaid">
+			<span className="hollow" aria-hidden /> Unpaid
+		</span>
+	);
+
+/** A payment drawn as a small cheque: the name written on it, a signature
+    rule, and the amount in its box. Paying turns the border teal, draws the
+    squiggle and stamps a check badge — same language as the agreement docs. */
+function PayCheque({
+	label,
+	amount,
+	paid,
+	onToggle,
+}: {
+	label: string;
+	amount: number;
+	paid: boolean;
+	onToggle: () => void;
+}) {
+	return (
+		<button className={`pay-cheque${paid ? ' paid' : ''}`} onClick={onToggle}>
+			<span className="pc-main">
+				<span className="pc-name">{label}</span>
+				<svg
+					className="pc-sig"
+					width="86"
+					height="18"
+					viewBox="0 0 86 18"
+					fill="none"
+					aria-hidden
+				>
+					<line
+						x1="0"
+						y1="15"
+						x2="86"
+						y2="15"
+						stroke="#d3d7dc"
+						strokeWidth="1.5"
+						strokeDasharray="3 3"
+					/>
+					{paid && (
+						<path
+							d="M4 11 c5 -7 10 3 16 -4 s11 2 16 -5 s11 4 15 -2 s10 3 14 -1"
+							stroke="var(--primary-dark)"
+							strokeWidth="2"
+							strokeLinecap="round"
+						/>
+					)}
+				</svg>
+			</span>
+			<span className="pc-amount">£{amount}</span>
+			<PayState paid={paid} />
+			{paid && (
+				<span className="doc-check">
+					<IconCheck size={12} />
+				</span>
+			)}
+		</button>
+	);
+}
+
 /** The placeholder rental agreement document — shared by both phones. */
 export function AgreementModal({
 	guest,
@@ -174,18 +241,6 @@ export function ReservedScreen({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [state]);
 
-	// Payments are the stayer's steps really — tappable here so the state
-	// change can be demoed from the host's phone.
-	const PayState = ({ paid }: { paid: boolean }) =>
-		paid ? (
-			<span className="c-status">
-				<Tick /> Paid
-			</span>
-		) : (
-			<span className="c-status unpaid">
-				<span className="hollow" aria-hidden /> Unpaid
-			</span>
-		);
 
 	return (
 		<div className="screen">
@@ -253,28 +308,26 @@ export function ReservedScreen({
 						</button>
 					</div>
 
-					{/* Both payments under one header — tap a row to flip its
-					    paid state (demo) */}
+					{/* Both payments under one header, as cheques stacked
+					    vertically — tap one to flip its paid state (demo) */}
 					<div className="check-item">
 						<div className="check-title">Payments</div>
-						<button
-							className="check-line split tappable"
-							onClick={() => setSwapState({ depositPaid: !swap.depositPaid })}
-						>
-							<span className="c-left">
-								Security deposit <span className="c-amount">£{listing.securityDeposit}</span>
-							</span>
-							<PayState paid={swap.depositPaid} />
-						</button>
-						<button
-							className="check-line split tappable"
-							onClick={() => setSwapState({ rentPaid: !swap.rentPaid })}
-						>
-							<span className="c-left">
-								Rent <span className="c-amount">£{rentTotal}</span>
-							</span>
-							<PayState paid={swap.rentPaid} />
-						</button>
+						<div className="pay-cheques">
+							<PayCheque
+								label="Security deposit"
+								amount={listing.securityDeposit}
+								paid={swap.depositPaid}
+								onToggle={() =>
+									setSwapState({ depositPaid: !swap.depositPaid })
+								}
+							/>
+							<PayCheque
+								label="Rent"
+								amount={rentTotal}
+								paid={swap.rentPaid}
+								onToggle={() => setSwapState({ rentPaid: !swap.rentPaid })}
+							/>
+						</div>
 						<div className="check-note">
 							You will receive the rent 3 days after {who} moves in.
 						</div>
