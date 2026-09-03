@@ -2665,6 +2665,24 @@ input {
 	margin-left: auto;
 	opacity: 0.75;
 }
+/* Edge-to-edge strip above the footer: the footer's own top rule takes
+   over from the banner's bottom border */
+.timer-banner.full {
+	position: relative;
+	justify-content: center;
+	margin-bottom: 0;
+	padding: 12px 16px;
+	border-radius: 0;
+	border-left: none;
+	border-right: none;
+	border-bottom: none;
+	flex-shrink: 0;
+}
+.timer-banner.full .timer-info {
+	position: absolute;
+	right: 14px;
+	margin-left: 0;
+}
 .timer-clock {
 	display: inline-flex;
 }

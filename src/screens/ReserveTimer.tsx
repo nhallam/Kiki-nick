@@ -14,7 +14,14 @@ function format(msLeft: number): string {
 	return `${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
 }
 
-export function ReserveTimer({ note }: { note: string }) {
+export function ReserveTimer({
+	note,
+	full,
+}: {
+	note: string;
+	/** Edge-to-edge strip pinned above the footer, instead of an inline pill */
+	full?: boolean;
+}) {
 	const swap = useSwapState();
 	const [now, setNow] = useState(() => Date.now());
 	const [showInfo, setShowInfo] = useState(false);
@@ -28,7 +35,10 @@ export function ReserveTimer({ note }: { note: string }) {
 
 	return (
 		<>
-			<button className="timer-banner" onClick={() => setShowInfo(true)}>
+			<button
+				className={`timer-banner${full ? ' full' : ''}`}
+				onClick={() => setShowInfo(true)}
+			>
 				<span className="timer-clock" aria-hidden>
 					<svg
 						width="16"

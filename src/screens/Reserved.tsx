@@ -256,10 +256,7 @@ export function ReservedScreen({
 				<span style={{ width: 44 }} />
 			</div>
 
-			<div
-				className="form-content"
-				style={{ paddingTop: 0, display: 'flex', flexDirection: 'column' }}
-			>
+			<div className="form-content" style={{ paddingTop: 0 }}>
 				{/* Flat like the request screen: no card chrome, dividers only.
 				    No guest header — the checklist is about the steps, and the
 				    guest's details live on the request and match screens. */}
@@ -326,12 +323,10 @@ export function ReservedScreen({
 					</div>
 				</div>
 
-				{/* The deadline hugs the bottom of the content, clear of the
-				    footer's button area */}
-				<div style={{ marginTop: 'auto', paddingTop: 16 }}>
-					<ReserveTimer note="to complete the steps" />
-				</div>
 			</div>
+
+			{/* The deadline runs edge to edge, pinned right above the buttons */}
+			<ReserveTimer note="to complete the steps" full />
 
 			<div className="form-footer">
 				<div className="steps-progress">
