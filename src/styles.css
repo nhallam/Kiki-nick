@@ -3191,21 +3191,17 @@ input {
 	font-weight: 600;
 	margin-bottom: 10px;
 }
-/* Section title with a text action on the right (e.g. View agreement) */
-.check-head {
-	display: flex;
-	align-items: baseline;
-	justify-content: space-between;
-	margin-bottom: 10px;
-}
-.check-head .check-title {
-	margin-bottom: 0;
-}
-.check-link {
-	font-size: 14px;
+/* Quiet close under the agreement's Sign button — sits on the dimmed
+   overlay, so it needs to be white to read */
+.agreement-close-link {
+	display: block;
+	width: 100%;
+	text-align: center;
+	padding: 14px 0 2px;
+	font-size: 15px;
 	font-weight: 600;
-	color: var(--primary-dark);
-	padding: 2px 0;
+	color: var(--white);
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 .check-line {
 	display: flex;

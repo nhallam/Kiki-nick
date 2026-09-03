@@ -109,13 +109,18 @@ function PayCheque({
 	);
 }
 
-/** The placeholder rental agreement document — shared by both phones. */
+/** The placeholder rental agreement document — shared by both phones.
+    With signAs="host" the host reads and signs in here: a Sign button sits
+    under the document, and (demo) tapping the guest's signature slot flips
+    her signature. */
 export function AgreementModal({
 	guest,
 	onClose,
+	signAs,
 }: {
 	guest: string;
 	onClose: () => void;
+	signAs?: 'host';
 }) {
 	const swap = useSwapState();
 	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
@@ -153,7 +158,14 @@ export function AgreementModal({
 						policy in force at the time of booking.
 					</div>
 					<div className="agreement-signatures">
-						<div className="agreement-sig">
+						<div
+							className="agreement-sig"
+							onClick={
+								signAs === 'host'
+									? () => setSwapState({ guestSigned: !swap.guestSigned })
+									: undefined
+							}
+						>
 							<span className="sig-name">{guest}</span>
 							<span className={swap.guestSigned ? 'sig-state done' : 'sig-state'}>
 								{swap.guestSigned ? '✓ Signed' : 'Not yet signed'}
@@ -167,9 +179,28 @@ export function AgreementModal({
 						</div>
 					</div>
 				</div>
-				<button className="btn-primary" style={{ marginTop: 14 }} onClick={onClose}>
-					Close
-				</button>
+				{signAs === 'host' && !swap.hostSigned ? (
+					<>
+						<button
+							className="btn-primary"
+							style={{ marginTop: 14 }}
+							onClick={() => setSwapState({ hostSigned: true })}
+						>
+							Sign agreement
+						</button>
+						<button className="agreement-close-link" onClick={onClose}>
+							Close
+						</button>
+					</>
+				) : (
+					<button
+						className="btn-primary"
+						style={{ marginTop: 14 }}
+						onClick={onClose}
+					>
+						Close
+					</button>
+				)}
 			</div>
 		</div>
 	);
@@ -235,22 +266,14 @@ export function ReservedScreen({
 				<div className="check-card flat">
 					{/* Rental agreement — one row per signer */}
 					<div className="check-item">
-						<div className="check-head">
-							<div className="check-title">Rental agreement</div>
-							<button
-								className="check-link"
-								onClick={() => setShowAgreement(true)}
-							>
-								View agreement
-							</button>
-						</div>
-						{/* One document per signer, side by side. The guest's tile is
-						    tappable so her signature can be demoed from this phone;
-						    tapping your own unsigned tile signs it. */}
+						<div className="check-title">Rental agreement</div>
+						{/* One document per signer, side by side. Tapping either one
+						    opens the agreement itself — you read what you sign, and
+						    the Sign button lives inside the document. */}
 						<div className="agreement-docs">
 							<button
 								className="agree-doc"
-								onClick={() => setSwapState({ guestSigned: !swap.guestSigned })}
+								onClick={() => setShowAgreement(true)}
 							>
 								<DocIllustration signed={swap.guestSigned} />
 								<span className="ad-name">{who}</span>
@@ -262,9 +285,7 @@ export function ReservedScreen({
 							</button>
 							<button
 								className="agree-doc"
-								onClick={() =>
-									!swap.hostSigned && setSwapState({ hostSigned: true })
-								}
+								onClick={() => setShowAgreement(true)}
 							>
 								<DocIllustration signed={swap.hostSigned} />
 								<span className="ad-name">You</span>
@@ -337,7 +358,11 @@ export function ReservedScreen({
 			</div>
 
 			{showAgreement && (
-				<AgreementModal guest={guest} onClose={() => setShowAgreement(false)} />
+				<AgreementModal
+					guest={guest}
+					signAs="host"
+					onClose={() => setShowAgreement(false)}
+				/>
 			)}
 
 			{confirmWithdraw && (
