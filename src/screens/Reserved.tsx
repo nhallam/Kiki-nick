@@ -325,17 +325,27 @@ export function ReservedScreen({
 
 			</div>
 
-			{/* The deadline runs edge to edge, pinned right above the buttons */}
-			<ReserveTimer note="to complete the steps" full />
-
 			<div className="form-footer">
-				<div className="steps-progress">
-					<span className="sp-count">{stepsDone} of 3 steps complete</span>
-					<span className="sp-note">
-						{allDone
-							? 'Confirming the booking…'
-							: 'The booking confirms automatically once all steps are done.'}
-					</span>
+				{/* One progress unit: a segment per step, the count on the left,
+				    the countdown on the right. The auto-confirm explanation
+				    lives in the countdown's modal. */}
+				<div className="steps-lockup">
+					<div className="steps-track" aria-hidden>
+						{[0, 1, 2].map((i) => (
+							<span
+								key={i}
+								className={i < stepsDone ? 'seg done' : 'seg'}
+							/>
+						))}
+					</div>
+					<div className="steps-row">
+						<span className="sl-count">
+							{allDone
+								? 'Confirming the booking…'
+								: `${stepsDone} of 3 steps complete`}
+						</span>
+						<ReserveTimer note="" inline />
+					</div>
 				</div>
 				{bothSigned ? (
 					<div className="withdraw-locked">

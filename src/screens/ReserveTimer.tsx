@@ -16,11 +16,11 @@ function format(msLeft: number): string {
 
 export function ReserveTimer({
 	note,
-	full,
+	inline,
 }: {
 	note: string;
-	/** Edge-to-edge strip pinned above the footer, instead of an inline pill */
-	full?: boolean;
+	/** Just the tappable countdown cluster — for sitting inside another row */
+	inline?: boolean;
 }) {
 	const swap = useSwapState();
 	const [now, setNow] = useState(() => Date.now());
@@ -36,7 +36,7 @@ export function ReserveTimer({
 	return (
 		<>
 			<button
-				className={`timer-banner${full ? ' full' : ''}`}
+				className={inline ? 'timer-inline' : 'timer-banner'}
 				onClick={() => setShowInfo(true)}
 			>
 				<span className="timer-clock" aria-hidden>
@@ -54,7 +54,7 @@ export function ReserveTimer({
 					</svg>
 				</span>
 				<span className="timer-value">{format(swap.reservedDeadline - now)}</span>
-				<span className="timer-note">{note}</span>
+				{!inline && <span className="timer-note">{note}</span>}
 				<span className="timer-info" aria-hidden>
 					<svg
 						width="17"
