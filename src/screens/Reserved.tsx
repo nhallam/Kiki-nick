@@ -93,8 +93,10 @@ function PayCheque({
 		<button className={`pay-cheque${paid ? ' paid' : ''}`} onClick={onToggle}>
 			<span className="pc-main">
 				<span className="pc-name">{label}</span>
-				{/* Paying turns the payer's name into their signature */}
-				<span className={`pc-payer${paid ? ' signed' : ''}`}>{payer}</span>
+				<span className="pc-payer">
+					{payer}
+					{paid && <span className="pc-signed">Signed</span>}
+				</span>
 			</span>
 			<span className="pc-amount">£{amount}</span>
 			<PayState paid={paid} />
