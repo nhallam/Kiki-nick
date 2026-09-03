@@ -3053,13 +3053,13 @@ input {
 	box-shadow: 0 0 0 1px var(--primary);
 }
 /* Secondary outline: reads active (teal label) without outranking the
-   footer's primary CTA */
+   footer's primary CTA. Compact and right-aligned — the compose pattern —
+   with the textarea's radius so the pair reads as one unit. */
 .reply-btn {
-	align-self: stretch;
-	width: 100%;
-	padding: 11px 16px;
-	border: 1px solid var(--border-light);
-	border-radius: 24px;
+	align-self: flex-end;
+	padding: 9px 22px;
+	border: 1px solid var(--border-medium);
+	border-radius: 10px;
 	background: var(--white);
 	color: var(--primary-dark);
 	font-size: 14.5px;
