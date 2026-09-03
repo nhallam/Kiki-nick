@@ -3347,6 +3347,10 @@ input {
 	flex-shrink: 0;
 	font-size: 13px;
 	font-weight: 600;
+	/* Wide enough for "Unpaid" so the amount box doesn't shift when the
+	   label changes to the shorter "Paid" */
+	width: 48px;
+	text-align: right;
 }
 .pay-cheque .c-status.paid {
 	/* Same token as the .doc-check badge, matching the Signed labels */
