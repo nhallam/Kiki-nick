@@ -3323,8 +3323,15 @@ input {
 	color: var(--gray);
 	margin: 1px 0 2px;
 }
-.pc-sig {
-	display: block;
+/* Once paid, the payer's name becomes their signature */
+.pc-payer.signed {
+	font-family: 'Snell Roundhand', 'Segoe Script', 'Bradley Hand', cursive;
+	font-size: 19px;
+	font-weight: 400;
+	line-height: 1.15;
+	color: var(--primary-dark);
+	transform: rotate(-2deg);
+	transform-origin: left center;
 }
 /* The cheque's amount box */
 .pc-amount {

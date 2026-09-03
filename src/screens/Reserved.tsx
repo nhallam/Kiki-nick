@@ -93,33 +93,8 @@ function PayCheque({
 		<button className={`pay-cheque${paid ? ' paid' : ''}`} onClick={onToggle}>
 			<span className="pc-main">
 				<span className="pc-name">{label}</span>
-				<span className="pc-payer">{payer}</span>
-				<svg
-					className="pc-sig"
-					width="86"
-					height="18"
-					viewBox="0 0 86 18"
-					fill="none"
-					aria-hidden
-				>
-					<line
-						x1="0"
-						y1="15"
-						x2="86"
-						y2="15"
-						stroke="#d3d7dc"
-						strokeWidth="1.5"
-						strokeDasharray="3 3"
-					/>
-					{paid && (
-						<path
-							d="M4 11 c5 -7 10 3 16 -4 s11 2 16 -5 s11 4 15 -2 s10 3 14 -1"
-							stroke="var(--primary-dark)"
-							strokeWidth="2"
-							strokeLinecap="round"
-						/>
-					)}
-				</svg>
+				{/* Paying turns the payer's name into their signature */}
+				<span className={`pc-payer${paid ? ' signed' : ''}`}>{payer}</span>
 			</span>
 			<span className="pc-amount">£{amount}</span>
 			<PayState paid={paid} />
