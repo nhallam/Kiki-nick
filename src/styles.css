@@ -1393,10 +1393,15 @@ input {
 .contact-section .contact-row {
 	padding: 10px 0;
 }
-/* Icon anchors left, the value reads from the right — like the summary rows */
+/* Label anchors left, the value reads from the right — like the summary rows */
 .contact-section .contact-row .c-value {
 	margin-left: auto;
 	text-align: right;
+}
+.contact-row .c-label {
+	font-size: 14.5px;
+	font-weight: 600;
+	color: var(--dark);
 }
 
 /* Guest-led header inside the summary card (host's own listing needs no

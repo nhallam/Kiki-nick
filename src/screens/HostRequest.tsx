@@ -202,10 +202,13 @@ export function ContactRows({
 	email,
 	instagram,
 	phone,
+	labels,
 }: {
 	email: string;
 	instagram: string;
 	phone: string;
+	/** Text labels instead of icons (the request page's contact section) */
+	labels?: boolean;
 }) {
 	const contacts = [
 		{ label: 'Email', icon: <IconMail />, value: email, href: `mailto:${email}` },
@@ -216,7 +219,7 @@ export function ContactRows({
 			href: `https://instagram.com/${instagram.replace(/^@/, '')}`,
 		},
 		{
-			label: 'Call',
+			label: 'Phone',
 			icon: <IconPhone />,
 			value: phone,
 			href: `tel:${phone.replace(/\s+/g, '')}`,
@@ -234,7 +237,11 @@ export function ContactRows({
 					target={c.href.startsWith('http') ? '_blank' : undefined}
 					rel="noreferrer"
 				>
-					<span className="c-icon">{c.icon}</span>
+					{labels ? (
+						<span className="c-label">{c.label}</span>
+					) : (
+						<span className="c-icon">{c.icon}</span>
+					)}
 					<span className="c-value">{c.value}</span>
 				</a>
 			))}
@@ -441,6 +448,7 @@ export function HostRequestScreen({
 						email={preview.email}
 						instagram={preview.instagram}
 						phone={preview.phone}
+						labels
 					/>
 				</div>
 			</div>
