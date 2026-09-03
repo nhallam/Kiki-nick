@@ -3172,10 +3172,11 @@ input {
 .check-item + .check-item {
 	border-top: 1px solid var(--border-light);
 }
+/* Matches .section-label — the app's section-heading size */
 .check-title {
-	font-size: 15px;
-	font-weight: 700;
-	margin-bottom: 8px;
+	font-size: 18px;
+	font-weight: 600;
+	margin-bottom: 10px;
 }
 .check-line {
 	display: flex;
