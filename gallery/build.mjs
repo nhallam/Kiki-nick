@@ -113,8 +113,16 @@ const VERSIONS = [
 		id: 'match33',
 		label: '3.3',
 		section: 'mf-round3',
-		blurb: 'UI refinement round — latest.',
+		blurb: 'UI refinement round: booker card, paper-object docs and cheques, letter intro, footer lockup.',
 		branch: 'matching-v33',
+		wide: true,
+	},
+	{
+		id: 'match34',
+		label: '3.4',
+		section: 'mf-round3',
+		blurb: "Melissa's reserve steps as a guided screen-by-screen flow — latest.",
+		branch: 'matching-v34',
 		wide: true,
 	},
 	{
