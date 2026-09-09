@@ -140,9 +140,63 @@ export function AgreementModal({
 	const listing = LISTINGS.find((l) => l.listerName === 'Ryan')!;
 	const rentTotal = preview.nights * listing.nightlyRate;
 
+	// Signing ceremony: the document flips over to a signature pad where
+	// you write with your finger; Sign flips it back, signed.
+	const [signing, setSigning] = useState(false);
+	const [hasInk, setHasInk] = useState(false);
+	const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+	const drawing = React.useRef(false);
+	const last = React.useRef({ x: 0, y: 0 });
+	const myName =
+		signAs === 'guest' ? preview.fullName : 'Ryan Carter';
+
+	const initCanvas = (c: HTMLCanvasElement | null) => {
+		canvasRef.current = c;
+		if (!c) return;
+		const dpr = window.devicePixelRatio || 1;
+		c.width = c.clientWidth * dpr;
+		c.height = c.clientHeight * dpr;
+		const ctx = c.getContext('2d')!;
+		ctx.scale(dpr, dpr);
+		ctx.strokeStyle = '#0f6e56';
+		ctx.lineWidth = 2.5;
+		ctx.lineCap = 'round';
+		ctx.lineJoin = 'round';
+	};
+	const inkAt = (e: React.PointerEvent<HTMLCanvasElement>) => {
+		const r = e.currentTarget.getBoundingClientRect();
+		return { x: e.clientX - r.left, y: e.clientY - r.top };
+	};
+	const inkStart = (e: React.PointerEvent<HTMLCanvasElement>) => {
+		e.currentTarget.setPointerCapture(e.pointerId);
+		drawing.current = true;
+		last.current = inkAt(e);
+	};
+	const inkMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+		if (!drawing.current || !canvasRef.current) return;
+		const ctx = canvasRef.current.getContext('2d')!;
+		const p = inkAt(e);
+		ctx.beginPath();
+		ctx.moveTo(last.current.x, last.current.y);
+		ctx.lineTo(p.x, p.y);
+		ctx.stroke();
+		last.current = p;
+		if (!hasInk) setHasInk(true);
+	};
+	const inkEnd = () => {
+		drawing.current = false;
+	};
+	const clearInk = () => {
+		const c = canvasRef.current;
+		if (c) c.getContext('2d')!.clearRect(0, 0, c.width, c.height);
+		setHasInk(false);
+	};
+
 	return (
 		<div className="sheet-overlay" onClick={onClose}>
 			<div className="agreement-modal" onClick={(e) => e.stopPropagation()}>
+				<div className="agreement-flip">
+					<div className={`flip-inner${signing ? ' flipped' : ''}`}>
 				<div className="agreement-doc">
 					<div className="agreement-heading">Short-stay Rental Agreement</div>
 					<div className="agreement-ref">
@@ -199,23 +253,70 @@ export function AgreementModal({
 						</div>
 					</div>
 				</div>
-				{signAs &&
-				!(signAs === 'host' ? swap.hostSigned : swap.guestSigned) ? (
+
+						{/* The back of the document: the signature pad */}
+						<div className="signing-face">
+							<div className="signing-head">Sign the agreement</div>
+							<div className="signing-hint">
+								Write your signature with your finger
+							</div>
+							<div className="signing-pad">
+								<canvas
+									ref={initCanvas}
+									className="sign-canvas"
+									onPointerDown={inkStart}
+									onPointerMove={inkMove}
+									onPointerUp={inkEnd}
+									onPointerLeave={inkEnd}
+								/>
+								<div className="signing-line-wrap" aria-hidden>
+									<div className="signing-line" />
+									<div className="signing-name">{myName}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{signing ? (
 					<>
 						<button
 							className="btn-primary"
 							style={{ marginTop: 14 }}
-							onClick={() =>
+							disabled={!hasInk}
+							onClick={() => {
 								setSwapState(
 									signAs === 'host'
 										? { hostSigned: true }
 										: { guestSigned: true },
-								)
-							}
+								);
+								setSigning(false);
+								clearInk();
+							}}
+						>
+							Sign
+						</button>
+						<button
+							className="agreement-close-btn"
+							onClick={() => {
+								setSigning(false);
+								clearInk();
+							}}
+						>
+							Cancel
+						</button>
+					</>
+				) : signAs &&
+				  !(signAs === 'host' ? swap.hostSigned : swap.guestSigned) ? (
+					<>
+						<button
+							className="btn-primary"
+							style={{ marginTop: 14 }}
+							onClick={() => setSigning(true)}
 						>
 							Sign agreement
 						</button>
-						<button className="agreement-close-link" onClick={onClose}>
+						<button className="agreement-close-btn" onClick={onClose}>
 							Close
 						</button>
 					</>
@@ -258,13 +359,17 @@ export function ReservedScreen({
 	const [showAgreement, setShowAgreement] = useState(false);
 	const [confirmWithdraw, setConfirmWithdraw] = useState(false);
 
-	// No manual Confirm any more: 3 of 3 confirms the booking by itself.
+	// The match is made when both parties have pressed Confirm match.
 	useEffect(() => {
-		if (state === 'reserved' && allDone) {
-			const t = window.setTimeout(() => setGuestState(guest, 'confirmed'), 700);
+		if (
+			state === 'reserved' &&
+			swap.guestConfirmedMatch &&
+			swap.hostConfirmedMatch
+		) {
+			const t = window.setTimeout(() => setGuestState(guest, 'confirmed'), 500);
 			return () => window.clearTimeout(t);
 		}
-	}, [state, allDone, guest]);
+	}, [state, swap.guestConfirmedMatch, swap.hostConfirmedMatch, guest]);
 	useEffect(() => {
 		if (state === 'confirmed') onConfirmed();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -368,13 +473,26 @@ export function ReservedScreen({
 					<div className="steps-row">
 						<span className="sl-count">
 							{allDone
-								? 'Confirming the booking…'
+								? 'All steps complete'
 								: `${stepsDone} of 3 steps complete`}
 						</span>
 						<ReserveTimer note="" inline />
 					</div>
 				</div>
-				{bothSigned ? (
+				{allDone ? (
+					swap.hostConfirmedMatch ? (
+						<div className="confirm-waiting">
+							You've confirmed — waiting for {who} to confirm.
+						</div>
+					) : (
+						<button
+							className="btn-primary"
+							onClick={() => setSwapState({ hostConfirmedMatch: true })}
+						>
+							Confirm match
+						</button>
+					)
+				) : bothSigned ? (
 					<div className="withdraw-locked">
 						Both parties have signed — the reservation can no longer be
 						withdrawn.

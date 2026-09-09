@@ -24,6 +24,10 @@ export interface SwapState {
 	rentShot: number | null;
 	/** Epoch ms when the 48h completion window closes (set on reserve) */
 	reservedDeadline: number | null;
+	/** Once all steps are done, each party presses Confirm match; the match
+	    is made when both have. */
+	guestConfirmedMatch: boolean;
+	hostConfirmedMatch: boolean;
 }
 
 const INITIAL_STATE: SwapState = {
@@ -38,6 +42,8 @@ const INITIAL_STATE: SwapState = {
 	depositShot: null,
 	rentShot: null,
 	reservedDeadline: null,
+	guestConfirmedMatch: false,
+	hostConfirmedMatch: false,
 };
 
 let state: SwapState = INITIAL_STATE;
@@ -101,5 +107,7 @@ export function withdrawReservation(guest: string) {
 		depositShot: null,
 		rentShot: null,
 		reservedDeadline: null,
+		guestConfirmedMatch: false,
+		hostConfirmedMatch: false,
 	});
 }

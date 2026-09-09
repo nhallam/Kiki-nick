@@ -61,14 +61,17 @@ export function GuestStepsScreen({
 		(swap.rentPaid ? 1 : 0);
 	const bothSigned = swap.guestSigned && swap.hostSigned;
 
-	// Auto-confirm can complete from either phone — whoever finishes the
-	// last step tips it over.
+	// The match is made when both parties have pressed Confirm match.
 	useEffect(() => {
-		if (swap.melissa === 'reserved' && stepsDone === 3) {
-			const t = window.setTimeout(() => setGuestState(guest, 'confirmed'), 700);
+		if (
+			swap.melissa === 'reserved' &&
+			swap.guestConfirmedMatch &&
+			swap.hostConfirmedMatch
+		) {
+			const t = window.setTimeout(() => setGuestState(guest, 'confirmed'), 500);
 			return () => window.clearTimeout(t);
 		}
-	}, [swap.melissa, stepsDone, guest]);
+	}, [swap.melissa, swap.guestConfirmedMatch, swap.hostConfirmedMatch, guest]);
 
 	const openUpload = (which: 'deposit' | 'rent') => {
 		setPicked(which === 'deposit' ? swap.depositShot : swap.rentShot);
@@ -310,15 +313,31 @@ export function GuestStepsScreen({
 								Next
 							</button>
 						)}
-						{wizPage === 2 && (
-							<button
-								className="btn-primary"
-								disabled={!(swap.depositPaid && swap.rentPaid)}
-								onClick={() => setWizPage(null)}
-							>
-								Done
-							</button>
-						)}
+						{wizPage === 2 &&
+							(stepsDone === 3 ? (
+								swap.guestConfirmedMatch ? (
+									<div className="confirm-waiting">
+										You've confirmed — waiting for Ryan to confirm.
+									</div>
+								) : (
+									<button
+										className="btn-primary"
+										onClick={() =>
+											setSwapState({ guestConfirmedMatch: true })
+										}
+									>
+										Confirm match
+									</button>
+								)
+							) : (
+								<button
+									className="btn-primary"
+									disabled={!(swap.depositPaid && swap.rentPaid)}
+									onClick={() => setWizPage(null)}
+								>
+									Done
+								</button>
+							))}
 					</div>
 				</>
 			) : (
@@ -414,13 +433,26 @@ export function GuestStepsScreen({
 					<div className="steps-row">
 						<span className="sl-count">
 							{stepsDone === 3
-								? 'Confirming your booking…'
+								? 'All steps complete'
 								: `${stepsDone} of 3 steps complete`}
 						</span>
 						<ReserveTimer note="" inline />
 					</div>
 				</div>
-				{bothSigned ? (
+				{stepsDone === 3 ? (
+					swap.guestConfirmedMatch ? (
+						<div className="confirm-waiting">
+							You've confirmed — waiting for Ryan to confirm.
+						</div>
+					) : (
+						<button
+							className="btn-primary"
+							onClick={() => setSwapState({ guestConfirmedMatch: true })}
+						>
+							Confirm match
+						</button>
+					)
+				) : bothSigned ? (
 					<div className="withdraw-locked">
 						Both parties have signed — the reservation can no longer be
 						withdrawn.
