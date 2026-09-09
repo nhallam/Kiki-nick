@@ -4568,3 +4568,106 @@ input {
 	font-size: 15px;
 	font-weight: 600;
 }
+
+/* ---------- 3.4 guided guest flow ---------- */
+/* Three screens on a horizontal rail: what's needed → sign → pay */
+.wizard-viewport {
+	flex: 1;
+	overflow: hidden;
+}
+.wizard-row {
+	display: flex;
+	width: 300%;
+	height: 100%;
+	transition: transform 0.35s ease;
+}
+.wizard-panel {
+	width: calc(100% / 3);
+	height: 100%;
+	overflow-y: auto;
+	padding: 24px;
+	display: flex;
+	flex-direction: column;
+	scrollbar-width: none;
+}
+.wizard-panel::-webkit-scrollbar {
+	display: none;
+}
+/* Content floats to the vertical middle of the roomier screen */
+.wz-center {
+	margin: auto 0;
+	display: flex;
+	flex-direction: column;
+}
+.wz-title {
+	font-size: 23px;
+	font-weight: 700;
+	text-align: center;
+	margin-bottom: 10px;
+}
+.wz-sub {
+	font-size: 14.5px;
+	color: var(--gray);
+	text-align: center;
+	line-height: 1.5;
+	margin: 0 8px 24px;
+}
+.wz-list {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	margin: 4px 14px 0;
+}
+.wz-step {
+	display: flex;
+	align-items: center;
+	gap: 13px;
+	font-size: 15.5px;
+	font-weight: 600;
+}
+.wz-num {
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	background: var(--primary-tint);
+	color: var(--primary-dark);
+	font-size: 14px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+.wz-num.done {
+	background: var(--primary);
+	color: var(--white);
+}
+.wz-docs {
+	margin: 6px 0 0;
+}
+.wz-fine {
+	font-size: 13px;
+	color: var(--gray);
+	text-align: center;
+	margin-top: 16px;
+}
+.wz-dots {
+	display: flex;
+	justify-content: center;
+	gap: 7px;
+	margin-bottom: 12px;
+}
+.wz-dots .dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: var(--border-medium);
+}
+.wz-dots .dot.on {
+	background: var(--primary);
+}
+.wz-timer {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 12px;
+}

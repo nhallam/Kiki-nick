@@ -21,10 +21,22 @@ import { ReserveTimer } from './ReserveTimer';
 /** Little document illustration for the agreement tiles — a page with text
     lines and a signature rule; signing draws the squiggle and a check badge.
     Shared with the guest's steps screen. */
-export function DocIllustration({ signed }: { signed: boolean }) {
+export function DocIllustration({
+	signed,
+	large,
+}: {
+	signed: boolean;
+	/** Bigger rendering for the guided-flow signing stage */
+	large?: boolean;
+}) {
 	return (
 		<span className={`doc-illo${signed ? ' signed' : ''}`} aria-hidden>
-			<svg width="66" height="80" viewBox="0 0 66 80" fill="none">
+			<svg
+				width={large ? 92 : 66}
+				height={large ? 112 : 80}
+				viewBox="0 0 66 80"
+				fill="none"
+			>
 				<rect
 					x="1.5"
 					y="1.5"

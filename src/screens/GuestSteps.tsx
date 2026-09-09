@@ -13,6 +13,7 @@ import { PAY_SHOTS, RYAN_PHOTOS } from '../assets';
 import { LISTINGS } from '../data';
 import { IconCheck, IconChevronLeft, RoomPhoto, StatusBar } from '../ui';
 import {
+	getSwapState,
 	setGuestState,
 	setSwapState,
 	useSwapState,
@@ -45,6 +46,13 @@ export function GuestStepsScreen({
 	// Which payment is being uploaded ('deposit' | 'rent'), plus selection
 	const [uploadFor, setUploadFor] = useState<'deposit' | 'rent' | null>(null);
 	const [picked, setPicked] = useState<number | null>(null);
+	// 3.4: her steps run as a guided flow — three screens sliding
+	// horizontally (what's needed → sign → pay), then the overview.
+	// null = overview; she starts in the flow while her steps are incomplete.
+	const [wizPage, setWizPage] = useState<number | null>(() => {
+		const s = getSwapState();
+		return s.guestSigned && s.depositPaid && s.rentPaid ? null : 0;
+	});
 
 	// The 3 steps: agreement (both signatures), deposit, rent
 	const stepsDone =
@@ -153,13 +161,168 @@ export function GuestStepsScreen({
 		<div className="screen">
 			<StatusBar time="12:13" />
 			<div className="form-header review-head with-back no-rule">
-				<button className="icon-btn review-back" onClick={onBack} aria-label="Back">
+				<button
+					className="icon-btn review-back"
+					onClick={() =>
+						wizPage != null && wizPage > 0
+							? setWizPage(wizPage - 1)
+							: onBack()
+					}
+					aria-label="Back"
+				>
 					<IconChevronLeft size={26} />
 				</button>
 				<HostFlowSteps current={2} />
 				<span style={{ width: 44 }} />
 			</div>
 
+			{wizPage != null ? (
+				<>
+					{/* The guided flow: three screens sliding horizontally */}
+					<div className="wizard-viewport">
+						<div
+							className="wizard-row"
+							style={{ transform: `translateX(-${(wizPage * 100) / 3}%)` }}
+						>
+							{/* 1 — what's needed to continue */}
+							<div className="wizard-panel">
+								<div className="wz-center">
+									<h2 className="wz-title">Ryan reserved your dates!</h2>
+									<p className="wz-sub">
+										Complete these steps within 48 hours to confirm your
+										stay at Ryan's Apartment.
+									</p>
+									<div className="wz-list">
+										<div className="wz-step">
+											<span
+												className={`wz-num${swap.guestSigned ? ' done' : ''}`}
+											>
+												{swap.guestSigned ? <IconCheck size={13} /> : '1'}
+											</span>
+											Sign the rental agreement
+										</div>
+										<div className="wz-step">
+											<span
+												className={`wz-num${swap.depositPaid ? ' done' : ''}`}
+											>
+												{swap.depositPaid ? <IconCheck size={13} /> : '2'}
+											</span>
+											Pay the security deposit
+										</div>
+										<div className="wz-step">
+											<span
+												className={`wz-num${swap.rentPaid ? ' done' : ''}`}
+											>
+												{swap.rentPaid ? <IconCheck size={13} /> : '3'}
+											</span>
+											Pay the rent
+										</div>
+									</div>
+								</div>
+							</div>
+
+							{/* 2 — sign, documents centered */}
+							<div className="wizard-panel">
+								<div className="wz-center">
+									<h2 className="wz-title">Sign the rental agreement</h2>
+									<p className="wz-sub">Tap a document to read and sign.</p>
+									<div className="agreement-docs wz-docs">
+										<button
+											className="agree-doc"
+											onClick={() => setShowAgreement(true)}
+										>
+											<DocIllustration signed={swap.guestSigned} large />
+											<span className="ad-name">You</span>
+											{swap.guestSigned ? (
+												<span className="ad-status signed">Signed</span>
+											) : (
+												<span className="ad-status action">Tap to sign</span>
+											)}
+										</button>
+										<button
+											className="agree-doc"
+											onClick={() => setShowAgreement(true)}
+										>
+											<DocIllustration signed={swap.hostSigned} large />
+											<span className="ad-name">Ryan</span>
+											{swap.hostSigned ? (
+												<span className="ad-status signed">Signed</span>
+											) : (
+												<span className="ad-status">
+													Waiting to be signed
+												</span>
+											)}
+										</button>
+									</div>
+								</div>
+							</div>
+
+							{/* 3 — pay, cheque per payment */}
+							<div className="wizard-panel">
+								<div className="wz-center">
+									<h2 className="wz-title">Make the payments</h2>
+									<p className="wz-sub">
+										Pay by bank transfer to Kiki, then upload a screenshot
+										of each confirmation.
+									</p>
+									<div className="pay-cheques">
+										<PayCheque
+											which="deposit"
+											label="Security deposit"
+											amount={listing.securityDeposit}
+											shot={swap.depositShot}
+										/>
+										<PayCheque
+											which="rent"
+											label="Rent"
+											amount={rentTotal}
+											shot={swap.rentShot}
+										/>
+									</div>
+									<p className="wz-fine">
+										The deposit is refunded in full after your stay.
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className="form-footer">
+						<div className="wz-dots" aria-hidden>
+							{[0, 1, 2].map((i) => (
+								<span key={i} className={i === wizPage ? 'dot on' : 'dot'} />
+							))}
+						</div>
+						<div className="wz-timer">
+							<ReserveTimer note="" inline />
+						</div>
+						{wizPage === 0 && (
+							<button className="btn-primary" onClick={() => setWizPage(1)}>
+								Okay
+							</button>
+						)}
+						{wizPage === 1 && (
+							<button
+								className="btn-primary"
+								disabled={!swap.guestSigned}
+								onClick={() => setWizPage(2)}
+							>
+								Next
+							</button>
+						)}
+						{wizPage === 2 && (
+							<button
+								className="btn-primary"
+								disabled={!(swap.depositPaid && swap.rentPaid)}
+								onClick={() => setWizPage(null)}
+							>
+								Done
+							</button>
+						)}
+					</div>
+				</>
+			) : (
+				<>
 			<div className="form-content" style={{ paddingTop: 0 }}>
 				{/* The place this is all for */}
 				<div className="guest-steps-listing">
@@ -271,6 +434,8 @@ export function GuestStepsScreen({
 					</button>
 				)}
 			</div>
+				</>
+			)}
 
 			{showAgreement && (
 				<AgreementModal
