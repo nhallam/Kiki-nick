@@ -19,8 +19,9 @@ import { HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
 import { ReserveTimer } from './ReserveTimer';
 
 /** Little document illustration for the agreement tiles — a page with text
-    lines and a signature rule; signing draws the squiggle and a check badge. */
-function DocIllustration({ signed }: { signed: boolean }) {
+    lines and a signature rule; signing draws the squiggle and a check badge.
+    Shared with the guest's steps screen. */
+export function DocIllustration({ signed }: { signed: boolean }) {
 	return (
 		<span className={`doc-illo${signed ? ' signed' : ''}`} aria-hidden>
 			<svg width="66" height="80" viewBox="0 0 66 80" fill="none">
@@ -110,9 +111,9 @@ function PayCheque({
 }
 
 /** The placeholder rental agreement document — shared by both phones.
-    With signAs="host" the host reads and signs in here: a Sign button sits
-    under the document, and (demo) tapping the guest's signature slot flips
-    her signature. */
+    With signAs set, that party reads and signs in here: a Sign button sits
+    under the document, and (demo) tapping the other party's signature slot
+    flips their signature. */
 export function AgreementModal({
 	guest,
 	onClose,
@@ -120,7 +121,7 @@ export function AgreementModal({
 }: {
 	guest: string;
 	onClose: () => void;
-	signAs?: 'host';
+	signAs?: 'host' | 'guest';
 }) {
 	const swap = useSwapState();
 	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
@@ -171,7 +172,14 @@ export function AgreementModal({
 								{swap.guestSigned ? '✓ Signed' : 'Not yet signed'}
 							</span>
 						</div>
-						<div className="agreement-sig">
+						<div
+							className="agreement-sig"
+							onClick={
+								signAs === 'guest'
+									? () => setSwapState({ hostSigned: !swap.hostSigned })
+									: undefined
+							}
+						>
 							<span className="sig-name">Ryan</span>
 							<span className={swap.hostSigned ? 'sig-state done' : 'sig-state'}>
 								{swap.hostSigned ? '✓ Signed' : 'Not yet signed'}
@@ -179,12 +187,19 @@ export function AgreementModal({
 						</div>
 					</div>
 				</div>
-				{signAs === 'host' && !swap.hostSigned ? (
+				{signAs &&
+				!(signAs === 'host' ? swap.hostSigned : swap.guestSigned) ? (
 					<>
 						<button
 							className="btn-primary"
 							style={{ marginTop: 14 }}
-							onClick={() => setSwapState({ hostSigned: true })}
+							onClick={() =>
+								setSwapState(
+									signAs === 'host'
+										? { hostSigned: true }
+										: { guestSigned: true },
+								)
+							}
 						>
 							Sign agreement
 						</button>

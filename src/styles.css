@@ -3398,6 +3398,13 @@ input {
 	/* Same token as the .doc-check badge, matching the Signed labels */
 	color: var(--primary);
 }
+/* Guest side: the cheque's action is uploading the transfer confirmation */
+.pay-cheque .c-status.upload {
+	color: var(--primary-dark);
+}
+.pay-cheque .pay-thumb {
+	flex-shrink: 0;
+}
 .pay-cheque .doc-check {
 	right: -7px;
 	top: -7px;

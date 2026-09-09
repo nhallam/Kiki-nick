@@ -20,14 +20,8 @@ import {
 } from '../store';
 import { HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
 import { PhotoDeck } from './PhotoDeck';
-import { AgreementModal } from './Reserved';
+import { AgreementModal, DocIllustration } from './Reserved';
 import { ReserveTimer } from './ReserveTimer';
-
-const Tick = () => (
-	<span className="tick" aria-hidden>
-		<IconCheck size={11} />
-	</span>
-);
 
 /* Melissa's camera roll: her two payment screenshots plus a couple of
    holiday snaps, so the picker feels like a real roll. */
@@ -111,40 +105,49 @@ export function GuestStepsScreen({
 		);
 	}
 
-	const PayRow = ({
+	/* Her cheques: same paper object as Ryan's, but tapping one opens the
+	   screenshot picker — pay by transfer, upload the confirmation. Once
+	   uploaded, the screenshot sits on the cheque (tap to swap it). */
+	const PayCheque = ({
 		which,
+		label,
 		amount,
 		shot,
 	}: {
 		which: 'deposit' | 'rent';
+		label: string;
 		amount: number;
 		shot: number | null;
-	}) =>
-		shot != null ? (
-			<div className="check-line split">
-				<span className="c-left">£{amount}</span>
-				<span className="pay-upload-state">
-					{/* tap the screenshot to swap it out */}
-					<button
-						className="tl-thumb pay-thumb"
-						onClick={() => openUpload(which)}
-						aria-label="Change uploaded screenshot"
-					>
-						<img src={GUEST_ROLL[shot]} alt="" />
-					</button>
-					<span className="c-status">
-						<Tick /> Sent
-					</span>
+	}) => {
+		const paid = shot != null;
+		return (
+			<button
+				className={`pay-cheque${paid ? ' paid' : ''}`}
+				onClick={() => openUpload(which)}
+			>
+				<span className="pc-main">
+					<span className="pc-name">{label}</span>
+					<span className="pc-payer">You</span>
 				</span>
-			</div>
-		) : (
-			<div className="check-line split">
-				<span className="c-left">£{amount}</span>
-				<button className="sign-btn" onClick={() => openUpload(which)}>
-					Upload confirmation
-				</button>
-			</div>
+				{paid && (
+					<span className="tl-thumb pay-thumb">
+						<img src={GUEST_ROLL[shot]} alt="" />
+					</span>
+				)}
+				<span className="pc-amount">£{amount}</span>
+				{paid ? (
+					<span className="c-status paid">Paid</span>
+				) : (
+					<span className="c-status upload">Upload</span>
+				)}
+				{paid && (
+					<span className="doc-check">
+						<IconCheck size={12} />
+					</span>
+				)}
+			</button>
 		);
+	};
 
 	return (
 		<div className="screen">
@@ -170,77 +173,90 @@ export function GuestStepsScreen({
 				</div>
 
 				<p className="reserved-note">
-					Ryan reserved your dates! Your booking confirms automatically once
-					all steps are done.
+					Ryan reserved your dates — complete your steps below to confirm the
+					booking.
 				</p>
 
-				<div className="check-card">
-					{/* Rental agreement — she signs hers, watches for his */}
+				<div className="check-card flat">
+					{/* Rental agreement — same documents as Ryan's screen, from her
+					    seat. Tapping either opens the agreement; she signs inside. */}
 					<div className="check-item">
 						<div className="check-title">Rental agreement</div>
-						<div className="check-line split">
-							<span className="c-left">You</span>
-							{swap.guestSigned ? (
-								<span className="c-status">
-									<Tick /> Signed
-								</span>
-							) : (
-								<button
-									className="sign-btn"
-									onClick={() => setSwapState({ guestSigned: true })}
-								>
-									Tap to sign agreement
-								</button>
-							)}
+						<div className="agreement-docs">
+							<button
+								className="agree-doc"
+								onClick={() => setShowAgreement(true)}
+							>
+								<DocIllustration signed={swap.guestSigned} />
+								<span className="ad-name">You</span>
+								{swap.guestSigned ? (
+									<span className="ad-status signed">Signed</span>
+								) : (
+									<span className="ad-status action">Tap to sign</span>
+								)}
+							</button>
+							<button
+								className="agree-doc"
+								onClick={() => setShowAgreement(true)}
+							>
+								<DocIllustration signed={swap.hostSigned} />
+								<span className="ad-name">Ryan</span>
+								{swap.hostSigned ? (
+									<span className="ad-status signed">Signed</span>
+								) : (
+									<span className="ad-status">Waiting to be signed</span>
+								)}
+							</button>
 						</div>
-						<div className="check-line split">
-							<span className="c-left">Ryan</span>
-							{swap.hostSigned ? (
-								<span className="c-status">
-									<Tick /> Signed
-								</span>
-							) : (
-								<span className="c-status unpaid">Waiting to be signed</span>
-							)}
-						</div>
-						<button
-							className="view-agreement-btn"
-							onClick={() => setShowAgreement(true)}
-						>
-							View rental agreement
-						</button>
 					</div>
 
-					{/* Payments: bank transfer + screenshot upload (MVP flow) */}
+					{/* Payments: bank transfer + screenshot upload (MVP flow),
+					    dressed as the same cheques Ryan sees */}
 					<div className="check-item">
-						<div className="check-title">Security deposit</div>
+						<div className="check-title">Payments</div>
 						<div className="check-note">
-							Pay by bank transfer to Kiki, then upload a screenshot of the
-							confirmation
+							Pay by bank transfer to Kiki, then upload a screenshot of each
+							confirmation.
 						</div>
-						<PayRow which="deposit" amount={listing.securityDeposit} shot={swap.depositShot} />
-					</div>
-
-					<div className="check-item">
-						<div className="check-title">Rent</div>
+						<div className="pay-cheques">
+							<PayCheque
+								which="deposit"
+								label="Security deposit"
+								amount={listing.securityDeposit}
+								shot={swap.depositShot}
+							/>
+							<PayCheque
+								which="rent"
+								label="Rent"
+								amount={rentTotal}
+								shot={swap.rentShot}
+							/>
+						</div>
 						<div className="check-note">
-							Refunded in full if the stay doesn't go ahead
+							The deposit is refunded in full after your stay.
 						</div>
-						<PayRow which="rent" amount={rentTotal} shot={swap.rentShot} />
 					</div>
 				</div>
+			</div>
 
-				{/* The deadline sits with the progress it counts down to */}
-				<ReserveTimer note="to complete your steps" />
-				<div className="steps-progress">
-					<span className="sp-count">{stepsDone} of 3 steps complete</span>
-					<span className="sp-note">
-						{stepsDone === 3
-							? 'Confirming your booking…'
-							: 'Confirms automatically at 3 of 3'}
-					</span>
+			<div className="form-footer">
+				{/* Same lockup as Ryan's screen: a segment per step, the count on
+				    the left, the countdown on the right */}
+				<div className="steps-lockup">
+					<div className="steps-track" aria-hidden>
+						{[0, 1, 2].map((i) => (
+							<span key={i} className={i < stepsDone ? 'seg done' : 'seg'} />
+						))}
+					</div>
+					<div className="steps-row">
+						<span className="sl-count">
+							{stepsDone === 3
+								? 'Confirming your booking…'
+								: `${stepsDone} of 3 steps complete`}
+						</span>
+						<ReserveTimer note="" inline />
+					</div>
 				</div>
-
 				{bothSigned ? (
 					<div className="withdraw-locked">
 						Both parties have signed — the reservation can no longer be
@@ -257,7 +273,11 @@ export function GuestStepsScreen({
 			</div>
 
 			{showAgreement && (
-				<AgreementModal guest={guest} onClose={() => setShowAgreement(false)} />
+				<AgreementModal
+					guest={guest}
+					signAs="guest"
+					onClose={() => setShowAgreement(false)}
+				/>
 			)}
 
 			{confirmWithdraw && (
