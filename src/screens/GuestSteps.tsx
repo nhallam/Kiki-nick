@@ -291,11 +291,6 @@ export function GuestStepsScreen({
 					</div>
 
 					<div className="form-footer">
-						<div className="wz-dots" aria-hidden>
-							{[0, 1, 2].map((i) => (
-								<span key={i} className={i === wizPage ? 'dot on' : 'dot'} />
-							))}
-						</div>
 						<div className="wz-timer">
 							<ReserveTimer note="" inline />
 						</div>
