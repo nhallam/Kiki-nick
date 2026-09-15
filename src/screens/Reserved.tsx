@@ -7,7 +7,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { LISTINGS } from '../data';
-import { IconCheck, IconChevronLeft, StatusBar } from '../ui';
+import { IconCheck, IconChevronLeft, IconClose, StatusBar } from '../ui';
 import {
 	guestState,
 	setGuestState,
@@ -193,11 +193,17 @@ export function AgreementModal({
 	};
 
 	return (
-		<div className="sheet-overlay" onClick={onClose}>
-			<div className="agreement-modal" onClick={(e) => e.stopPropagation()}>
-				<div className="agreement-flip">
-					<div className={`flip-inner${signing ? ' flipped' : ''}`}>
-				<div className="agreement-doc">
+		<div className="agreement-screen">
+			<StatusBar time="12:13" />
+			<div className="ag-head">
+				<span className="ag-title">Rental agreement</span>
+				<button className="icon-btn" onClick={onClose} aria-label="Close">
+					<IconClose size={24} />
+				</button>
+			</div>
+			<div className="agreement-flip">
+				<div className={`flip-inner${signing ? ' flipped' : ''}`}>
+				<div className="agreement-doc fullscreen">
 					<div className="agreement-heading">Short-stay Rental Agreement</div>
 					<div className="agreement-ref">
 						Kiki booking #KI-2026-0826 · Draft for signature
@@ -278,11 +284,11 @@ export function AgreementModal({
 					</div>
 				</div>
 
+			<div className="ag-footer">
 				{signing ? (
 					<>
 						<button
 							className="btn-primary"
-							style={{ marginTop: 14 }}
 							disabled={!hasInk}
 							onClick={() => {
 								setSwapState(
@@ -308,24 +314,14 @@ export function AgreementModal({
 					</>
 				) : signAs &&
 				  !(signAs === 'host' ? swap.hostSigned : swap.guestSigned) ? (
-					<>
-						<button
-							className="btn-primary"
-							style={{ marginTop: 14 }}
-							onClick={() => setSigning(true)}
-						>
-							Sign agreement
-						</button>
-						<button className="agreement-close-btn" onClick={onClose}>
-							Close
-						</button>
-					</>
-				) : (
 					<button
 						className="btn-primary"
-						style={{ marginTop: 14 }}
-						onClick={onClose}
+						onClick={() => setSigning(true)}
 					>
+						Sign agreement
+					</button>
+				) : (
+					<button className="btn-primary" onClick={onClose}>
 						Close
 					</button>
 				)}
