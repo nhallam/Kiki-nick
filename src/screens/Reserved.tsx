@@ -140,57 +140,9 @@ export function AgreementModal({
 	const listing = LISTINGS.find((l) => l.listerName === 'Ryan')!;
 	const rentTotal = preview.nights * listing.nightlyRate;
 
-	// Signing ceremony: the document flips over to a signature pad where
-	// you write with your finger; Sign flips it back, signed.
-	const [signing, setSigning] = useState(false);
-	const [hasInk, setHasInk] = useState(false);
-	const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
-	const drawing = React.useRef(false);
-	const last = React.useRef({ x: 0, y: 0 });
-	const myName =
-		signAs === 'guest' ? preview.fullName : 'Ryan Carter';
-
-	const initCanvas = (c: HTMLCanvasElement | null) => {
-		canvasRef.current = c;
-		if (!c) return;
-		const dpr = window.devicePixelRatio || 1;
-		c.width = c.clientWidth * dpr;
-		c.height = c.clientHeight * dpr;
-		const ctx = c.getContext('2d')!;
-		ctx.scale(dpr, dpr);
-		ctx.strokeStyle = '#0f6e56';
-		ctx.lineWidth = 2.5;
-		ctx.lineCap = 'round';
-		ctx.lineJoin = 'round';
-	};
-	const inkAt = (e: React.PointerEvent<HTMLCanvasElement>) => {
-		const r = e.currentTarget.getBoundingClientRect();
-		return { x: e.clientX - r.left, y: e.clientY - r.top };
-	};
-	const inkStart = (e: React.PointerEvent<HTMLCanvasElement>) => {
-		e.currentTarget.setPointerCapture(e.pointerId);
-		drawing.current = true;
-		last.current = inkAt(e);
-	};
-	const inkMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
-		if (!drawing.current || !canvasRef.current) return;
-		const ctx = canvasRef.current.getContext('2d')!;
-		const p = inkAt(e);
-		ctx.beginPath();
-		ctx.moveTo(last.current.x, last.current.y);
-		ctx.lineTo(p.x, p.y);
-		ctx.stroke();
-		last.current = p;
-		if (!hasInk) setHasInk(true);
-	};
-	const inkEnd = () => {
-		drawing.current = false;
-	};
-	const clearInk = () => {
-		const c = canvasRef.current;
-		if (c) c.getContext('2d')!.clearRect(0, 0, c.width, c.height);
-		setHasInk(false);
-	};
+	// Signing asks for confirmation rather than a drawn signature.
+	const [confirmSign, setConfirmSign] = useState(false);
+	const myName = signAs === 'guest' ? preview.fullName : 'Ryan Carter';
 
 	return (
 		<div className="agreement-screen">
@@ -201,9 +153,7 @@ export function AgreementModal({
 					<IconClose size={24} />
 				</button>
 			</div>
-			<div className="agreement-flip">
-				<div className={`flip-inner${signing ? ' flipped' : ''}`}>
-				<div className="agreement-doc fullscreen">
+			<div className="agreement-doc fullscreen">
 					<div className="agreement-heading">Short-stay Rental Agreement</div>
 					<div className="agreement-ref">
 						Kiki booking #KI-2026-0826 · Draft for signature
@@ -258,65 +208,14 @@ export function AgreementModal({
 							</span>
 						</div>
 					</div>
-				</div>
-
-						{/* The back of the document: the signature pad */}
-						<div className="signing-face">
-							<div className="signing-head">Sign the agreement</div>
-							<div className="signing-hint">
-								Write your signature with your finger
-							</div>
-							<div className="signing-pad">
-								<canvas
-									ref={initCanvas}
-									className="sign-canvas"
-									onPointerDown={inkStart}
-									onPointerMove={inkMove}
-									onPointerUp={inkEnd}
-									onPointerLeave={inkEnd}
-								/>
-								<div className="signing-line-wrap" aria-hidden>
-									<div className="signing-line" />
-									<div className="signing-name">{myName}</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+			</div>
 
 			<div className="ag-footer">
-				{signing ? (
-					<>
-						<button
-							className="btn-primary"
-							disabled={!hasInk}
-							onClick={() => {
-								setSwapState(
-									signAs === 'host'
-										? { hostSigned: true }
-										: { guestSigned: true },
-								);
-								setSigning(false);
-								clearInk();
-							}}
-						>
-							Sign
-						</button>
-						<button
-							className="agreement-close-btn"
-							onClick={() => {
-								setSigning(false);
-								clearInk();
-							}}
-						>
-							Cancel
-						</button>
-					</>
-				) : signAs &&
-				  !(signAs === 'host' ? swap.hostSigned : swap.guestSigned) ? (
+				{signAs &&
+				!(signAs === 'host' ? swap.hostSigned : swap.guestSigned) ? (
 					<button
 						className="btn-primary"
-						onClick={() => setSigning(true)}
+						onClick={() => setConfirmSign(true)}
 					>
 						Sign agreement
 					</button>
@@ -326,6 +225,39 @@ export function AgreementModal({
 					</button>
 				)}
 			</div>
+
+			{confirmSign && (
+				<div className="sheet-overlay" onClick={() => setConfirmSign(false)}>
+					<div className="dialog-card" onClick={(e) => e.stopPropagation()}>
+						<div className="dialog-title">Sign this agreement?</div>
+						<div className="dialog-sub">
+							You're signing as {myName}. Your signature applies to this
+							rental agreement and can't be undone.
+						</div>
+						<div className="dialog-actions">
+							<button
+								className="btn-dialog-cancel"
+								onClick={() => setConfirmSign(false)}
+							>
+								Cancel
+							</button>
+							<button
+								className="btn-dialog-confirm"
+								onClick={() => {
+									setSwapState(
+										signAs === 'host'
+											? { hostSigned: true }
+											: { guestSigned: true },
+									);
+									setConfirmSign(false);
+								}}
+							>
+								Sign
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }
