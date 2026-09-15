@@ -121,8 +121,17 @@ const VERSIONS = [
 		id: 'match34',
 		label: '3.4',
 		section: 'mf-round3',
-		blurb: "Melissa's reserve steps as a guided screen-by-screen flow — latest.",
+		blurb:
+			"Melissa's reserve steps as a guided flow, signing ceremony, mutual Confirm match.",
 		branch: 'matching-v34',
+		wide: true,
+	},
+	{
+		id: 'match35',
+		label: '3.5',
+		section: 'mf-round3',
+		blurb: 'New iteration round — latest.',
+		branch: 'matching-v35',
 		wide: true,
 	},
 	{
