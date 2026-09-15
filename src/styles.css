@@ -4778,3 +4778,108 @@ input {
 	color: var(--gray);
 	font-size: 12px;
 }
+
+/* ---------- 3.5: decline flow ---------- */
+/* Read-only record on a declined request — the host sees what was sent */
+.declined-banner {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	border: 1px solid var(--border-light);
+	background: var(--light-gray);
+	border-radius: 12px;
+	padding: 12px 14px;
+	margin-bottom: 14px;
+}
+.db-title {
+	font-size: 14.5px;
+	font-weight: 700;
+	color: var(--error);
+}
+.db-line {
+	font-size: 13.5px;
+	color: var(--dark);
+}
+.db-note {
+	font-size: 13.5px;
+	color: var(--gray);
+	font-style: italic;
+}
+
+/* Decline dialog: reason categories + optional message */
+.decline-opts {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+.decline-opt {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 11px 12px;
+	border: 1px solid var(--border-light);
+	border-radius: 10px;
+	font-size: 14px;
+	font-weight: 500;
+	text-align: left;
+	color: var(--dark);
+}
+.decline-opt .radio {
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	border: 2px solid var(--border-medium);
+	flex-shrink: 0;
+}
+.decline-opt.on {
+	border-color: var(--primary);
+	background: var(--primary-tint);
+}
+.decline-opt.on .radio {
+	border-color: var(--primary);
+	background: var(--primary);
+	box-shadow: inset 0 0 0 3px var(--white);
+}
+.decline-note {
+	width: 100%;
+	border: 1px solid var(--border-light);
+	border-radius: 10px;
+	padding: 10px 12px;
+	font-size: 14px;
+	line-height: 1.45;
+	min-height: 64px;
+	resize: none;
+	margin-bottom: 14px;
+}
+.decline-note:focus {
+	outline: none;
+	border-color: var(--border-medium);
+}
+.btn-dialog-danger:disabled {
+	background: var(--disabled-bg);
+	color: var(--disabled-text);
+	cursor: default;
+}
+
+/* Declined requests fold away under the active list */
+.declined-toggle {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-top: 18px;
+	padding: 4px 0;
+	font-size: 14.5px;
+	font-weight: 700;
+	color: var(--gray);
+}
+.declined-toggle .chev {
+	display: inline-flex;
+	transition: transform 0.2s ease;
+}
+.declined-toggle .chev.open {
+	transform: rotate(180deg);
+}
+.req-row.muted {
+	opacity: 0.7;
+}

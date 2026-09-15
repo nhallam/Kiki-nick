@@ -13,7 +13,7 @@ import {
 	IconChevronLeft,
 	StatusBar,
 } from '../ui';
-import { guestState, reserveGuest, setGuestState, useSwapState } from '../store';
+import { declineGuest, guestState, reserveGuest, useSwapState } from '../store';
 import { ReviewSummaryCard } from './ReviewRequest';
 
 interface RequestPreview {
@@ -443,6 +443,14 @@ export function GuestProfileCard({
 	);
 }
 
+/** The reasons a host can send with a decline — the guest sees the one
+    chosen, phrased about the stay rather than the person. */
+const DECLINE_REASONS = [
+	'The dates are no longer available',
+	'Not the right fit for this stay',
+	'The home is no longer available',
+];
+
 export function HostRequestScreen({
 	guest,
 	onBack,
@@ -461,6 +469,12 @@ export function HostRequestScreen({
 
 	const swap = useSwapState();
 	const [confirmDecline, setConfirmDecline] = useState(false);
+	// The guest sees the category (and the note, if written); the host can
+	// always see back what was sent, on this screen's read-only snapshot.
+	const [declineCategory, setDeclineCategory] = useState<string | null>(null);
+	const [declineNote, setDeclineNote] = useState('');
+	const declined = guestState(swap, guest) === 'declined';
+	const declineInfo = swap.declines[guest];
 	// Only one reservation per overlapping date range; requests for other
 	// dates are unaffected.
 	const otherReserved = Object.keys(REQUEST_PREVIEWS).some(
@@ -485,6 +499,19 @@ export function HostRequestScreen({
 			</div>
 
 			<div className="form-content" style={{ paddingTop: 0 }}>
+				{/* Declined: the request stays readable, with a record of
+				    exactly what was sent */}
+				{declined && (
+					<div className="declined-banner">
+						<span className="db-title">You declined this request</span>
+						<span className="db-line">
+							Reason sent: {declineInfo?.category ?? 'No reason recorded'}
+						</span>
+						{declineInfo?.note && (
+							<span className="db-note">“{declineInfo.note}”</span>
+						)}
+					</div>
+				)}
 				{/* The host knows their own apartment — the screen leads with who
 				    is asking: the booker card, expandable to contact details */}
 				<BookerCard guest={guest} />
@@ -518,7 +545,11 @@ export function HostRequestScreen({
 			</div>
 
 			<div className="form-footer">
-				{otherReserved ? (
+				{declined ? (
+					<div className="footer-note">
+						This request is closed — {who} has been notified.
+					</div>
+				) : otherReserved ? (
 					<div className="footer-note">
 						You already have a reserved guest for overlapping dates.
 					</div>
@@ -530,24 +561,26 @@ export function HostRequestScreen({
 						Declining lets {preview.partner ? 'them' : 'her'} know.
 					</div>
 				)}
-				<div className="request-actions">
-					<button
-						className="btn-decline"
-						onClick={() => setConfirmDecline(true)}
-					>
-						Decline
-					</button>
-					<button
-						className="btn-primary"
-						disabled={otherReserved}
-						onClick={() => {
-							reserveGuest(guest);
-							onReserved();
-						}}
-					>
-						Accept and Reserve
-					</button>
-				</div>
+				{!declined && (
+					<div className="request-actions">
+						<button
+							className="btn-decline"
+							onClick={() => setConfirmDecline(true)}
+						>
+							Decline
+						</button>
+						<button
+							className="btn-primary"
+							disabled={otherReserved}
+							onClick={() => {
+								reserveGuest(guest);
+								onReserved();
+							}}
+						>
+							Accept and Reserve
+						</button>
+					</div>
+				)}
 			</div>
 
 			{confirmDecline && (
@@ -555,9 +588,28 @@ export function HostRequestScreen({
 					<div className="dialog-card" onClick={(e) => e.stopPropagation()}>
 						<div className="dialog-title">Decline {who}'s request?</div>
 						<div className="dialog-sub">
-							We'll send {who} a notification to let them know their
-							request wasn't successful.
+							{who} will see the reason you choose — and your message, if
+							you add one.
 						</div>
+						<div className="decline-opts">
+							{DECLINE_REASONS.map((r) => (
+								<button
+									key={r}
+									className={`decline-opt${declineCategory === r ? ' on' : ''}`}
+									onClick={() => setDeclineCategory(r)}
+									aria-pressed={declineCategory === r}
+								>
+									<span className="radio" aria-hidden />
+									{r}
+								</button>
+							))}
+						</div>
+						<textarea
+							className="decline-note"
+							placeholder="Add a personal message (optional)"
+							value={declineNote}
+							onChange={(e) => setDeclineNote(e.target.value)}
+						/>
 						<div className="dialog-actions">
 							<button
 								className="btn-dialog-cancel"
@@ -567,8 +619,9 @@ export function HostRequestScreen({
 							</button>
 							<button
 								className="btn-dialog-danger"
+								disabled={!declineCategory}
 								onClick={() => {
-									setGuestState(guest, 'declined');
+									declineGuest(guest, declineCategory!, declineNote.trim());
 									onDeclined();
 								}}
 							>

@@ -32,6 +32,9 @@ export interface SwapState {
 	    is made when both have. */
 	guestConfirmedMatch: boolean;
 	hostConfirmedMatch: boolean;
+	/** What the host sent when declining, kept per guest — the host can
+	    always see back exactly what went out. */
+	declines: Record<string, { category: string; note: string }>;
 }
 
 const INITIAL_STATE: SwapState = {
@@ -50,6 +53,7 @@ const INITIAL_STATE: SwapState = {
 	reservedDeadline: null,
 	guestConfirmedMatch: false,
 	hostConfirmedMatch: false,
+	declines: {},
 };
 
 let state: SwapState = INITIAL_STATE;
@@ -92,6 +96,15 @@ export const guestState = (swap: SwapState, guest: string): GuestRequestState =>
 
 export function setGuestState(guest: string, s: GuestRequestState) {
 	if (GUEST_KEYS[guest]) setSwapState({ [GUEST_KEYS[guest]]: s });
+}
+
+/** Declining sends the guest a reason (category + optional note) and
+    keeps a copy for the host's records. */
+export function declineGuest(guest: string, category: string, note: string) {
+	setGuestState(guest, 'declined');
+	setSwapState({
+		declines: { ...state.declines, [guest]: { category, note } },
+	});
 }
 
 /** Accepting starts the 48-hour completion window. */

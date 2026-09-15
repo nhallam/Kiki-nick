@@ -2,9 +2,15 @@
  * Host's view of one trip: the trip dates up top, then every booking
  * request that has come in against those dates — newest first.
  */
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Avatar, IconChevronLeft, IconChevronRight, StatusBar } from '../ui';
+import {
+	Avatar,
+	IconChevronDown,
+	IconChevronLeft,
+	IconChevronRight,
+	StatusBar,
+} from '../ui';
 import { guestState, useSwapState } from '../store';
 import { REQUEST_PREVIEWS } from './HostRequest';
 
@@ -112,6 +118,63 @@ export function TripRequestsScreen({
 	const statusOf = (r: TripBookingRequest) =>
 		REQUEST_PREVIEWS[r.name] ? guestState(swap, r.name) : r.status;
 
+	// Declined requests keep their history in a collapsed section — hosts
+	// need the memory ("did I already decline them?"), not the noise.
+	const active = TRIP_REQUESTS.filter((r) => statusOf(r) !== 'declined');
+	const declined = TRIP_REQUESTS.filter((r) => statusOf(r) === 'declined');
+	const [showDeclined, setShowDeclined] = useState(false);
+
+	const renderRow = (r: TripBookingRequest) => {
+		const status = statusOf(r);
+		const onOpen =
+			status === 'confirmed'
+				? onOpenMatch
+				: status === 'reserved'
+					? () => onOpenReserved(r.name)
+					: REQUEST_PREVIEWS[r.name] &&
+						  (status === 'new' || status === 'declined')
+						? () => onOpenRequest(r.name)
+						: undefined;
+		const partner = REQUEST_PREVIEWS[r.name]?.partner;
+		return (
+			<button
+				key={r.id}
+				className={`req-row${status === 'declined' ? ' muted' : ''}`}
+				onClick={onOpen}
+			>
+				{partner ? (
+					<span className="pair-avatars">
+						<Avatar variant={r.avatar} initial={r.initial} size={44} />
+						<Avatar
+							variant={partner.avatar}
+							initial={partner.initial}
+							size={44}
+						/>
+					</span>
+				) : (
+					<Avatar variant={r.avatar} initial={r.initial} size={44} />
+				)}
+				<span className="tr-body">
+					<span className="tr-title">
+						{REQUEST_PREVIEWS[r.name]?.displayName ?? r.name}
+						{status === 'new' && <span className="new-badge">New</span>}
+						{status === 'inReview' && (
+							<span className="review-badge">In review</span>
+						)}
+						{status === 'reserved' && (
+							<span className="review-badge">Reserved</span>
+						)}
+						{status === 'confirmed' && (
+							<span className="confirmed-badge">Confirmed</span>
+						)}
+					</span>
+					<span className="tr-sub">{r.sub}</span>
+				</span>
+				{onOpen && <IconChevronRight size={18} />}
+			</button>
+		);
+	};
+
 	return (
 		<div className="screen">
 			<StatusBar time="12:13" />
@@ -136,58 +199,27 @@ export function TripRequestsScreen({
 			<div className="screen-scroll" style={{ padding: '16px 20px 24px' }}>
 				<div className="trips-section-head" style={{ marginTop: 4 }}>
 					<h2 className="trips-section-title">
-						Booking requests <span className="req-count">{TRIP_REQUESTS.length}</span>
+						Booking requests <span className="req-count">{active.length}</span>
 					</h2>
 				</div>
 
-				{TRIP_REQUESTS.map((r) => {
-					const status = statusOf(r);
-					const onOpen =
-						status === 'confirmed'
-							? onOpenMatch
-							: status === 'reserved'
-								? () => onOpenReserved(r.name)
-								: status === 'new' && REQUEST_PREVIEWS[r.name]
-									? () => onOpenRequest(r.name)
-									: undefined;
-					const partner = REQUEST_PREVIEWS[r.name]?.partner;
-					return (
-						<button key={r.id} className="req-row" onClick={onOpen}>
-							{partner ? (
-								<span className="pair-avatars">
-									<Avatar variant={r.avatar} initial={r.initial} size={44} />
-									<Avatar
-										variant={partner.avatar}
-										initial={partner.initial}
-										size={44}
-									/>
-								</span>
-							) : (
-								<Avatar variant={r.avatar} initial={r.initial} size={44} />
-							)}
-							<span className="tr-body">
-								<span className="tr-title">
-									{REQUEST_PREVIEWS[r.name]?.displayName ?? r.name}
-									{status === 'new' && <span className="new-badge">New</span>}
-									{status === 'inReview' && (
-										<span className="review-badge">In review</span>
-									)}
-									{status === 'reserved' && (
-										<span className="review-badge">Reserved</span>
-									)}
-									{status === 'confirmed' && (
-										<span className="confirmed-badge">Confirmed</span>
-									)}
-									{status === 'declined' && (
-										<span className="declined-badge">Declined</span>
-									)}
-								</span>
-								<span className="tr-sub">{r.sub}</span>
+				{active.map(renderRow)}
+
+				{declined.length > 0 && (
+					<>
+						<button
+							className="declined-toggle"
+							onClick={() => setShowDeclined((o) => !o)}
+							aria-expanded={showDeclined}
+						>
+							Declined ({declined.length})
+							<span className={`chev${showDeclined ? ' open' : ''}`}>
+								<IconChevronDown size={17} />
 							</span>
-							<IconChevronRight size={18} />
 						</button>
-					);
-				})}
+						{showDeclined && declined.map(renderRow)}
+					</>
+				)}
 			</div>
 		</div>
 	);
