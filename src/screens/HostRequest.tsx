@@ -47,6 +47,20 @@ interface RequestPreview {
 	displayName?: string;
 	/** 'her' / 'their' — for the celebration copy */
 	pronoun?: string;
+	/** Group bookings: the individual profiles behind the combined card */
+	people?: {
+		name: string;
+		avatar: string;
+		initial?: string;
+		line: string;
+		grewUp: string;
+	}[];
+	/** Names all occupants in the rental agreement (group bookings) */
+	occupantsLine?: string;
+	/** Stay starts >1 month out, so rent can be paid in two parts… */
+	splitAvailable?: boolean;
+	/** …with the second half due 1 month before move-in */
+	splitDue?: string;
 }
 
 export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
@@ -71,6 +85,8 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		email: 'melissa.hart@gmail.com',
 		instagram: '@melissa.inmelbourne',
 		phone: '+61 412 555 083',
+		splitAvailable: true,
+		splitDue: '26 Jul 2026',
 	},
 	Aisha: {
 		avatar: 'aisha',
@@ -122,6 +138,24 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		partner: { name: 'Jordan', avatar: 'generic', initial: 'J' },
 		displayName: 'Tash & Jordan',
 		pronoun: 'their',
+		people: [
+			{
+				name: 'Tash Reeves',
+				avatar: 'tash',
+				line: '30 · Photographer',
+				grewUp: 'Grew up in Wellington, NZ',
+			},
+			{
+				name: 'Jordan Reeves',
+				avatar: 'generic',
+				initial: 'J',
+				line: '32 · Carpenter',
+				grewUp: 'Grew up in Wellington, NZ',
+			},
+		],
+		occupantsLine: 'Tash Reeves and Jordan Reeves',
+		splitAvailable: true,
+		splitDue: '26 Jul 2026',
 	},
 };
 
@@ -316,6 +350,8 @@ export function GuestProfileHeader({
     (Contact details live in their own section at the foot of the page.) */
 export function BookerCard({ guest }: { guest: string }) {
 	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
+	// Group bookings: the combined card expands into the individual profiles
+	const [showPeople, setShowPeople] = useState(false);
 	const matchesLabel =
 		preview.kikiMatches === 0
 			? 'First Kiki match'
@@ -337,7 +373,12 @@ export function BookerCard({ guest }: { guest: string }) {
 						<span className="booker-line">{preview.occupation}</span>
 					</span>
 					{preview.partner ? (
-						<span className="pair-avatars booker">
+						<button
+							className="pair-avatars booker"
+							onClick={() => setShowPeople((o) => !o)}
+							aria-expanded={showPeople}
+							aria-label="View both profiles"
+						>
 							<Avatar
 								variant={preview.avatar}
 								initial={preview.initial}
@@ -348,7 +389,7 @@ export function BookerCard({ guest }: { guest: string }) {
 								initial={preview.partner.initial}
 								size={72}
 							/>
-						</span>
+						</button>
 					) : (
 						<Avatar
 							variant={preview.avatar}
@@ -359,7 +400,30 @@ export function BookerCard({ guest }: { guest: string }) {
 				</span>
 				{/* Full-width line — free to run under the photo */}
 				<span className="booker-line">Grew up in {preview.hometown}</span>
+				{preview.people && (
+					<button
+						className="booker-people-toggle"
+						onClick={() => setShowPeople((o) => !o)}
+						aria-expanded={showPeople}
+					>
+						{showPeople ? 'Hide profiles' : 'View both profiles'}
+					</button>
+				)}
 			</div>
+			{showPeople && preview.people && (
+				<div className="booker-people">
+					{preview.people.map((p) => (
+						<div className="bp-row" key={p.name}>
+							<Avatar variant={p.avatar} initial={p.initial} size={46} />
+							<span className="bp-info">
+								<span className="bp-name">{p.name}</span>
+								<span className="bp-line">{p.line}</span>
+								<span className="bp-line">{p.grewUp}</span>
+							</span>
+						</div>
+					))}
+				</div>
+			)}
 		</div>
 	);
 }

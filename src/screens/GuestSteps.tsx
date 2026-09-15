@@ -21,7 +21,7 @@ import {
 } from '../store';
 import { HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
 import { PhotoDeck } from './PhotoDeck';
-import { AgreementModal, DocIllustration } from './Reserved';
+import { AgreementModal, DocIllustration, ScheduledCheque } from './Reserved';
 import { ReserveTimer } from './ReserveTimer';
 
 /* Melissa's camera roll: her two payment screenshots plus a couple of
@@ -160,6 +160,62 @@ export function GuestStepsScreen({
 		);
 	};
 
+	/* Split payments: her stay is >1 month out, so she can pay rent in two
+	   parts — half now, half due 1 month before move-in. The choice locks
+	   once she uploads the first rent payment. Shared by the guided flow's
+	   payments screen and the overview. */
+	const rent1 = Math.ceil(rentTotal / 2);
+	const rentCheques = (
+		<>
+			{preview.splitAvailable && swap.rentShot == null && (
+				<div className="split-block">
+					<div className="split-choice">
+						<button
+							className={`sc-opt${!swap.rentSplit ? ' on' : ''}`}
+							onClick={() => setSwapState({ rentSplit: false })}
+						>
+							Pay in full
+						</button>
+						<button
+							className={`sc-opt${swap.rentSplit ? ' on' : ''}`}
+							onClick={() => setSwapState({ rentSplit: true })}
+						>
+							Two parts
+						</button>
+					</div>
+					<p className="split-note">
+						Your stay is over a month away, so you can pay half the rent now
+						and the rest by {preview.splitDue}.
+					</p>
+				</div>
+			)}
+			{swap.rentSplit ? (
+				<>
+					<PayCheque
+						which="rent"
+						label="Rent — 1st half"
+						amount={rent1}
+						shot={swap.rentShot}
+					/>
+					<ScheduledCheque
+						label="Rent — 2nd half"
+						due={preview.splitDue ?? '1 month before move-in'}
+						amount={rentTotal - rent1}
+						paid={swap.rent2Paid}
+						payer="You"
+					/>
+				</>
+			) : (
+				<PayCheque
+					which="rent"
+					label="Rent"
+					amount={rentTotal}
+					shot={swap.rentShot}
+				/>
+			)}
+		</>
+	);
+
 	return (
 		<div className="screen">
 			<StatusBar time="12:13" />
@@ -275,12 +331,7 @@ export function GuestStepsScreen({
 											amount={listing.securityDeposit}
 											shot={swap.depositShot}
 										/>
-										<PayCheque
-											which="rent"
-											label="Rent"
-											amount={rentTotal}
-											shot={swap.rentShot}
-										/>
+										{rentCheques}
 									</div>
 									<p className="wz-fine">
 										The deposit is refunded in full after your stay.
@@ -402,12 +453,7 @@ export function GuestStepsScreen({
 								amount={listing.securityDeposit}
 								shot={swap.depositShot}
 							/>
-							<PayCheque
-								which="rent"
-								label="Rent"
-								amount={rentTotal}
-								shot={swap.rentShot}
-							/>
+							{rentCheques}
 						</div>
 						<div className="check-note">
 							The deposit is refunded in full after your stay.

@@ -122,6 +122,51 @@ function PayCheque({
 	);
 }
 
+/** Split rent's second half: a cheque that isn't due yet — no action,
+    just the amount and its due date. Shared by both phones. */
+export function ScheduledCheque({
+	label,
+	due,
+	amount,
+	paid,
+	payer,
+}: {
+	label: string;
+	due: string;
+	amount: number;
+	paid: boolean;
+	payer: string;
+}) {
+	return (
+		<div className={`pay-cheque as-div${paid ? ' paid' : ''}`}>
+			<span className="pc-main">
+				<span className="pc-name">{label}</span>
+				<span className="pc-payer">
+					{paid ? (
+						<>
+							{payer}
+							<span className="pc-signed">Signed</span>
+						</>
+					) : (
+						`Due by ${due}`
+					)}
+				</span>
+			</span>
+			<span className="pc-amount">£{amount}</span>
+			{paid ? (
+				<span className="c-status paid">Paid</span>
+			) : (
+				<span className="c-status scheduled">Scheduled</span>
+			)}
+			{paid && (
+				<span className="doc-check">
+					<IconCheck size={12} />
+				</span>
+			)}
+		</div>
+	);
+}
+
 /** The placeholder rental agreement document — shared by both phones.
     With signAs set, that party reads and signs in here: a Sign button sits
     under the document, and (demo) tapping the other party's signature slot
@@ -161,11 +206,16 @@ export function AgreementModal({
 					<p>
 						This agreement is made between <b>Ryan Carter</b> ("the Host") of
 						Ryan's Apartment, Hackney, London and <b>{preview.fullName}</b>{' '}
-						("the Stayer") of {preview.hometown}.
+						("{preview.partner ? 'the Stayers' : 'the Stayer'}") of{' '}
+						{preview.hometown}.
 					</p>
 					<div className="agreement-clause">
-						<b>1. Stay.</b> The Host grants the Stayer use of the whole
+						<b>1. Stay.</b> The Host grants the{' '}
+						{preview.partner ? 'Stayers' : 'Stayer'} use of the whole
 						apartment from 26 August 2026 to 29 August 2026 (3 nights).
+						{preview.occupantsLine && (
+							<> Occupants: {preview.occupantsLine} (2 guests).</>
+						)}
 					</div>
 					<div className="agreement-clause">
 						<b>2. Payment.</b> Rent of £{rentTotal} and a refundable security
@@ -189,7 +239,12 @@ export function AgreementModal({
 									: undefined
 							}
 						>
-							<span className="sig-name">{guest}</span>
+							<span className="sig-name">
+								{guest}
+								{preview.partner && (
+									<span className="sig-role"> · lead booker</span>
+								)}
+							</span>
 							<span className={swap.guestSigned ? 'sig-state done' : 'sig-state'}>
 								{swap.guestSigned ? '✓ Signed' : 'Not yet signed'}
 							</span>
@@ -369,13 +424,36 @@ export function ReservedScreen({
 									setSwapState({ depositPaid: !swap.depositPaid })
 								}
 							/>
-							<PayCheque
-								label="Rent"
-								payer={who}
-								amount={rentTotal}
-								paid={swap.rentPaid}
-								onToggle={() => setSwapState({ rentPaid: !swap.rentPaid })}
-							/>
+							{swap.rentSplit ? (
+								/* She chose two parts: half in the window, half
+								   due 1 month before move-in */
+								<>
+									<PayCheque
+										label="Rent — 1st half"
+										payer={who}
+										amount={Math.ceil(rentTotal / 2)}
+										paid={swap.rentPaid}
+										onToggle={() =>
+											setSwapState({ rentPaid: !swap.rentPaid })
+										}
+									/>
+									<ScheduledCheque
+										label="Rent — 2nd half"
+										due={preview.splitDue ?? '1 month before move-in'}
+										amount={rentTotal - Math.ceil(rentTotal / 2)}
+										paid={swap.rent2Paid}
+										payer={who}
+									/>
+								</>
+							) : (
+								<PayCheque
+									label="Rent"
+									payer={who}
+									amount={rentTotal}
+									paid={swap.rentPaid}
+									onToggle={() => setSwapState({ rentPaid: !swap.rentPaid })}
+								/>
+							)}
 						</div>
 						<div className="check-note">
 							You will receive the rent 3 days after {who} moves in.

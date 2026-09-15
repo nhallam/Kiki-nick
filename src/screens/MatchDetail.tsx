@@ -160,13 +160,45 @@ export function MatchDetailScreen({
 			sub: `£${listing.securityDeposit} held by Kiki`,
 			done: swap.depositPaid,
 		},
-		{
-			title: 'Rent paid',
-			sub: isGuest
-				? `£${rentTotal} · paid to Ryan 3 days after move-in`
-				: `£${rentTotal} · paid to you 3 days after move-in`,
-			done: swap.rentPaid,
-		},
+		...(swap.rentSplit
+			? /* Rent in two parts: the second half is due 1 month before
+			     move-in, and is paid from here once the match is made */
+				([
+					{
+						title: 'Rent · 1st half paid',
+						sub: isGuest
+							? `£${Math.ceil(rentTotal / 2)} · paid to Ryan 3 days after move-in`
+							: `£${Math.ceil(rentTotal / 2)} · paid to you 3 days after move-in`,
+						done: swap.rentPaid,
+					},
+					{
+						title: swap.rent2Paid ? 'Rent · 2nd half paid' : 'Rent · 2nd half',
+						sub: swap.rent2Paid
+							? `£${rentTotal - Math.ceil(rentTotal / 2)} · paid`
+							: `£${rentTotal - Math.ceil(rentTotal / 2)} · due by ${preview.splitDue ?? '26 Jul 2026'}`,
+						done: swap.rent2Paid,
+						actions:
+							isGuest && !swap.rent2Paid ? (
+								<span className="tl-actions">
+									<button
+										className="tl-action-btn"
+										onClick={() => setSwapState({ rent2Paid: true })}
+									>
+										Pay now
+									</button>
+								</span>
+							) : undefined,
+					},
+				] as StaticItem[])
+			: [
+					{
+						title: 'Rent paid',
+						sub: isGuest
+							? `£${rentTotal} · paid to Ryan 3 days after move-in`
+							: `£${rentTotal} · paid to you 3 days after move-in`,
+						done: swap.rentPaid,
+					},
+				]),
 		{
 			title: 'Condition photos · before',
 			sub: isGuest ? 'Added by Ryan before move-in' : 'Added by you before move-in',

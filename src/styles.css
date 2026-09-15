@@ -4694,3 +4694,87 @@ input {
 	justify-content: center;
 	margin-bottom: 12px;
 }
+
+/* ---------- 3.5: split rent + group profiles ---------- */
+/* Pay in full / two parts — a small segmented choice above the cheques */
+.split-block {
+	margin-bottom: 2px;
+}
+.split-choice {
+	display: flex;
+	gap: 6px;
+	padding: 4px;
+	border: 1px solid var(--border-light);
+	border-radius: 12px;
+	background: var(--white);
+}
+.sc-opt {
+	flex: 1;
+	padding: 9px;
+	border-radius: 9px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--gray);
+}
+.sc-opt.on {
+	background: var(--primary-tint);
+	color: var(--primary-dark);
+}
+.split-note {
+	font-size: 12.5px;
+	color: var(--gray);
+	line-height: 1.45;
+	margin: 8px 2px 6px;
+}
+/* A cheque that isn't due yet */
+.pay-cheque.as-div {
+	cursor: default;
+}
+.pay-cheque .c-status.scheduled {
+	color: var(--gray);
+	width: auto;
+}
+
+/* The combined booker card opens into the individual profiles */
+.booker-people-toggle {
+	align-self: flex-start;
+	margin-top: 8px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--primary-dark);
+	padding: 2px 0;
+}
+.booker-people {
+	border-top: 1px solid var(--border-light);
+	margin-top: 12px;
+	padding-top: 4px;
+}
+.bp-row {
+	display: flex;
+	align-items: center;
+	gap: 13px;
+	padding: 10px 0;
+}
+.bp-row + .bp-row {
+	border-top: 1px solid var(--border-light);
+}
+.bp-info {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+}
+.bp-name {
+	font-size: 15px;
+	font-weight: 700;
+}
+.bp-line {
+	font-size: 13.5px;
+	color: var(--gray);
+	line-height: 1.4;
+}
+/* Small role tag on a signature slot (lead booker) */
+.sig-role {
+	font-weight: 500;
+	color: var(--gray);
+	font-size: 12px;
+}
