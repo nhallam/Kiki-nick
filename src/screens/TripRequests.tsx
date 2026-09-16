@@ -81,6 +81,15 @@ export const TRIP_REQUESTS: TripBookingRequest[] = [
 		status: 'new',
 	},
 	{
+		// The long stay — 3 monthly rent instalments (75 nights @ £67)
+		id: 6,
+		name: 'Priya',
+		avatar: 'priya',
+		initial: 'P',
+		sub: '1 guest · 1 Oct - 15 Dec · £5,025 + deposit',
+		status: 'new',
+	},
+	{
 		id: 4,
 		name: 'Sara',
 		avatar: 'sara',

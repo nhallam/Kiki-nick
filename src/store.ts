@@ -16,6 +16,7 @@ export interface SwapState {
 	melissa: GuestRequestState;
 	aisha: GuestRequestState;
 	tash: GuestRequestState;
+	priya: GuestRequestState;
 	/** Reserved checklist: has each party signed the rental agreement? */
 	guestSigned: boolean;
 	hostSigned: boolean;
@@ -46,6 +47,7 @@ const INITIAL_STATE: SwapState = {
 	melissa: 'new',
 	aisha: 'new',
 	tash: 'new',
+	priya: 'new',
 	guestSigned: false,
 	hostSigned: false,
 	depositPaid: false,
@@ -89,10 +91,11 @@ export function useSwapState(): SwapState {
 }
 
 /** Guests the host can act on, keyed by display name. */
-const GUEST_KEYS: Record<string, 'melissa' | 'aisha' | 'tash'> = {
+const GUEST_KEYS: Record<string, 'melissa' | 'aisha' | 'tash' | 'priya'> = {
 	Melissa: 'melissa',
 	Aisha: 'aisha',
 	Tash: 'tash',
+	Priya: 'priya',
 };
 
 /** Request state for a guest by display name ('Melissa' / 'Aisha' / 'Tash'). */
@@ -106,7 +109,7 @@ export function setGuestState(guest: string, s: GuestRequestState) {
 /** The guest whose journey the left phone is playing: whoever Ryan has
     reserved or matched; Melissa until he acts on someone. */
 export const activeGuest = (swap: SwapState): string =>
-	['Melissa', 'Aisha', 'Tash'].find((g) => {
+	['Melissa', 'Aisha', 'Tash', 'Priya'].find((g) => {
 		const s = guestState(swap, g);
 		return s === 'offered' || s === 'reserved' || s === 'confirmed';
 	}) ?? 'Melissa';

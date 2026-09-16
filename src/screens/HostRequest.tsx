@@ -174,6 +174,34 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		splitDues: ['26 Sep 2026'],
 		moveOutLabel: 'Saturday 26 Sep',
 	},
+	// The really long stay: ~2.5 months, so rent splits into 3 monthly
+	// instalments (month 1 up front, months 2 and 3 scheduled).
+	Priya: {
+		avatar: 'priya',
+		initial: 'P',
+		flag: '🇮🇳',
+		occupation: 'UX Researcher',
+		age: 34,
+		gender: 'Female',
+		kikiMatches: 1,
+		hometown: 'Mumbai, India',
+		fullName: 'Priya Sharma',
+		stayOrdinal: 'second',
+		nights: 75,
+		range: [62, 137],
+		datesValue: '1 Oct - 15 Dec 2026 · 75 nights',
+		guestsLabel: '1 guest · Priya',
+		intro:
+			"Hi Ryan! I'm Priya, a UX researcher from Mumbai joining a London client for the autumn. I'm after a proper home base for two and a half months — I work from the office most days and keep things calm and tidy at home.",
+		questions:
+			'Would you be okay with me setting up a small desk by the window? And is there a good gym nearby?',
+		email: 'priya.sharma@gmail.com',
+		instagram: '@priya.inbetween',
+		phone: '+91 98200 55012',
+		splitDues: ['1 Nov 2026', '1 Dec 2026'],
+		moveInLabel: 'Thursday 1 Oct',
+		moveOutLabel: 'Tuesday 15 Dec',
+	},
 };
 
 /** Monthly rent instalments for stays over 30 nights: month 1 is paid up

@@ -99,7 +99,7 @@ export function TripsScreen({
 
 	const swap = useSwapState();
 	// Requests still New for the Aug trip (Sara/Marco are settled).
-	const LIVE_GUESTS = ['Melissa', 'Aisha', 'Tash'];
+	const LIVE_GUESTS = ['Melissa', 'Aisha', 'Tash', 'Priya'];
 	const newCount = TRIP_REQUESTS.filter(
 		(r) => guestState(swap, r.name) === 'new' && LIVE_GUESTS.includes(r.name),
 	).length;
