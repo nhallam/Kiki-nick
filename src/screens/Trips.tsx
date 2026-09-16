@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 
 import { SentRequest } from '../data';
 import { Avatar, IconChevronDown, IconChevronRight, StatusBar } from '../ui';
-import { guestState, useSwapState } from '../store';
+import { activeGuest, guestState, useSwapState } from '../store';
 import { TripRequestCard } from './Rank';
 import { TabBar } from './TabBar';
 import { TRIP_REQUESTS } from './TripRequests';
@@ -103,14 +103,17 @@ export function TripsScreen({
 	const newCount = TRIP_REQUESTS.filter(
 		(r) => guestState(swap, r.name) === 'new' && LIVE_GUESTS.includes(r.name),
 	).length;
-	const matched = swap.melissa === 'confirmed';
+	// The left phone plays whichever guest Ryan reserved.
+	const active = activeGuest(swap);
+	const activeState = guestState(swap, active);
+	const matched = activeState === 'confirmed';
 
-	// Melissa's own phone: her request card tracks what Ryan does with it.
+	// The guest's own phone: their request card tracks what Ryan does.
 	const stayingStatus = (r: SentRequest): string => {
 		if (r.listingId !== 2) return r.status;
-		if (swap.melissa === 'reserved') return 'Reserved - complete your steps';
-		if (swap.melissa === 'confirmed') return 'Confirmed';
-		if (swap.melissa === 'declined') return 'Declined';
+		if (activeState === 'reserved') return 'Reserved - complete your steps';
+		if (activeState === 'confirmed') return 'Confirmed';
+		if (guestState(swap, 'Melissa') === 'declined') return 'Declined';
 		return r.status;
 	};
 

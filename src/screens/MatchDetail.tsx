@@ -23,7 +23,7 @@ import {
 	IconPin,
 	StatusBar,
 } from '../ui';
-import { setSwapState, useSwapState } from '../store';
+import { activeGuest, setSwapState, useSwapState } from '../store';
 import { ContactRows, REQUEST_PREVIEWS } from './HostRequest';
 import { AgreementModal } from './Reserved';
 
@@ -62,7 +62,8 @@ export function MatchDetailScreen({
 	onOpenListing: () => void;
 }) {
 	const swap = useSwapState();
-	const guest = 'Melissa';
+	// The match belongs to whichever guest Ryan reserved
+	const guest = activeGuest(swap);
 	const preview = REQUEST_PREVIEWS[guest];
 	const listing = LISTINGS.find((l) => l.listerName === 'Ryan')!;
 	const rentTotal = preview.nights * listing.nightlyRate;
@@ -120,7 +121,7 @@ export function MatchDetailScreen({
 						<span className="tl-sub">
 							{isGuest
 								? 'Document the apartment when you move out'
-								: `${guest} adds these when she moves out`}
+								: `${guest} adds these when ${preview.partner ? 'they move' : 'she moves'} out`}
 						</span>
 						{isGuest && (
 							<button className="tl-add-btn" onClick={openPicker}>
@@ -340,14 +341,23 @@ export function MatchDetailScreen({
 					<div className="match-avatars">
 						{/* The stayer leads; the host peeks out from behind */}
 						<span className="match-avatar front">
-							<Avatar variant="melissa" size={88} />
+							<Avatar
+								variant={preview.avatar}
+								initial={preview.initial}
+								size={88}
+							/>
 						</span>
 						<span className="match-avatar back">
 							<Avatar variant="ryan" size={88} />
 						</span>
 					</div>
-					<div className="match-dates">26 - 29 Aug · {preview.nights} nights</div>
-					<div className="match-where">Melissa at Ryan's apartment</div>
+					<div className="match-dates">
+						{preview.datesValue.split(' · ')[0].replace(' 2026', '')} ·{' '}
+						{preview.nights} nights
+					</div>
+					<div className="match-where">
+						{preview.displayName ?? guest} at Ryan's apartment
+					</div>
 				</div>
 				<div className="match-links">
 					<button className="match-link" onClick={() => setShowAddressSheet(true)}>

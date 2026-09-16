@@ -98,6 +98,14 @@ export function setGuestState(guest: string, s: GuestRequestState) {
 	if (GUEST_KEYS[guest]) setSwapState({ [GUEST_KEYS[guest]]: s });
 }
 
+/** The guest whose journey the left phone is playing: whoever Ryan has
+    reserved or matched; Melissa until he acts on someone. */
+export const activeGuest = (swap: SwapState): string =>
+	['Melissa', 'Aisha', 'Tash'].find((g) => {
+		const s = guestState(swap, g);
+		return s === 'reserved' || s === 'confirmed';
+	}) ?? 'Melissa';
+
 /** Declining sends the guest a reason (category + optional note) and
     keeps a copy for the host's records. */
 export function declineGuest(guest: string, category: string, note: string) {

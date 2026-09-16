@@ -13,7 +13,9 @@ import { PAY_SHOTS, RYAN_PHOTOS } from '../assets';
 import { LISTINGS } from '../data';
 import { IconCheck, IconChevronLeft, RoomPhoto, StatusBar } from '../ui';
 import {
+	activeGuest,
 	getSwapState,
+	guestState,
 	setGuestState,
 	setSwapState,
 	useSwapState,
@@ -36,7 +38,10 @@ export function GuestStepsScreen({
 	onOpenMatch: () => void;
 }) {
 	const swap = useSwapState();
-	const guest = 'Melissa';
+	// The left phone plays whichever guest Ryan reserved — Melissa's,
+	// Aisha's, or Tash & Jordan's flow, so each scenario is demoable.
+	const guest = activeGuest(swap);
+	const guestStateNow = guestState(swap, guest);
 	const preview = REQUEST_PREVIEWS[guest];
 	const listing = LISTINGS.find((l) => l.listerName === 'Ryan')!;
 	const rentTotal = preview.nights * listing.nightlyRate;
@@ -64,14 +69,14 @@ export function GuestStepsScreen({
 	// The match is made when both parties have pressed Confirm match.
 	useEffect(() => {
 		if (
-			swap.melissa === 'reserved' &&
+			guestStateNow === 'reserved' &&
 			swap.guestConfirmedMatch &&
 			swap.hostConfirmedMatch
 		) {
 			const t = window.setTimeout(() => setGuestState(guest, 'confirmed'), 500);
 			return () => window.clearTimeout(t);
 		}
-	}, [swap.melissa, swap.guestConfirmedMatch, swap.hostConfirmedMatch, guest]);
+	}, [guestStateNow, swap.guestConfirmedMatch, swap.hostConfirmedMatch, guest]);
 
 	const openUpload = (which: 'deposit' | 'rent') => {
 		setPicked(which === 'deposit' ? swap.depositShot : swap.rentShot);
@@ -87,8 +92,8 @@ export function GuestStepsScreen({
 		setUploadFor(null);
 	};
 
-	// Ryan confirmed — this route turns into her celebration.
-	if (swap.melissa === 'confirmed') {
+	// Ryan confirmed — this route turns into the celebration.
+	if (guestStateNow === 'confirmed') {
 		return (
 			<div className="screen">
 				<StatusBar time="12:13" />
@@ -104,7 +109,7 @@ export function GuestStepsScreen({
 					<h1 className="confirmed-title">You're booked!</h1>
 					<p className="confirmed-sub">
 						Ryan confirmed your stay — {preview.nights} nights at his place in
-						Hackney, 26 - 29 Aug.
+						Hackney, {preview.datesValue.split(' · ')[0].replace(' 2026', '')}.
 					</p>
 				</div>
 				<div className="form-footer">
@@ -396,7 +401,10 @@ export function GuestStepsScreen({
 					</span>
 					<span className="gsl-body">
 						<span className="gsl-title">Ryan's Apartment</span>
-						<span className="gsl-sub">26 - 29 Aug · {preview.nights} nights · Hackney, London</span>
+						<span className="gsl-sub">
+							{preview.datesValue.split(' · ')[0].replace(' 2026', '')} ·{' '}
+							{preview.nights} nights · Hackney, London
+						</span>
 					</span>
 				</div>
 

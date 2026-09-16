@@ -57,6 +57,8 @@ interface RequestPreview {
 	}[];
 	/** Names all occupants in the rental agreement (group bookings) */
 	occupantsLine?: string;
+	/** The lead booker's full name — the one who signs for a group */
+	leadFullName?: string;
 	/** Stay starts >1 month out, so rent can be paid in two parts… */
 	splitAvailable?: boolean;
 	/** …with the second half due 1 month before move-in */
@@ -154,6 +156,7 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 			},
 		],
 		occupantsLine: 'Tash Reeves and Jordan Reeves',
+		leadFullName: 'Tash Reeves',
 		splitAvailable: true,
 		splitDue: '26 Jul 2026',
 	},

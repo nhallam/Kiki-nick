@@ -19,7 +19,7 @@ import { ReservedScreen } from './screens/Reserved';
 import { ConfirmedScreen } from './screens/Confirmed';
 import { MatchDetailScreen } from './screens/MatchDetail';
 import { GuestStepsScreen } from './screens/GuestSteps';
-import { getSwapState } from './store';
+import { activeGuest, getSwapState, guestState } from './store';
 
 type Route =
 	| { name: 'explore' }
@@ -176,9 +176,10 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 					onOpenTrip={() => setRoute({ name: 'tripRequests' })}
 					onOpenMatch={() => setRoute({ name: 'match' })}
 					onOpenRequestListing={(listingId) => {
-						// Once Ryan reserves (or confirms) Melissa's request, her card
-						// leads to her steps rather than back to the listing.
-						const s = getSwapState().melissa;
+						// Once Ryan reserves (or confirms) a request, the card leads
+						// to that guest's steps rather than back to the listing.
+						const swap = getSwapState();
+						const s = guestState(swap, activeGuest(swap));
 						if (listingId === 2 && (s === 'reserved' || s === 'confirmed')) {
 							setRoute({ name: 'guestSteps' });
 							return;

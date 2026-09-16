@@ -187,7 +187,10 @@ export function AgreementModal({
 
 	// Signing asks for confirmation rather than a drawn signature.
 	const [confirmSign, setConfirmSign] = useState(false);
-	const myName = signAs === 'guest' ? preview.fullName : 'Ryan Carter';
+	const myName =
+		signAs === 'guest'
+			? (preview.leadFullName ?? preview.fullName)
+			: 'Ryan Carter';
 
 	return (
 		<div className="agreement-screen">
