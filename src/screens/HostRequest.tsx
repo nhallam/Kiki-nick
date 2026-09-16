@@ -12,6 +12,7 @@ import {
 	IconCheck,
 	IconChevronDown,
 	IconChevronLeft,
+	IconClose,
 	StatusBar,
 } from '../ui';
 import {
@@ -441,23 +442,38 @@ export function BookerCard({ guest }: { guest: string }) {
 			</div>
 
 			{showProfiles && (
-				<div className="sheet-overlay" onClick={() => setShowProfiles(false)}>
-					<div className="profile-deck" onClick={(e) => e.stopPropagation()}>
-						<div className="pd-scroller">
-							{cards.map((p, i) => (
-								<div className="pd-card" key={p.name}>
-									<div className="pd-head">
-										<Avatar
-											variant={p.avatar}
-											initial={p.initial}
-											size={54}
-										/>
-										<span className="pd-id">
-											<span className="pd-name">{p.name}</span>
-											<span className="pd-line">{p.line}</span>
-											<span className="pd-line">{p.grewUp}</span>
-										</span>
-									</div>
+				/* Full screen, like the agreement: X top right, a centred
+				   vertically-scrollable card per guest, swipe across for more */
+				<div className="profile-screen">
+					<StatusBar time="12:13" />
+					<div className="ag-head">
+						<span className="ag-title">
+							{preview.partner ? 'Profiles' : 'Profile'}
+						</span>
+						<button
+							className="icon-btn"
+							onClick={() => setShowProfiles(false)}
+							aria-label="Close"
+						>
+							<IconClose size={24} />
+						</button>
+					</div>
+					<div className="pf-scroller">
+						{cards.map((p, i) => (
+							<div className="pf-col" key={p.name}>
+								<div className="pf-card">
+									<Avatar
+										variant={p.avatar}
+										initial={p.initial}
+										size={96}
+									/>
+									<span className="pf-name">
+										{p.name}
+										<span className="booker-flag">{preview.flag}</span>
+									</span>
+									<span className="pf-matches">{matchesLabel}</span>
+									<span className="pf-line">{p.line}</span>
+									<span className="pf-line">{p.grewUp}</span>
 									{/* The Instagram screenshot — the trust artefact */}
 									<div className="ig-shot">
 										<div className="ig-top">
@@ -483,12 +499,12 @@ export function BookerCard({ guest }: { guest: string }) {
 										<span className="ig-tag">From Instagram</span>
 									</div>
 								</div>
-							))}
-						</div>
-						{cards.length > 1 && (
-							<div className="pd-hint">Swipe for {preview.partner!.name}</div>
-						)}
+							</div>
+						))}
 					</div>
+					{cards.length > 1 && (
+						<div className="pf-hint">Swipe for {preview.partner!.name}</div>
+					)}
 				</div>
 			)}
 		</div>

@@ -4888,48 +4888,88 @@ input {
 	vertical-align: 2px;
 }
 
-/* Profile deck: swipeable cards over the request, one per guest */
-.profile-deck {
-	margin: auto 0;
-	padding: 0 0 8px;
+/* Full-screen profiles: X top right, one centred scrollable card per
+   guest, swipe across for more */
+.profile-screen {
+	position: absolute;
+	inset: 0;
+	z-index: 40;
+	background: var(--light-gray);
+	display: flex;
+	flex-direction: column;
+	animation: agreement-up 0.28s ease;
 }
-.pd-scroller {
+.profile-screen .status-bar,
+.profile-screen .ag-head {
+	background: var(--white);
+}
+.profile-screen .ag-head {
+	border-bottom: 1px solid var(--border-light);
+}
+.pf-scroller {
+	flex: 1;
+	min-height: 0;
 	display: flex;
 	overflow-x: auto;
 	scroll-snap-type: x mandatory;
-	gap: 14px;
-	padding: 0 26px;
 	scrollbar-width: none;
 }
-.pd-scroller::-webkit-scrollbar {
+.pf-scroller::-webkit-scrollbar {
 	display: none;
 }
-.pd-card {
-	min-width: calc(100% - 52px);
+.pf-col {
+	min-width: 100%;
 	scroll-snap-align: center;
-	background: var(--white);
-	border-radius: 18px;
-	padding: 18px 16px 16px;
-}
-.pd-head {
 	display: flex;
-	align-items: center;
-	gap: 13px;
-	margin-bottom: 14px;
+	padding: 18px 20px 8px;
 }
-.pd-id {
+.pf-card {
+	margin: auto 0;
+	max-height: 100%;
+	width: 100%;
+	overflow-y: auto;
+	scrollbar-width: none;
+	background: var(--white);
+	border: 1px solid var(--border-light);
+	border-radius: 18px;
+	padding: 22px 18px 18px;
 	display: flex;
 	flex-direction: column;
-	gap: 1px;
+	align-items: center;
+	text-align: center;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
 }
-.pd-name {
-	font-size: 16.5px;
+.pf-card::-webkit-scrollbar {
+	display: none;
+}
+.pf-name {
+	font-size: 19px;
 	font-weight: 700;
+	margin-top: 12px;
 }
-.pd-line {
+.pf-matches {
 	font-size: 13.5px;
+	font-weight: 600;
+	color: var(--primary);
+	margin: 3px 0 6px;
+}
+.pf-line {
+	font-size: 14px;
 	color: var(--gray);
-	line-height: 1.4;
+	line-height: 1.5;
+}
+.pf-card .ig-shot {
+	width: 100%;
+	margin-top: 16px;
+	text-align: left;
+}
+.pf-hint {
+	flex-shrink: 0;
+	text-align: center;
+	font-size: 12.5px;
+	font-weight: 600;
+	color: var(--gray);
+	padding: 10px 0 26px;
 }
 
 /* The Instagram screenshot mock */
@@ -4987,11 +5027,102 @@ input {
 	border-radius: 7px;
 	padding: 3px 7px;
 }
-.pd-hint {
-	text-align: center;
-	font-size: 12.5px;
-	font-weight: 600;
-	color: var(--white);
-	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+
+/* How-to-pay sheet: slides up from the bottom of the payments screen */
+.pay-sheet {
+	background: var(--white);
+	border-radius: 24px 24px 0 0;
+	padding: 22px 20px 30px;
+	animation: pay-sheet-up 0.3s ease;
+}
+@keyframes pay-sheet-up {
+	from {
+		transform: translateY(60px);
+		opacity: 0;
+	}
+}
+.ps-title {
+	font-size: 17px;
+	font-weight: 700;
+	margin-bottom: 4px;
+}
+.ps-sub {
+	font-size: 13.5px;
+	color: var(--gray);
+	line-height: 1.45;
+	margin-bottom: 16px;
+}
+.pay-opt {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	text-align: left;
+	border: 1px solid var(--border-light);
+	border-radius: 12px;
+	padding: 13px 14px;
+	color: var(--dark);
+}
+.pay-opt + .pay-opt {
 	margin-top: 10px;
+}
+.po-body {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	min-width: 0;
+}
+.po-name {
+	font-size: 15px;
+	font-weight: 700;
+}
+.po-sub {
+	font-size: 12.5px;
+	color: var(--gray);
+}
+.bank-rows {
+	border: 1px solid var(--border-light);
+	border-radius: 12px;
+	padding: 2px 14px;
+	margin-bottom: 16px;
+}
+.bank-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 0;
+}
+.bank-row + .bank-row {
+	border-top: 1px solid var(--border-light);
+}
+.br-label {
+	font-size: 13px;
+	color: var(--gray);
+	width: 108px;
+	flex-shrink: 0;
+}
+.br-value {
+	flex: 1;
+	font-size: 14px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+.copy-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 30px;
+	height: 26px;
+	border-radius: 8px;
+	color: var(--primary-dark);
+	font-size: 11.5px;
+	font-weight: 700;
+	padding: 0 5px;
+}
+.copy-btn:active {
+	background: var(--primary-tint);
+}
+.copy-btn.copied {
+	color: var(--primary);
 }

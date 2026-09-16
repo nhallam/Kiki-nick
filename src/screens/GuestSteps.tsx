@@ -11,7 +11,13 @@ import React, { useEffect, useState } from 'react';
 
 import { PAY_SHOTS, RYAN_PHOTOS } from '../assets';
 import { LISTINGS } from '../data';
-import { IconCheck, IconChevronLeft, RoomPhoto, StatusBar } from '../ui';
+import {
+	IconCheck,
+	IconChevronLeft,
+	IconChevronRight,
+	RoomPhoto,
+	StatusBar,
+} from '../ui';
 import {
 	activeGuest,
 	getSwapState,
@@ -23,6 +29,31 @@ import {
 	withdrawReservation,
 } from '../store';
 import { HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
+
+const IconCopy = ({ size = 15 }: { size?: number }) => (
+	<svg
+		width={size}
+		height={size}
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<rect x="9" y="9" width="12" height="12" rx="2.5" />
+		<path d="M5 15H4.5A2.5 2.5 0 0 1 2 12.5v-8A2.5 2.5 0 0 1 4.5 2h8A2.5 2.5 0 0 1 15 4.5V5" />
+	</svg>
+);
+
+/* Kiki's UK account (placeholder details) for the bank-transfer path */
+const BANK_DETAILS = [
+	{ label: 'Bank', value: 'Barclays Bank UK' },
+	{ label: 'Account name', value: 'Kiki Home Swaps Ltd' },
+	{ label: 'Sort code', value: '20-41-12' },
+	{ label: 'Account number', value: '55671234' },
+	{ label: 'Reference', value: 'KI-2026-0826' },
+];
 import { PhotoDeck } from './PhotoDeck';
 import { AgreementModal, DocIllustration, ScheduledCheque } from './Reserved';
 import { ReserveTimer } from './ReserveTimer';
@@ -52,6 +83,22 @@ export function GuestStepsScreen({
 	// Which payment is being uploaded ('deposit' | 'rent'), plus selection
 	const [uploadFor, setUploadFor] = useState<'deposit' | 'rent' | null>(null);
 	const [picked, setPicked] = useState<number | null>(null);
+	// Paying starts with a how-to-pay sheet: bank transfer (Kiki's details,
+	// copyable) or Stripe (placeholder). After Done on the transfer details,
+	// the cheque goes back to the plain upload-a-screenshot flow.
+	const [payFor, setPayFor] = useState<'deposit' | 'rent' | null>(null);
+	const [paySheetView, setPaySheetView] = useState<'method' | 'bank'>('method');
+	const [bankSeen, setBankSeen] = useState({ deposit: false, rent: false });
+	const [copiedField, setCopiedField] = useState<string | null>(null);
+	const copyDetail = (label: string, value: string) => {
+		try {
+			navigator.clipboard?.writeText(value);
+		} catch {
+			/* clipboard can be unavailable in embedded previews */
+		}
+		setCopiedField(label);
+		window.setTimeout(() => setCopiedField(null), 1400);
+	};
 	// 3.4: her steps run as a guided flow — three screens sliding
 	// horizontally (what's needed → sign → pay), then the overview.
 	// null = overview; she starts in the flow while her steps are incomplete.
@@ -82,6 +129,19 @@ export function GuestStepsScreen({
 	const openUpload = (which: 'deposit' | 'rent') => {
 		setPicked(which === 'deposit' ? swap.depositShot : swap.rentShot);
 		setUploadFor(which);
+	};
+	/* First tap on an unpaid cheque asks how to pay; once the transfer
+	   details have been seen (or it's already paid), taps go to the
+	   screenshot picker directly. */
+	const startPayment = (which: 'deposit' | 'rent') => {
+		const paid =
+			which === 'deposit' ? swap.depositShot != null : swap.rentShot != null;
+		if (paid || bankSeen[which]) {
+			openUpload(which);
+			return;
+		}
+		setPaySheetView('method');
+		setPayFor(which);
 	};
 	const saveUpload = () => {
 		if (picked == null || !uploadFor) return;
@@ -205,7 +265,7 @@ export function GuestStepsScreen({
 		return (
 			<button
 				className={`pay-cheque${paid ? ' paid' : ''}`}
-				onClick={() => openUpload(which)}
+				onClick={() => startPayment(which)}
 			>
 				<span className="pc-main">
 					<span className="pc-name">{label}</span>
@@ -220,7 +280,9 @@ export function GuestStepsScreen({
 				{paid ? (
 					<span className="c-status paid">Paid</span>
 				) : (
-					<span className="c-status upload">Upload</span>
+					<span className="c-status upload">
+						{bankSeen[which] ? 'Upload' : 'Pay'}
+					</span>
 				)}
 				{paid && (
 					<span className="doc-check">
@@ -622,6 +684,87 @@ export function GuestStepsScreen({
 								Withdraw
 							</button>
 						</div>
+					</div>
+				</div>
+			)}
+
+			{payFor && (
+				<div className="sheet-overlay" onClick={() => setPayFor(null)}>
+					<div className="pay-sheet" onClick={(e) => e.stopPropagation()}>
+						{paySheetView === 'method' ? (
+							<>
+								<div className="ps-title">
+									Pay the{' '}
+									{payFor === 'deposit' ? 'security deposit' : 'rent'}
+								</div>
+								<div className="ps-sub">
+									£
+									{payFor === 'deposit'
+										? listing.securityDeposit
+										: swap.rentSplit
+											? rent1
+											: rentTotal}{' '}
+									to Kiki — choose how to pay.
+								</div>
+								<button
+									className="pay-opt"
+									onClick={() => setPaySheetView('bank')}
+								>
+									<span className="po-body">
+										<span className="po-name">Bank transfer</span>
+										<span className="po-sub">
+											Kiki's UK account — upload your confirmation after
+										</span>
+									</span>
+									<IconChevronRight size={18} />
+								</button>
+								{/* Placeholder only — the Stripe flow isn't wired up */}
+								<button className="pay-opt">
+									<span className="po-body">
+										<span className="po-name">Pay with Stripe</span>
+										<span className="po-sub">
+											Card or Apple Pay · opens Stripe checkout
+										</span>
+									</span>
+									<IconChevronRight size={18} />
+								</button>
+							</>
+						) : (
+							<>
+								<div className="ps-title">Bank transfer details</div>
+								<div className="ps-sub">
+									Include the reference so Kiki can match your payment.
+								</div>
+								<div className="bank-rows">
+									{BANK_DETAILS.map((d) => (
+										<div className="bank-row" key={d.label}>
+											<span className="br-label">{d.label}</span>
+											<span className="br-value">{d.value}</span>
+											<button
+												className={`copy-btn${copiedField === d.label ? ' copied' : ''}`}
+												onClick={() => copyDetail(d.label, d.value)}
+												aria-label={`Copy ${d.label}`}
+											>
+												{copiedField === d.label ? (
+													'Copied'
+												) : (
+													<IconCopy />
+												)}
+											</button>
+										</div>
+									))}
+								</div>
+								<button
+									className="btn-primary"
+									onClick={() => {
+										setBankSeen((s) => ({ ...s, [payFor]: true }));
+										setPayFor(null);
+									}}
+								>
+									Done
+								</button>
+							</>
+						)}
 					</div>
 				</div>
 			)}
