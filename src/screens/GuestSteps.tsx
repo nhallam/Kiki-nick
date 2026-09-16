@@ -305,6 +305,32 @@ export function GuestStepsScreen({
 	const rent1 = instalments.first;
 	const rentCheques = (
 		<>
+			{canSplit && swap.rentShot == null && (
+				/* The choice has to announce itself: a callout with a proper
+				   toggle, not a text link */
+				<div className="split-box">
+					<p className="split-copy">
+						Stays over 30 nights can split the rent into monthly
+						payments.
+					</p>
+					<div className="split-toggle">
+						<button
+							className={`st-opt${!swap.rentSplit ? ' on' : ''}`}
+							onClick={() => setSwapState({ rentSplit: false })}
+							aria-pressed={!swap.rentSplit}
+						>
+							Pay in full
+						</button>
+						<button
+							className={`st-opt${swap.rentSplit ? ' on' : ''}`}
+							onClick={() => setSwapState({ rentSplit: true })}
+							aria-pressed={swap.rentSplit}
+						>
+							Split monthly
+						</button>
+					</div>
+				</div>
+			)}
 			{swap.rentSplit ? (
 				<>
 					<PayCheque
@@ -331,16 +357,6 @@ export function GuestStepsScreen({
 					amount={rentTotal}
 					shot={swap.rentShot}
 				/>
-			)}
-			{canSplit && swap.rentShot == null && (
-				<button
-					className="split-link"
-					onClick={() => setSwapState({ rentSplit: !swap.rentSplit })}
-				>
-					{swap.rentSplit
-						? 'Pay the rent in full instead'
-						: 'Stays over 30 nights can split the rent into monthly payments'}
-				</button>
 			)}
 		</>
 	);
