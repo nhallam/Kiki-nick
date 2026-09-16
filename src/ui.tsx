@@ -310,10 +310,9 @@ const RyanFace = () => (
 	/>
 );
 
-/* Which face "me" resolves to — the host phone provides "ryan". */
-export const SelfAvatarContext = React.createContext<'melissa' | 'ryan'>(
-	'melissa',
-);
+/* Which face "me" resolves to — the host phone provides "ryan"; the guest
+   phone provides whichever guest's flow it is playing. */
+export const SelfAvatarContext = React.createContext<string>('melissa');
 
 const FACE_AVATARS: Record<string, () => React.JSX.Element> = {
 	melissa: MelissaFace,

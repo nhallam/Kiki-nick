@@ -7,8 +7,9 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
 import App from './App';
-import { HOST_PROFILE, MY_PROFILE } from './data';
-import { resetSwapState } from './store';
+import { HOST_PROFILE } from './data';
+import { activeGuest, resetSwapState, useSwapState } from './store';
+import { REQUEST_PREVIEWS } from './screens/HostRequest';
 import { Avatar, SelfAvatarContext } from './ui';
 import './styles.css';
 
@@ -26,6 +27,10 @@ function DuoStage() {
 		setRun((r) => r + 1);
 	};
 	const stageRef = useRef<HTMLDivElement>(null);
+	// The left phone plays whichever guest Ryan reserved — its label and
+	// self-avatar follow along.
+	const swap = useSwapState();
+	const guest = REQUEST_PREVIEWS[activeGuest(swap)];
 
 	useLayoutEffect(() => {
 		const fit = () => {
@@ -70,14 +75,23 @@ function DuoStage() {
 			>
 				<div className="duo-col">
 					<div className="duo-label">
-						<Avatar variant="melissa" size={30} />
+						<Avatar variant={guest.avatar} initial={guest.initial} size={30} />
+						{guest.partner && (
+							<span style={{ marginLeft: -14, display: 'inline-flex' }}>
+								<Avatar
+									variant={guest.partner.avatar}
+									initial={guest.partner.initial}
+									size={30}
+								/>
+							</span>
+						)}
 						<span className="duo-role">Guest</span>
 						<span className="duo-name">
-							{MY_PROFILE.name} {MY_PROFILE.nationalityFlag}
+							{guest.displayName ?? activeGuest(swap)} {guest.flag}
 						</span>
 					</div>
 					<div className="phone">
-						<SelfAvatarContext.Provider value="melissa">
+						<SelfAvatarContext.Provider value={guest.avatar}>
 							<App key={run} persona="guest" />
 						</SelfAvatarContext.Provider>
 					</div>
