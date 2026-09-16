@@ -79,7 +79,7 @@ export function ConfirmedScreen({
 
 			<div className="form-footer">
 				<button className="btn-primary" onClick={onDone}>
-					View match
+					View your match
 				</button>
 			</div>
 		</div>
