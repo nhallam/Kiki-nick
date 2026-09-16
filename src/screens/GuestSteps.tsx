@@ -28,7 +28,7 @@ import {
 	useSwapState,
 	withdrawReservation,
 } from '../store';
-import { HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
+import { HostFlowSteps, REQUEST_PREVIEWS, rentInstalments } from './HostRequest';
 
 const IconCopy = ({ size = 15 }: { size?: number }) => (
 	<svg
@@ -88,7 +88,9 @@ export function GuestStepsScreen({
 	// the cheque goes back to the plain upload-a-screenshot flow.
 	const [payFor, setPayFor] = useState<'deposit' | 'rent' | null>(null);
 	const [paySheetView, setPaySheetView] = useState<'method' | 'bank'>('method');
-	const [bankSeen, setBankSeen] = useState({ deposit: false, rent: false });
+	// One decision covers every payment: once a method is chosen for the
+	// deposit, the rent skips the sheet.
+	const [methodChosen, setMethodChosen] = useState(false);
 	const [copiedField, setCopiedField] = useState<string | null>(null);
 	const copyDetail = (label: string, value: string) => {
 		try {
@@ -136,7 +138,7 @@ export function GuestStepsScreen({
 	const startPayment = (which: 'deposit' | 'rent') => {
 		const paid =
 			which === 'deposit' ? swap.depositShot != null : swap.rentShot != null;
-		if (paid || bankSeen[which]) {
+		if (paid || methodChosen) {
 			openUpload(which);
 			return;
 		}
@@ -199,25 +201,15 @@ export function GuestStepsScreen({
 					<HostFlowSteps current={1} />
 					<span style={{ width: 44 }} />
 				</div>
-				<div className="form-content" style={{ paddingTop: 0 }}>
-					<div className="guest-steps-listing">
-						<span className="gsl-thumb">
-							<RoomPhoto variant={listing.photoVariant} />
-						</span>
-						<span className="gsl-body">
-							<span className="gsl-title">Ryan's Apartment</span>
-							<span className="gsl-sub">
-								{preview.datesValue.split(' · ')[0].replace(' 2026', '')} ·{' '}
-								{preview.nights} nights · Hackney, London
-							</span>
-						</span>
-					</div>
-
+				<div className="form-content offer-content" style={{ paddingTop: 0 }}>
+					{/* The fan-out of the place, same as the celebration */}
+					<PhotoDeck />
 					<h2 className="offer-title">Ryan sent you an offer!</h2>
 					<p className="offer-sub">
-						Accepting reserves your stay and starts the booking steps —
-						signing the agreement and paying within 48 hours. Your other
-						requests stay active until you accept.
+						Accepting reserves your stay at Ryan's Apartment,{' '}
+						{preview.datesValue.split(' · ')[0].replace(' 2026', '')}, and
+						starts the booking steps. Your other requests stay active
+						until you accept.
 					</p>
 
 					<div className="offer-summary">
@@ -241,6 +233,16 @@ export function GuestStepsScreen({
 						onClick={() => reserveGuest(guest)}
 					>
 						Accept offer
+					</button>
+					{/* An out, so an unwanted offer can't lock her in */}
+					<button
+						className="withdraw-btn"
+						onClick={() => {
+							setGuestState(guest, 'new');
+							onBack();
+						}}
+					>
+						Decline offer
 					</button>
 				</div>
 			</div>
@@ -281,7 +283,7 @@ export function GuestStepsScreen({
 					<span className="c-status paid">Paid</span>
 				) : (
 					<span className="c-status upload">
-						{bankSeen[which] ? 'Upload' : 'Pay'}
+						{methodChosen ? 'Upload' : 'Pay'}
 					</span>
 				)}
 				{paid && (
@@ -299,7 +301,8 @@ export function GuestStepsScreen({
 	   full, and the choice locks once the first rent payment is uploaded.
 	   Shared by the guided flow's payments screen and the overview. */
 	const canSplit = preview.nights > 30;
-	const rent1 = Math.ceil(rentTotal / 2);
+	const instalments = rentInstalments(preview, rentTotal);
+	const rent1 = instalments.first;
 	const rentCheques = (
 		<>
 			{swap.rentSplit ? (
@@ -310,13 +313,16 @@ export function GuestStepsScreen({
 						amount={rent1}
 						shot={swap.rentShot}
 					/>
-					<ScheduledCheque
-						label="Rent — month 2"
-						due={preview.splitDue ?? 'the start of month 2'}
-						amount={rentTotal - rent1}
-						paid={swap.rent2Paid}
-						payer="You"
-					/>
+					{instalments.rest.map((inst, i) => (
+						<ScheduledCheque
+							key={i}
+							label={`Rent — month ${i + 2}`}
+							due={inst.due}
+							amount={inst.amount}
+							paid={swap.rentSchedPaid[i] ?? false}
+							payer="You"
+						/>
+					))}
 				</>
 			) : (
 				<PayCheque
@@ -731,9 +737,27 @@ export function GuestStepsScreen({
 							</>
 						) : (
 							<>
-								<div className="ps-title">Bank transfer details</div>
-								<div className="ps-sub">
-									Include the reference so Kiki can match your payment.
+								<div className="ps-head">
+									<div>
+										<div className="ps-title">Bank transfer details</div>
+										<div className="ps-sub" style={{ marginBottom: 0 }}>
+											Include the reference so Kiki can match your
+											payment.
+										</div>
+									</div>
+									<button
+										className={`copy-all-btn${copiedField === 'all' ? ' copied' : ''}`}
+										onClick={() =>
+											copyDetail(
+												'all',
+												BANK_DETAILS.map(
+													(d) => `${d.label}: ${d.value}`,
+												).join('\n'),
+											)
+										}
+									>
+										{copiedField === 'all' ? 'Copied' : 'Copy all'}
+									</button>
 								</div>
 								<div className="bank-rows">
 									{BANK_DETAILS.map((d) => (
@@ -757,7 +781,7 @@ export function GuestStepsScreen({
 								<button
 									className="btn-primary"
 									onClick={() => {
-										setBankSeen((s) => ({ ...s, [payFor]: true }));
+										setMethodChosen(true);
 										setPayFor(null);
 									}}
 								>

@@ -23,8 +23,8 @@ import {
 	IconPin,
 	StatusBar,
 } from '../ui';
-import { activeGuest, setSwapState, useSwapState } from '../store';
-import { ContactRows, REQUEST_PREVIEWS } from './HostRequest';
+import { activeGuest, getSwapState, setSwapState, useSwapState } from '../store';
+import { ContactRows, REQUEST_PREVIEWS, rentInstalments } from './HostRequest';
 import { AgreementModal } from './Reserved';
 
 const IconKey = ({ size = 18 }: { size?: number }) => (
@@ -67,6 +67,7 @@ export function MatchDetailScreen({
 	const preview = REQUEST_PREVIEWS[guest];
 	const listing = LISTINGS.find((l) => l.listerName === 'Ryan')!;
 	const rentTotal = preview.nights * listing.nightlyRate;
+	const instalments = rentInstalments(preview, rentTotal);
 	const isGuest = persona !== 'host';
 
 	const [showPicker, setShowPicker] = useState(false);
@@ -162,34 +163,40 @@ export function MatchDetailScreen({
 			done: swap.depositPaid,
 		},
 		...(swap.rentSplit
-			? /* Monthly rent (stays over 30 nights): month 2 is due when the
-			     second month starts, and is paid from here once matched */
+			? /* Monthly rent (stays over 30 nights): the remaining months are
+			     evenly spaced and payable from here once matched */
 				([
 					{
 						title: 'Rent · month 1 paid',
 						sub: isGuest
-							? `£${Math.ceil(rentTotal / 2)} · paid to Ryan 3 days after move-in`
-							: `£${Math.ceil(rentTotal / 2)} · paid to you 3 days after move-in`,
+							? `£${instalments.first} · paid to Ryan 3 days after move-in`
+							: `£${instalments.first} · paid to you 3 days after move-in`,
 						done: swap.rentPaid,
 					},
-					{
-						title: swap.rent2Paid ? 'Rent · month 2 paid' : 'Rent · month 2',
-						sub: swap.rent2Paid
-							? `£${rentTotal - Math.ceil(rentTotal / 2)} · paid`
-							: `£${rentTotal - Math.ceil(rentTotal / 2)} · due by ${preview.splitDue ?? 'the start of month 2'}`,
-						done: swap.rent2Paid,
+					...instalments.rest.map((inst, i) => ({
+						title: swap.rentSchedPaid[i]
+							? `Rent · month ${i + 2} paid`
+							: `Rent · month ${i + 2}`,
+						sub: swap.rentSchedPaid[i]
+							? `£${inst.amount} · paid`
+							: `£${inst.amount} · due by ${inst.due}`,
+						done: swap.rentSchedPaid[i] ?? false,
 						actions:
-							isGuest && !swap.rent2Paid ? (
+							isGuest && !swap.rentSchedPaid[i] ? (
 								<span className="tl-actions">
 									<button
 										className="tl-action-btn"
-										onClick={() => setSwapState({ rent2Paid: true })}
+										onClick={() => {
+											const next = [...getSwapState().rentSchedPaid];
+											next[i] = true;
+											setSwapState({ rentSchedPaid: next });
+										}}
 									>
 										Pay now
 									</button>
 								</span>
 							) : undefined,
-					},
+					})),
 				] as StaticItem[])
 			: [
 					{

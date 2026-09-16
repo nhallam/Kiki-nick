@@ -3283,6 +3283,11 @@ input {
 	padding: 14px 16px 30px;
 	border-top: 1px solid var(--border-light);
 }
+/* Sign/Close match the sign dialog's confirm — the brand teal, not the
+   darker CTA green */
+.ag-footer .btn-primary {
+	background: var(--primary);
+}
 
 /* One side has confirmed the match; the other hasn't yet */
 .confirm-waiting {
@@ -4921,11 +4926,10 @@ input {
 	min-width: 100%;
 	scroll-snap-align: center;
 	display: flex;
-	padding: 18px 20px 8px;
+	padding: 18px 18px 0;
 }
 .pf-card {
-	margin: auto 0;
-	max-height: 100%;
+	height: 100%;
 	width: 100%;
 	overflow-y: auto;
 	scrollbar-width: none;
@@ -4963,13 +4967,22 @@ input {
 	margin-top: 16px;
 	text-align: left;
 }
-.pf-hint {
+.pf-dots {
 	flex-shrink: 0;
-	text-align: center;
-	font-size: 12.5px;
-	font-weight: 600;
-	color: var(--gray);
-	padding: 10px 0 26px;
+	display: flex;
+	justify-content: center;
+	gap: 7px;
+	padding: 13px 0 24px;
+}
+.pf-dots .dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: var(--border-medium);
+	transition: background 0.2s;
+}
+.pf-dots .dot.on {
+	background: var(--primary);
 }
 
 /* The Instagram screenshot mock */
@@ -5124,5 +5137,44 @@ input {
 	background: var(--primary-tint);
 }
 .copy-btn.copied {
+	color: var(--primary);
+}
+
+/* Offer screen: centred hero around the photo fan-out */
+.offer-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	padding-top: 8px !important;
+}
+.offer-content .offer-title {
+	margin-top: 2px;
+}
+.offer-content .offer-summary {
+	width: 100%;
+	text-align: left;
+}
+
+/* Copy-all sits beside the bank-details title */
+.ps-head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 14px;
+}
+.copy-all-btn {
+	flex-shrink: 0;
+	border: 1px solid var(--border-medium);
+	border-radius: 16px;
+	padding: 7px 13px;
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--primary-dark);
+	background: var(--white);
+}
+.copy-all-btn.copied {
+	border-color: var(--primary);
 	color: var(--primary);
 }

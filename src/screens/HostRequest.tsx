@@ -68,9 +68,9 @@ interface RequestPreview {
 	occupantsLine?: string;
 	/** The lead booker's full name — the one who signs for a group */
 	leadFullName?: string;
-	/** Stays over 30 nights can split rent into monthly payments; this is
-	    when the second month's rent is due */
-	splitDue?: string;
+	/** Stays over 30 nights can split rent into monthly payments; due dates
+	    for months 2..n, evenly spaced through the stay */
+	splitDues?: string[];
 	/** Match-timeline day labels, when they differ from the default trip */
 	moveInLabel?: string;
 	moveOutLabel?: string;
@@ -171,10 +171,30 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		],
 		occupantsLine: 'Tash Reeves and Jordan Reeves',
 		leadFullName: 'Tash Reeves',
-		splitDue: '26 Sep 2026',
+		splitDues: ['26 Sep 2026'],
 		moveOutLabel: 'Saturday 26 Sep',
 	},
 };
+
+/** Monthly rent instalments for stays over 30 nights: month 1 is paid up
+    front inside the 48h window; the remaining months are evenly spaced
+    (a 3-month stay yields months 2 and 3 as scheduled payments). */
+export function rentInstalments(
+	preview: RequestPreview,
+	rentTotal: number,
+): { months: number; first: number; rest: { amount: number; due: string }[] } {
+	const months = Math.max(1, Math.ceil(preview.nights / 30));
+	if (months === 1) return { months, first: rentTotal, rest: [] };
+	const per = Math.floor(rentTotal / months);
+	return {
+		months,
+		first: rentTotal - per * (months - 1),
+		rest: Array.from({ length: months - 1 }, (_, i) => ({
+			amount: per,
+			due: preview.splitDues?.[i] ?? `the start of month ${i + 2}`,
+		})),
+	};
+}
 
 /** Do two requests fight over the same dates? (day-of-Aug ranges) */
 export const rangesOverlap = (a: [number, number], b: [number, number]) =>
@@ -376,6 +396,7 @@ export function BookerCard({ guest }: { guest: string }) {
 	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
 	// See profile opens the card deck — swipeable when it's a group
 	const [showProfiles, setShowProfiles] = useState(false);
+	const [cardIdx, setCardIdx] = useState(0);
 	const matchesLabel =
 		preview.kikiMatches === 0
 			? 'First Kiki match'
@@ -458,7 +479,16 @@ export function BookerCard({ guest }: { guest: string }) {
 							<IconClose size={24} />
 						</button>
 					</div>
-					<div className="pf-scroller">
+					<div
+						className="pf-scroller"
+						onScroll={(e) =>
+							setCardIdx(
+								Math.round(
+									e.currentTarget.scrollLeft / e.currentTarget.clientWidth,
+								),
+							)
+						}
+					>
 						{cards.map((p, i) => (
 							<div className="pf-col" key={p.name}>
 								<div className="pf-card">
@@ -503,7 +533,14 @@ export function BookerCard({ guest }: { guest: string }) {
 						))}
 					</div>
 					{cards.length > 1 && (
-						<div className="pf-hint">Swipe for {preview.partner!.name}</div>
+						<div className="pf-dots" aria-hidden>
+							{cards.map((_, i) => (
+								<span
+									key={i}
+									className={i === cardIdx ? 'dot on' : 'dot'}
+								/>
+							))}
+						</div>
 					)}
 				</div>
 			)}
@@ -658,11 +695,8 @@ export function HostRequestScreen({
 						overlapping dates.
 					</div>
 				) : (
-					/* Sits with the actions it explains — quiet, two lines */
 					<div className="footer-note soft">
 						Sending an offer lets {who} accept and reserve the stay.
-						<br />
-						Declining lets {preview.partner ? 'them' : 'her'} know.
 					</div>
 				)}
 				{!declined && !offered && (

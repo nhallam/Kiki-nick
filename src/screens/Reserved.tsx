@@ -15,7 +15,7 @@ import {
 	useSwapState,
 	withdrawReservation,
 } from '../store';
-import { HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
+import { HostFlowSteps, REQUEST_PREVIEWS, rentInstalments } from './HostRequest';
 import { ReserveTimer } from './ReserveTimer';
 
 /** Little document illustration for the agreement tiles — a page with text
@@ -334,6 +334,7 @@ export function ReservedScreen({
 	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
 	const listing = LISTINGS.find((l) => l.listerName === 'Ryan')!;
 	const rentTotal = preview.nights * listing.nightlyRate;
+	const instalments = rentInstalments(preview, rentTotal);
 	const who = preview.displayName ?? guest;
 	// The 3 steps: agreement (both signatures), deposit, rent
 	const stepsDone =
@@ -429,25 +430,28 @@ export function ReservedScreen({
 								}
 							/>
 							{swap.rentSplit ? (
-								/* She chose two parts: half in the window, half
-								   due 1 month before move-in */
+								/* Monthly instalments: month 1 inside the window,
+								   the rest evenly spaced through the stay */
 								<>
 									<PayCheque
 										label="Rent — month 1"
 										payer={who}
-										amount={Math.ceil(rentTotal / 2)}
+										amount={instalments.first}
 										paid={swap.rentPaid}
 										onToggle={() =>
 											setSwapState({ rentPaid: !swap.rentPaid })
 										}
 									/>
-									<ScheduledCheque
-										label="Rent — month 2"
-										due={preview.splitDue ?? '1 month before move-in'}
-										amount={rentTotal - Math.ceil(rentTotal / 2)}
-										paid={swap.rent2Paid}
-										payer={who}
-									/>
+									{instalments.rest.map((inst, i) => (
+										<ScheduledCheque
+											key={i}
+											label={`Rent — month ${i + 2}`}
+											due={inst.due}
+											amount={inst.amount}
+											paid={swap.rentSchedPaid[i] ?? false}
+											payer={who}
+										/>
+									))}
 								</>
 							) : (
 								<PayCheque

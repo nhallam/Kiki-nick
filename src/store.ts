@@ -22,10 +22,10 @@ export interface SwapState {
 	/** Reserved checklist: the stayer's payments (tappable in the demo) */
 	depositPaid: boolean;
 	rentPaid: boolean;
-	/** Rent in two parts (stay >1 month out): half now, half due 1 month
-	    before move-in. rentPaid then means the first half. */
+	/** Monthly rent (stays over 30 nights): month 1 up front (rentPaid),
+	    the remaining months evenly spaced — one flag per scheduled month. */
 	rentSplit: boolean;
-	rent2Paid: boolean;
+	rentSchedPaid: boolean[];
 	/** Move-out condition photos Melissa uploaded (indices into her roll) */
 	afterPhotos: number[];
 	/** Payment-confirmation screenshots Melissa uploaded (index into her roll) */
@@ -51,7 +51,7 @@ const INITIAL_STATE: SwapState = {
 	depositPaid: false,
 	rentPaid: false,
 	rentSplit: false,
-	rent2Paid: false,
+	rentSchedPaid: [],
 	afterPhotos: [],
 	depositShot: null,
 	rentShot: null,
@@ -143,7 +143,7 @@ export function withdrawReservation(guest: string) {
 		depositPaid: false,
 		rentPaid: false,
 		rentSplit: false,
-		rent2Paid: false,
+		rentSchedPaid: [],
 		depositShot: null,
 		rentShot: null,
 		reservedDeadline: null,
