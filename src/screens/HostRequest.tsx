@@ -5,6 +5,7 @@
  */
 import React, { useState } from 'react';
 
+import { RYAN_PHOTOS } from '../assets';
 import { LISTINGS } from '../data';
 import {
 	Avatar,
@@ -13,7 +14,13 @@ import {
 	IconChevronLeft,
 	StatusBar,
 } from '../ui';
-import { declineGuest, guestState, reserveGuest, useSwapState } from '../store';
+import {
+	declineGuest,
+	guestState,
+	sendOffer,
+	setGuestState,
+	useSwapState,
+} from '../store';
 import { ReviewSummaryCard } from './ReviewRequest';
 
 interface RequestPreview {
@@ -54,15 +61,18 @@ interface RequestPreview {
 		initial?: string;
 		line: string;
 		grewUp: string;
+		insta?: string;
 	}[];
 	/** Names all occupants in the rental agreement (group bookings) */
 	occupantsLine?: string;
 	/** The lead booker's full name — the one who signs for a group */
 	leadFullName?: string;
-	/** Stay starts >1 month out, so rent can be paid in two parts… */
-	splitAvailable?: boolean;
-	/** …with the second half due 1 month before move-in */
+	/** Stays over 30 nights can split rent into monthly payments; this is
+	    when the second month's rent is due */
 	splitDue?: string;
+	/** Match-timeline day labels, when they differ from the default trip */
+	moveInLabel?: string;
+	moveOutLabel?: string;
 }
 
 export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
@@ -87,8 +97,6 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		email: 'melissa.hart@gmail.com',
 		instagram: '@melissa.inmelbourne',
 		phone: '+61 412 555 083',
-		splitAvailable: true,
-		splitDue: '26 Jul 2026',
 	},
 	Aisha: {
 		avatar: 'aisha',
@@ -112,6 +120,7 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		email: 'aisha.khan@outlook.com',
 		instagram: '@aisha.designs',
 		phone: '+44 7700 900412',
+		moveInLabel: 'Thursday 27 Aug',
 	},
 	// The group booking (flagged for 3.2): a couple travelling together.
 	Tash: {
@@ -126,12 +135,14 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		fullName: 'Tash & Jordan Reeves',
 		personLine: 'Couple, 30 & 32',
 		stayOrdinal: 'first',
-		nights: 3,
-		range: [26, 29],
-		datesValue: '26 - 29 Aug 2026 · 3 nights',
+		// The long stay: over 30 nights, so rent can split into monthly
+		// payments (the split-rent scenario)
+		nights: 31,
+		range: [26, 57],
+		datesValue: '26 Aug - 26 Sep 2026 · 31 nights',
 		guestsLabel: '2 guests · Tash & Jordan',
 		intro:
-			"Kia ora Ryan! We're Tash and Jordan, a couple from Wellington over for a friend's wedding. We're easy-going, tidy, and out exploring most days — your place looks like the perfect base.",
+			"Kia ora Ryan! We're Tash and Jordan, a couple from Wellington over for a friend's wedding and a month of remote work after. We're easy-going, tidy, and out exploring most days — your place looks like the perfect base.",
 		questions:
 			'Is the sofa bed comfy enough if one of us is jet-lagged? And any good coffee nearby?',
 		email: 'tash.reeves@gmail.com',
@@ -146,6 +157,7 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 				avatar: 'tash',
 				line: '30 · Photographer',
 				grewUp: 'Grew up in Wellington, NZ',
+				insta: '@tash.shoots',
 			},
 			{
 				name: 'Jordan Reeves',
@@ -153,12 +165,13 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 				initial: 'J',
 				line: '32 · Carpenter',
 				grewUp: 'Grew up in Wellington, NZ',
+				insta: '@jordy.builds',
 			},
 		],
 		occupantsLine: 'Tash Reeves and Jordan Reeves',
 		leadFullName: 'Tash Reeves',
-		splitAvailable: true,
-		splitDue: '26 Jul 2026',
+		splitDue: '26 Sep 2026',
+		moveOutLabel: 'Saturday 26 Sep',
 	},
 };
 
@@ -351,22 +364,43 @@ export function GuestProfileHeader({
 /** The booker summary card at the top of the host's request review: who is
     asking to stay, at a glance — name, match count, and the profile basics.
     (Contact details live in their own section at the foot of the page.) */
+/* Follower-count mockery for the Instagram screenshots */
+const IG_STATS = [
+	{ posts: 214, followers: '1,032', following: 840 },
+	{ posts: 87, followers: '412', following: 366 },
+];
+const IG_GRID = [0, 1, 2, 3, 0, 1, 2, 3, 0];
+
 export function BookerCard({ guest }: { guest: string }) {
 	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
-	// Group bookings: the combined card expands into the individual profiles
-	const [showPeople, setShowPeople] = useState(false);
+	// See profile opens the card deck — swipeable when it's a group
+	const [showProfiles, setShowProfiles] = useState(false);
 	const matchesLabel =
 		preview.kikiMatches === 0
 			? 'First Kiki match'
 			: `${preview.kikiMatches} Kiki matches`;
+	const cards = preview.people ?? [
+		{
+			name: preview.fullName,
+			avatar: preview.avatar,
+			initial: preview.initial,
+			line: `${preview.age} · ${preview.occupation}`,
+			grewUp: `Grew up in ${preview.hometown}`,
+			insta: preview.instagram,
+		},
+	];
 
 	return (
 		<div className="booker-card">
 			<div className="booker-main">
 				<span className="booker-top">
 					<span className="booker-info">
+						{/* First names only; the deck carries the detail */}
 						<span className="booker-name">
-							{preview.fullName}
+							{guest}
+							{preview.partner && (
+								<span className="booker-plus">+1</span>
+							)}
 							<span className="booker-flag">{preview.flag}</span>
 						</span>
 						<span className="booker-matches">{matchesLabel}</span>
@@ -376,12 +410,7 @@ export function BookerCard({ guest }: { guest: string }) {
 						<span className="booker-line">{preview.occupation}</span>
 					</span>
 					{preview.partner ? (
-						<button
-							className="pair-avatars booker"
-							onClick={() => setShowPeople((o) => !o)}
-							aria-expanded={showPeople}
-							aria-label="View both profiles"
-						>
+						<span className="pair-avatars booker">
 							<Avatar
 								variant={preview.avatar}
 								initial={preview.initial}
@@ -392,7 +421,7 @@ export function BookerCard({ guest }: { guest: string }) {
 								initial={preview.partner.initial}
 								size={72}
 							/>
-						</button>
+						</span>
 					) : (
 						<Avatar
 							variant={preview.avatar}
@@ -403,28 +432,63 @@ export function BookerCard({ guest }: { guest: string }) {
 				</span>
 				{/* Full-width line — free to run under the photo */}
 				<span className="booker-line">Grew up in {preview.hometown}</span>
-				{preview.people && (
-					<button
-						className="booker-people-toggle"
-						onClick={() => setShowPeople((o) => !o)}
-						aria-expanded={showPeople}
-					>
-						{showPeople ? 'Hide profiles' : 'View both profiles'}
-					</button>
-				)}
+				<button
+					className="booker-people-toggle"
+					onClick={() => setShowProfiles(true)}
+				>
+					{preview.partner ? 'See profiles' : 'See profile'}
+				</button>
 			</div>
-			{showPeople && preview.people && (
-				<div className="booker-people">
-					{preview.people.map((p) => (
-						<div className="bp-row" key={p.name}>
-							<Avatar variant={p.avatar} initial={p.initial} size={46} />
-							<span className="bp-info">
-								<span className="bp-name">{p.name}</span>
-								<span className="bp-line">{p.line}</span>
-								<span className="bp-line">{p.grewUp}</span>
-							</span>
+
+			{showProfiles && (
+				<div className="sheet-overlay" onClick={() => setShowProfiles(false)}>
+					<div className="profile-deck" onClick={(e) => e.stopPropagation()}>
+						<div className="pd-scroller">
+							{cards.map((p, i) => (
+								<div className="pd-card" key={p.name}>
+									<div className="pd-head">
+										<Avatar
+											variant={p.avatar}
+											initial={p.initial}
+											size={54}
+										/>
+										<span className="pd-id">
+											<span className="pd-name">{p.name}</span>
+											<span className="pd-line">{p.line}</span>
+											<span className="pd-line">{p.grewUp}</span>
+										</span>
+									</div>
+									{/* The Instagram screenshot — the trust artefact */}
+									<div className="ig-shot">
+										<div className="ig-top">
+											<Avatar
+												variant={p.avatar}
+												initial={p.initial}
+												size={40}
+											/>
+											<span className="ig-id">
+												<span className="ig-handle">{p.insta}</span>
+												<span className="ig-stats">
+													<b>{IG_STATS[i % 2].posts}</b> posts ·{' '}
+													<b>{IG_STATS[i % 2].followers}</b> followers ·{' '}
+													<b>{IG_STATS[i % 2].following}</b> following
+												</span>
+											</span>
+										</div>
+										<div className="ig-grid">
+											{IG_GRID.map((n, j) => (
+												<img key={j} src={RYAN_PHOTOS[n]} alt="" />
+											))}
+										</div>
+										<span className="ig-tag">From Instagram</span>
+									</div>
+								</div>
+							))}
 						</div>
-					))}
+						{cards.length > 1 && (
+							<div className="pd-hint">Swipe for {preview.partner!.name}</div>
+						)}
+					</div>
 				</div>
 			)}
 		</div>
@@ -458,12 +522,13 @@ export function HostRequestScreen({
 	guest,
 	onBack,
 	onDeclined,
-	onReserved,
+	onOffered,
 }: {
 	guest: string;
 	onBack: () => void;
 	onDeclined: () => void;
-	onReserved: () => void;
+	/** An offer went out — nothing is reserved until the guest accepts */
+	onOffered: () => void;
 }) {
 	const listing = LISTINGS.find((l) => l.listerName === 'Ryan')!;
 	const preview = REQUEST_PREVIEWS[guest] ?? REQUEST_PREVIEWS.Melissa;
@@ -477,6 +542,7 @@ export function HostRequestScreen({
 	const [declineCategory, setDeclineCategory] = useState<string | null>(null);
 	const [declineNote, setDeclineNote] = useState('');
 	const declined = guestState(swap, guest) === 'declined';
+	const offered = guestState(swap, guest) === 'offered';
 	const declineInfo = swap.declines[guest];
 	// Only one reservation per overlapping date range; requests for other
 	// dates are unaffected.
@@ -545,26 +611,45 @@ export function HostRequestScreen({
 						labels
 					/>
 				</div>
-			</div>
 
-			<div className="form-footer">
+				{/* The decision lives at the end of the page, not in a sticky
+				    footer — you read everything, then act */}
+				<div className="inline-actions">
 				{declined ? (
 					<div className="footer-note">
 						This request is closed — {who} has been notified.
 					</div>
+				) : offered ? (
+					<>
+						<div className="footer-note">
+							Offer sent — waiting for {who} to accept. Nothing is
+							reserved until {preview.partner ? 'they' : 'she'} accept
+							{preview.partner ? '' : 's'}.
+						</div>
+						<button
+							className="withdraw-btn"
+							onClick={() => {
+								setGuestState(guest, 'new');
+								onBack();
+							}}
+						>
+							Withdraw offer
+						</button>
+					</>
 				) : otherReserved ? (
 					<div className="footer-note">
-						You already have a reserved guest for overlapping dates.
+						You already have an offer out or a reserved guest for
+						overlapping dates.
 					</div>
 				) : (
 					/* Sits with the actions it explains — quiet, two lines */
 					<div className="footer-note soft">
-						Accepting reserves {who}'s stay.
+						Sending an offer lets {who} accept and reserve the stay.
 						<br />
 						Declining lets {preview.partner ? 'them' : 'her'} know.
 					</div>
 				)}
-				{!declined && (
+				{!declined && !offered && (
 					<div className="request-actions">
 						<button
 							className="btn-decline"
@@ -576,14 +661,15 @@ export function HostRequestScreen({
 							className="btn-primary"
 							disabled={otherReserved}
 							onClick={() => {
-								reserveGuest(guest);
-								onReserved();
+								sendOffer(guest);
+								onOffered();
 							}}
 						>
-							Accept and Reserve
+							Send offer
 						</button>
 					</div>
 				)}
+				</div>
 			</div>
 
 			{confirmDecline && (

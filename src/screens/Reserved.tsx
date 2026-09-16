@@ -215,7 +215,8 @@ export function AgreementModal({
 					<div className="agreement-clause">
 						<b>1. Stay.</b> The Host grants the{' '}
 						{preview.partner ? 'Stayers' : 'Stayer'} use of the whole
-						apartment from 26 August 2026 to 29 August 2026 (3 nights).
+						apartment from {preview.datesValue.split(' · ')[0]} (
+						{preview.nights} nights).
 						{preview.occupantsLine && (
 							<> Occupants: {preview.occupantsLine} (2 guests).</>
 						)}
@@ -432,7 +433,7 @@ export function ReservedScreen({
 								   due 1 month before move-in */
 								<>
 									<PayCheque
-										label="Rent — 1st half"
+										label="Rent — month 1"
 										payer={who}
 										amount={Math.ceil(rentTotal / 2)}
 										paid={swap.rentPaid}
@@ -441,7 +442,7 @@ export function ReservedScreen({
 										}
 									/>
 									<ScheduledCheque
-										label="Rent — 2nd half"
+										label="Rent — month 2"
 										due={preview.splitDue ?? '1 month before move-in'}
 										amount={rentTotal - Math.ceil(rentTotal / 2)}
 										paid={swap.rent2Paid}

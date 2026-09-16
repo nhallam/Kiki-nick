@@ -111,6 +111,7 @@ export function TripsScreen({
 	// The guest's own phone: their request card tracks what Ryan does.
 	const stayingStatus = (r: SentRequest): string => {
 		if (r.listingId !== 2) return r.status;
+		if (activeState === 'offered') return 'Offer received - tap to respond';
 		if (activeState === 'reserved') return 'Reserved - complete your steps';
 		if (activeState === 'confirmed') return 'Confirmed';
 		if (guestState(swap, 'Melissa') === 'declined') return 'Declined';

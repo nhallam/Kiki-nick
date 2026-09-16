@@ -5,7 +5,12 @@
  */
 import { useSyncExternalStore } from 'react';
 
-export type GuestRequestState = 'new' | 'reserved' | 'confirmed' | 'declined';
+export type GuestRequestState =
+	| 'new'
+	| 'offered'
+	| 'reserved'
+	| 'confirmed'
+	| 'declined';
 
 export interface SwapState {
 	melissa: GuestRequestState;
@@ -103,7 +108,7 @@ export function setGuestState(guest: string, s: GuestRequestState) {
 export const activeGuest = (swap: SwapState): string =>
 	['Melissa', 'Aisha', 'Tash'].find((g) => {
 		const s = guestState(swap, g);
-		return s === 'reserved' || s === 'confirmed';
+		return s === 'offered' || s === 'reserved' || s === 'confirmed';
 	}) ?? 'Melissa';
 
 /** Declining sends the guest a reason (category + optional note) and
@@ -115,7 +120,13 @@ export function declineGuest(guest: string, category: string, note: string) {
 	});
 }
 
-/** Accepting starts the 48-hour completion window. */
+/** Two-step consent: the host offers; nothing is reserved yet. */
+export function sendOffer(guest: string) {
+	setGuestState(guest, 'offered');
+}
+
+/** The guest accepting the offer starts the 48-hour completion window
+    (and puts their other requests on hold). */
 export function reserveGuest(guest: string) {
 	setGuestState(guest, 'reserved');
 	// Start a touch under 48h so the countdown reads "47:59:xx" immediately

@@ -162,21 +162,21 @@ export function MatchDetailScreen({
 			done: swap.depositPaid,
 		},
 		...(swap.rentSplit
-			? /* Rent in two parts: the second half is due 1 month before
-			     move-in, and is paid from here once the match is made */
+			? /* Monthly rent (stays over 30 nights): month 2 is due when the
+			     second month starts, and is paid from here once matched */
 				([
 					{
-						title: 'Rent · 1st half paid',
+						title: 'Rent · month 1 paid',
 						sub: isGuest
 							? `£${Math.ceil(rentTotal / 2)} · paid to Ryan 3 days after move-in`
 							: `£${Math.ceil(rentTotal / 2)} · paid to you 3 days after move-in`,
 						done: swap.rentPaid,
 					},
 					{
-						title: swap.rent2Paid ? 'Rent · 2nd half paid' : 'Rent · 2nd half',
+						title: swap.rent2Paid ? 'Rent · month 2 paid' : 'Rent · month 2',
 						sub: swap.rent2Paid
 							? `£${rentTotal - Math.ceil(rentTotal / 2)} · paid`
-							: `£${rentTotal - Math.ceil(rentTotal / 2)} · due by ${preview.splitDue ?? '26 Jul 2026'}`,
+							: `£${rentTotal - Math.ceil(rentTotal / 2)} · due by ${preview.splitDue ?? 'the start of month 2'}`,
 						done: swap.rent2Paid,
 						actions:
 							isGuest && !swap.rent2Paid ? (
@@ -207,8 +207,16 @@ export function MatchDetailScreen({
 			thumb: RYAN_PHOTOS[1],
 		},
 		/* No manual action — these complete by themselves on the day */
-		{ title: 'Move-in', sub: 'Wednesday 26 Aug · automatic', done: false },
-		{ title: 'Move-out', sub: 'Saturday 29 Aug · automatic', done: false },
+		{
+			title: 'Move-in',
+			sub: `${preview.moveInLabel ?? 'Wednesday 26 Aug'} · automatic`,
+			done: false,
+		},
+		{
+			title: 'Move-out',
+			sub: `${preview.moveOutLabel ?? 'Saturday 29 Aug'} · automatic`,
+			done: false,
+		},
 	];
 
 	const refund: StaticItem = {

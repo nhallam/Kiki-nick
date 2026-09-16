@@ -4696,35 +4696,15 @@ input {
 }
 
 /* ---------- 3.5: split rent + group profiles ---------- */
-/* Pay in full / two parts — a small segmented choice above the cheques */
-.split-block {
-	margin-bottom: 2px;
-}
-.split-choice {
-	display: flex;
-	gap: 6px;
-	padding: 4px;
-	border: 1px solid var(--border-light);
-	border-radius: 12px;
-	background: var(--white);
-}
-.sc-opt {
-	flex: 1;
-	padding: 9px;
-	border-radius: 9px;
-	font-size: 14px;
+/* Monthly split reads as a quiet option under the rent cheque */
+.split-link {
+	align-self: flex-start;
+	text-align: left;
+	font-size: 13px;
 	font-weight: 600;
-	color: var(--gray);
-}
-.sc-opt.on {
-	background: var(--primary-tint);
 	color: var(--primary-dark);
-}
-.split-note {
-	font-size: 12.5px;
-	color: var(--gray);
-	line-height: 1.45;
-	margin: 8px 2px 6px;
+	padding: 2px 2px 4px;
+	line-height: 1.4;
 }
 /* A cheque that isn't due yet */
 .pay-cheque.as-div {
@@ -4743,34 +4723,6 @@ input {
 	font-weight: 600;
 	color: var(--primary-dark);
 	padding: 2px 0;
-}
-.booker-people {
-	border-top: 1px solid var(--border-light);
-	margin-top: 12px;
-	padding-top: 4px;
-}
-.bp-row {
-	display: flex;
-	align-items: center;
-	gap: 13px;
-	padding: 10px 0;
-}
-.bp-row + .bp-row {
-	border-top: 1px solid var(--border-light);
-}
-.bp-info {
-	display: flex;
-	flex-direction: column;
-	gap: 1px;
-}
-.bp-name {
-	font-size: 15px;
-	font-weight: 700;
-}
-.bp-line {
-	font-size: 13.5px;
-	color: var(--gray);
-	line-height: 1.4;
 }
 /* Small role tag on a signature slot (lead booker) */
 .sig-role {
@@ -4882,4 +4834,164 @@ input {
 }
 .req-row.muted {
 	opacity: 0.7;
+}
+
+/* ---------- 3.6 ---------- */
+/* The accept/decline block scrolls with the page — no sticky footer */
+.inline-actions {
+	border-top: 1px solid var(--border-light);
+	margin-top: 4px;
+	padding-top: 16px;
+}
+
+/* The guest's offer screen: accept to reserve (two-step consent) */
+.offer-title {
+	font-size: 22px;
+	font-weight: 700;
+	margin: 10px 0 8px;
+}
+.offer-sub {
+	font-size: 14.5px;
+	color: var(--gray);
+	line-height: 1.55;
+	margin-bottom: 18px;
+}
+.offer-summary {
+	border: 1px solid var(--border-light);
+	border-radius: 12px;
+	padding: 4px 14px;
+}
+.offer-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 11px 0;
+	font-size: 14.5px;
+}
+.offer-row + .offer-row {
+	border-top: 1px solid var(--border-light);
+}
+.offer-row.total {
+	font-weight: 700;
+	color: var(--primary-dark);
+}
+
+/* Booker card: "+N" tag after the first name */
+.booker-plus {
+	font-size: 14px;
+	font-weight: 700;
+	color: var(--gray);
+	background: var(--light-gray);
+	border-radius: 8px;
+	padding: 2px 7px;
+	margin-left: 8px;
+	vertical-align: 2px;
+}
+
+/* Profile deck: swipeable cards over the request, one per guest */
+.profile-deck {
+	margin: auto 0;
+	padding: 0 0 8px;
+}
+.pd-scroller {
+	display: flex;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	gap: 14px;
+	padding: 0 26px;
+	scrollbar-width: none;
+}
+.pd-scroller::-webkit-scrollbar {
+	display: none;
+}
+.pd-card {
+	min-width: calc(100% - 52px);
+	scroll-snap-align: center;
+	background: var(--white);
+	border-radius: 18px;
+	padding: 18px 16px 16px;
+}
+.pd-head {
+	display: flex;
+	align-items: center;
+	gap: 13px;
+	margin-bottom: 14px;
+}
+.pd-id {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+}
+.pd-name {
+	font-size: 16.5px;
+	font-weight: 700;
+}
+.pd-line {
+	font-size: 13.5px;
+	color: var(--gray);
+	line-height: 1.4;
+}
+
+/* The Instagram screenshot mock */
+.ig-shot {
+	position: relative;
+	border: 1px solid var(--border-light);
+	border-radius: 12px;
+	overflow: hidden;
+}
+.ig-top {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 12px;
+}
+.ig-id {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	min-width: 0;
+}
+.ig-handle {
+	font-size: 14px;
+	font-weight: 700;
+}
+.ig-stats {
+	font-size: 12px;
+	color: var(--gray);
+}
+.ig-stats b {
+	color: var(--dark);
+	font-weight: 700;
+}
+.ig-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 2px;
+}
+.ig-grid img {
+	width: 100%;
+	aspect-ratio: 1;
+	object-fit: cover;
+	display: block;
+}
+.ig-tag {
+	position: absolute;
+	bottom: 8px;
+	right: 8px;
+	font-size: 10.5px;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+	color: var(--white);
+	background: rgba(31, 41, 55, 0.75);
+	border-radius: 7px;
+	padding: 3px 7px;
+}
+.pd-hint {
+	text-align: center;
+	font-size: 12.5px;
+	font-weight: 600;
+	color: var(--white);
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+	margin-top: 10px;
 }

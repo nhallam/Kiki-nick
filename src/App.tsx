@@ -176,11 +176,14 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 					onOpenTrip={() => setRoute({ name: 'tripRequests' })}
 					onOpenMatch={() => setRoute({ name: 'match' })}
 					onOpenRequestListing={(listingId) => {
-						// Once Ryan reserves (or confirms) a request, the card leads
-						// to that guest's steps rather than back to the listing.
+						// Once Ryan offers, reserves or confirms a request, the card
+						// leads to that guest's offer/steps rather than the listing.
 						const swap = getSwapState();
 						const s = guestState(swap, activeGuest(swap));
-						if (listingId === 2 && (s === 'reserved' || s === 'confirmed')) {
+						if (
+							listingId === 2 &&
+							(s === 'offered' || s === 'reserved' || s === 'confirmed')
+						) {
 							setRoute({ name: 'guestSteps' });
 							return;
 						}
@@ -204,7 +207,7 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 					guest={route.guest}
 					onBack={() => setRoute({ name: 'tripRequests' })}
 					onDeclined={() => setRoute({ name: 'tripRequests' })}
-					onReserved={() => setRoute({ name: 'reserved', guest: route.guest })}
+					onOffered={() => setRoute({ name: 'tripRequests' })}
 				/>
 			);
 		case 'reserved':

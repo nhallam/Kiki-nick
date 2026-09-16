@@ -16,6 +16,7 @@ import {
 	activeGuest,
 	getSwapState,
 	guestState,
+	reserveGuest,
 	setGuestState,
 	setSwapState,
 	useSwapState,
@@ -121,6 +122,71 @@ export function GuestStepsScreen({
 		);
 	}
 
+	// Two-step consent: Ryan sent an offer — nothing is reserved until she
+	// accepts, and her other requests stay live meanwhile.
+	if (guestStateNow === 'offered') {
+		return (
+			<div className="screen">
+				<StatusBar time="12:13" />
+				<div className="form-header review-head with-back no-rule">
+					<button
+						className="icon-btn review-back"
+						onClick={onBack}
+						aria-label="Back"
+					>
+						<IconChevronLeft size={26} />
+					</button>
+					<HostFlowSteps current={1} />
+					<span style={{ width: 44 }} />
+				</div>
+				<div className="form-content" style={{ paddingTop: 0 }}>
+					<div className="guest-steps-listing">
+						<span className="gsl-thumb">
+							<RoomPhoto variant={listing.photoVariant} />
+						</span>
+						<span className="gsl-body">
+							<span className="gsl-title">Ryan's Apartment</span>
+							<span className="gsl-sub">
+								{preview.datesValue.split(' · ')[0].replace(' 2026', '')} ·{' '}
+								{preview.nights} nights · Hackney, London
+							</span>
+						</span>
+					</div>
+
+					<h2 className="offer-title">Ryan sent you an offer!</h2>
+					<p className="offer-sub">
+						Accepting reserves your stay and starts the booking steps —
+						signing the agreement and paying within 48 hours. Your other
+						requests stay active until you accept.
+					</p>
+
+					<div className="offer-summary">
+						<div className="offer-row">
+							<span>Rent ({preview.nights} nights)</span>
+							<span>£{rentTotal}</span>
+						</div>
+						<div className="offer-row">
+							<span>Security deposit</span>
+							<span>£{listing.securityDeposit}</span>
+						</div>
+						<div className="offer-row total">
+							<span>Total</span>
+							<span>£{rentTotal + listing.securityDeposit}</span>
+						</div>
+					</div>
+				</div>
+				<div className="form-footer">
+					<button
+						className="btn-primary"
+						onClick={() => reserveGuest(guest)}
+					>
+						Accept offer
+					</button>
+				</div>
+			</div>
+		);
+	}
+
 	/* Her cheques: same paper object as Ryan's, but tapping one opens the
 	   screenshot picker — pay by transfer, upload the confirmation. Once
 	   uploaded, the screenshot sits on the cheque (tap to swap it). */
@@ -165,46 +231,26 @@ export function GuestStepsScreen({
 		);
 	};
 
-	/* Split payments: her stay is >1 month out, so she can pay rent in two
-	   parts — half now, half due 1 month before move-in. The choice locks
-	   once she uploads the first rent payment. Shared by the guided flow's
-	   payments screen and the overview. */
+	/* Split rent: only stays over 30 nights qualify, and it reads as a
+	   quiet option under the cheque rather than a mode switch — monthly
+	   payments, two for a stay this length. The deposit always pays in
+	   full, and the choice locks once the first rent payment is uploaded.
+	   Shared by the guided flow's payments screen and the overview. */
+	const canSplit = preview.nights > 30;
 	const rent1 = Math.ceil(rentTotal / 2);
 	const rentCheques = (
 		<>
-			{preview.splitAvailable && swap.rentShot == null && (
-				<div className="split-block">
-					<div className="split-choice">
-						<button
-							className={`sc-opt${!swap.rentSplit ? ' on' : ''}`}
-							onClick={() => setSwapState({ rentSplit: false })}
-						>
-							Pay in full
-						</button>
-						<button
-							className={`sc-opt${swap.rentSplit ? ' on' : ''}`}
-							onClick={() => setSwapState({ rentSplit: true })}
-						>
-							Two parts
-						</button>
-					</div>
-					<p className="split-note">
-						Your stay is over a month away, so you can pay half the rent now
-						and the rest by {preview.splitDue}.
-					</p>
-				</div>
-			)}
 			{swap.rentSplit ? (
 				<>
 					<PayCheque
 						which="rent"
-						label="Rent — 1st half"
+						label="Rent — month 1"
 						amount={rent1}
 						shot={swap.rentShot}
 					/>
 					<ScheduledCheque
-						label="Rent — 2nd half"
-						due={preview.splitDue ?? '1 month before move-in'}
+						label="Rent — month 2"
+						due={preview.splitDue ?? 'the start of month 2'}
 						amount={rentTotal - rent1}
 						paid={swap.rent2Paid}
 						payer="You"
@@ -217,6 +263,16 @@ export function GuestStepsScreen({
 					amount={rentTotal}
 					shot={swap.rentShot}
 				/>
+			)}
+			{canSplit && swap.rentShot == null && (
+				<button
+					className="split-link"
+					onClick={() => setSwapState({ rentSplit: !swap.rentSplit })}
+				>
+					{swap.rentSplit
+						? 'Pay the rent in full instead'
+						: 'Stays over 30 nights can split the rent into monthly payments'}
+				</button>
 			)}
 		</>
 	);
@@ -251,7 +307,7 @@ export function GuestStepsScreen({
 							{/* 1 — what's needed to continue */}
 							<div className="wizard-panel">
 								<div className="wz-center">
-									<h2 className="wz-title">Ryan reserved your dates!</h2>
+									<h2 className="wz-title">Your dates are reserved!</h2>
 									<p className="wz-sub">
 										Complete these steps within 48 hours to confirm your
 										stay at Ryan's Apartment.
@@ -347,8 +403,23 @@ export function GuestStepsScreen({
 					</div>
 
 					<div className="form-footer">
-						<div className="wz-timer">
-							<ReserveTimer note="" inline />
+						{/* Same progress lockup as the overview, so the guest can
+						    see where they are mid-flow */}
+						<div className="steps-lockup">
+							<div className="steps-track" aria-hidden>
+								{[0, 1, 2].map((i) => (
+									<span
+										key={i}
+										className={i < stepsDone ? 'seg done' : 'seg'}
+									/>
+								))}
+							</div>
+							<div className="steps-row">
+								<span className="sl-count">
+									{stepsDone} of 3 steps complete
+								</span>
+								<ReserveTimer note="" inline />
+							</div>
 						</div>
 						{wizPage === 0 && (
 							<button className="btn-primary" onClick={() => setWizPage(1)}>

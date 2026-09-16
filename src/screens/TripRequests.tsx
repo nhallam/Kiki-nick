@@ -77,7 +77,7 @@ export const TRIP_REQUESTS: TripBookingRequest[] = [
 		name: 'Tash',
 		avatar: 'tash',
 		initial: 'T',
-		sub: '2 guests · 26 - 29 Aug · £201 + deposit',
+		sub: '2 guests · 26 Aug - 26 Sep · £2,077 + deposit',
 		status: 'new',
 	},
 	{
@@ -132,7 +132,9 @@ export function TripRequestsScreen({
 				: status === 'reserved'
 					? () => onOpenReserved(r.name)
 					: REQUEST_PREVIEWS[r.name] &&
-						  (status === 'new' || status === 'declined')
+						  (status === 'new' ||
+								status === 'offered' ||
+								status === 'declined')
 						? () => onOpenRequest(r.name)
 						: undefined;
 		const partner = REQUEST_PREVIEWS[r.name]?.partner;
@@ -160,6 +162,9 @@ export function TripRequestsScreen({
 						{status === 'new' && <span className="new-badge">New</span>}
 						{status === 'inReview' && (
 							<span className="review-badge">In review</span>
+						)}
+						{status === 'offered' && (
+							<span className="review-badge">Offer sent</span>
 						)}
 						{status === 'reserved' && (
 							<span className="review-badge">Reserved</span>
