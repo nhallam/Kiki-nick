@@ -130,8 +130,18 @@ const VERSIONS = [
 		id: 'match35',
 		label: '3.5',
 		section: 'mf-round3',
-		blurb: 'New iteration round — latest.',
+		blurb:
+			'Full-screen agreement, confirm-to-sign, group profiles, decline flow, guest phone follows the reserved request.',
 		branch: 'matching-v35',
+		wide: true,
+	},
+	{
+		id: 'match36',
+		label: '3.6',
+		section: 'mf-round3',
+		blurb:
+			'Client-review round: two-step offers, >30-night split rent, profile cards with Instagram, inline CTA — latest.',
+		branch: 'matching-v36',
 		wide: true,
 	},
 	{
