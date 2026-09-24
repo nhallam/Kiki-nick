@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kiki — request card options</title>
+<style>
+	:root {
+		--primary: #20a598;
+		--primary-dark: #0f6e56;
+		--primary-tint: rgba(32, 165, 152, 0.1);
+		--dark: #1f2937;
+		--gray: #9ca3af;
+		--light-gray: #f6f6f6;
+		--border-light: #eee;
+		--border-medium: #ddd;
+		--white: #fff;
+		--pending: #b7791f;
+		--pending-tint: #fdf3e0;
+	}
+	* { margin: 0; padding: 0; box-sizing: border-box; }
+	body {
+		font-family: 'Inter', -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
+		background: #e7e9ec;
+		color: var(--dark);
+		-webkit-font-smoothing: antialiased;
+		padding: 36px 16px 80px;
+	}
+	.page { max-width: 980px; margin: 0 auto; }
+	h1 { font-size: 26px; margin-bottom: 6px; }
+	.intro { font-size: 15px; color: #667080; margin-bottom: 34px; max-width: 640px; line-height: 1.5; }
+	.options { display: flex; flex-wrap: wrap; gap: 28px; }
+	.option { width: 425px; }
+	.opt-label { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
+	.opt-label span { color: var(--primary); margin-right: 6px; }
+	.opt-note { font-size: 13.5px; color: #667080; line-height: 1.5; margin-bottom: 12px; min-height: 60px; }
+	.canvas { background: var(--white); border-radius: 20px; padding: 22px 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+	.section-title { font-size: 19px; font-weight: 800; margin-bottom: 14px; }
+
+	/* Illustrated thumbs (stand-ins for the app's RoomPhoto) */
+	.thumb { flex-shrink: 0; overflow: hidden; position: relative; }
+	.thumb.ryan { background: #3d5a3d; }
+	.thumb.ryan i { position: absolute; border-radius: 50%; background: #4e7a4a; }
+	.thumb.ryan i:nth-child(1) { width: 70%; height: 70%; left: -12%; top: 38%; }
+	.thumb.ryan i:nth-child(2) { width: 46%; height: 46%; right: -6%; top: -10%; background: #5b8a55; }
+	.thumb.ryan i:nth-child(3) { width: 34%; height: 34%; right: 18%; bottom: -8%; background: #467043; }
+	.thumb.nina { background: #ece3d6; }
+	.thumb.nina .sofa { position: absolute; left: 8%; bottom: 12%; width: 46%; height: 34%; background: #c4765a; border-radius: 3px; }
+	.thumb.nina .win { position: absolute; right: 10%; top: 14%; width: 30%; height: 48%; background: #cfe0e6; border-radius: 2px; }
+	.thumb.nina .floor { position: absolute; left: 0; bottom: 0; width: 100%; height: 12%; background: #c9b899; }
+
+	/* Status colors: amber = waiting on someone, teal = your move */
+	.amber { color: var(--pending); }
+	.teal { color: var(--primary-dark); }
+
+	/* ---------- Current (reference) ---------- */
+	.card-cur { display: flex; gap: 12px; border: 1px solid var(--border-light); border-radius: 12px; padding: 10px; background: var(--white); margin-bottom: 12px; }
+	.card-cur .thumb { width: 96px; height: 96px; border-radius: 8px; }
+	.card-cur .title { font-size: 16.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 4px 0 3px; }
+	.card-cur .meta { font-size: 14px; color: var(--dark); margin-bottom: 8px; }
+	.card-cur .meta b { font-weight: 400; color: var(--border-medium); padding: 0 3px; }
+	.chip { display: inline-block; align-self: flex-start; background: var(--pending-tint); border: 1px solid var(--pending); color: var(--pending); font-size: 13px; font-weight: 600; border-radius: 8px; padding: 4px 9px; }
+	.chip.teal-chip { background: var(--primary-tint); border-color: var(--primary); color: var(--primary-dark); }
+	.card-cur .body { min-width: 0; display: flex; flex-direction: column; }
+
+	/* ---------- A: compact row ---------- */
+	.card-a { display: flex; gap: 12px; align-items: center; border: 1px solid var(--border-light); border-radius: 14px; padding: 12px; background: var(--white); margin-bottom: 10px; }
+	.card-a .thumb { width: 56px; height: 56px; border-radius: 12px; }
+	.card-a .title { font-size: 15.5px; font-weight: 700; line-height: 1.3; margin-bottom: 3px; }
+	.card-a .meta { font-size: 13.5px; color: var(--gray); margin-bottom: 4px; }
+	.card-a .status { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+	.card-a .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pending); }
+	.card-a .dot.t { background: var(--primary); }
+	.card-a .body { min-width: 0; flex: 1; }
+	.card-a .chev { color: var(--border-medium); font-size: 20px; }
+
+	/* ---------- B: photo banner ---------- */
+	.card-b { border: 1px solid var(--border-light); border-radius: 16px; overflow: hidden; background: var(--white); margin-bottom: 14px; }
+	.card-b .thumb { width: 100%; height: 132px; }
+	.card-b .chip { position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.94); border: none; box-shadow: 0 1px 6px rgba(0,0,0,0.12); }
+	.card-b .body { padding: 12px 14px 14px; }
+	.card-b .title { font-size: 16.5px; font-weight: 700; margin-bottom: 3px; }
+	.card-b .meta { font-size: 14px; color: var(--gray); }
+
+	/* ---------- C: borderless list ---------- */
+	.list-c .row { display: flex; gap: 13px; align-items: center; padding: 13px 2px; }
+	.list-c .row + .row { border-top: 1px solid var(--border-light); }
+	.list-c .thumb { width: 64px; height: 64px; border-radius: 14px; }
+	.list-c .title { font-size: 15.5px; font-weight: 700; line-height: 1.3; }
+	.list-c .meta { font-size: 13.5px; color: var(--gray); margin-top: 2px; }
+	.list-c .status { font-size: 12.5px; font-weight: 700; margin-top: 4px; }
+	.list-c .body { flex: 1; min-width: 0; }
+	.list-c .chev { color: var(--border-medium); font-size: 20px; }
+
+	/* ---------- D: status edge ---------- */
+	.card-d { position: relative; display: flex; gap: 12px; align-items: center; border: 1px solid var(--border-light); border-left: none; border-radius: 12px; padding: 12px 12px 12px 16px; background: var(--white); margin-bottom: 10px; overflow: hidden; }
+	.card-d::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--pending); }
+	.card-d.t::before { background: var(--primary); }
+	.card-d .thumb { width: 62px; height: 62px; border-radius: 10px; }
+	.card-d .title { font-size: 15.5px; font-weight: 700; line-height: 1.3; margin-bottom: 2px; }
+	.card-d .meta { font-size: 13.5px; color: var(--gray); }
+	.card-d .status { font-size: 12.5px; font-weight: 700; margin-top: 4px; }
+	.card-d .body { flex: 1; min-width: 0; }
+</style>
+</head>
+<body>
+<div class="page">
+	<h1>Booking request cards — options</h1>
+	<p class="intro">
+		Four directions for the guest's Booking requests cards, next to the current design.
+		Every option fixes the truncated titles, and each shows two status states:
+		amber = waiting on someone else, teal = your move (e.g. an offer received).
+	</p>
+
+	<div class="options">
+		<div class="option">
+			<div class="opt-label"><span>—</span>Current, for reference</div>
+			<div class="opt-note">Big square photo forces the title into one truncated line ("…in Hac…"); the pill floats loose in the whitespace.</div>
+			<div class="canvas">
+				<div class="section-title">Booking requests</div>
+				<div class="card-cur">
+					<div class="thumb ryan"><i></i><i></i><i></i></div>
+					<div class="body">
+						<div class="title">Ryan's Apartment in Hackney, London</div>
+						<div class="meta">26 - 29 Aug <b>|</b> £67 p/night</div>
+						<span class="chip">In review by host</span>
+					</div>
+				</div>
+				<div class="card-cur">
+					<div class="thumb nina"><span class="sofa"></span><span class="win"></span><span class="floor"></span></div>
+					<div class="body">
+						<div class="title">Nina's Flat in Peckham, London</div>
+						<div class="meta">26 Sep - 3 Oct <b>|</b> £48 p/night</div>
+						<span class="chip teal-chip">Offer received</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="option">
+			<div class="opt-label"><span>A</span>Compact row</div>
+			<div class="opt-note">Small rounded thumb, title free to wrap, status as a coloured dot + text. Densest option — scales best when someone has five requests out.</div>
+			<div class="canvas">
+				<div class="section-title">Booking requests</div>
+				<div class="card-a">
+					<div class="thumb ryan"><i></i><i></i><i></i></div>
+					<div class="body">
+						<div class="title">Ryan's Apartment in Hackney, London</div>
+						<div class="meta">26 - 29 Aug · £67 p/night</div>
+						<div class="status amber"><span class="dot"></span>In review by host</div>
+					</div>
+					<div class="chev">›</div>
+				</div>
+				<div class="card-a">
+					<div class="thumb nina"><span class="sofa"></span><span class="win"></span><span class="floor"></span></div>
+					<div class="body">
+						<div class="title">Nina's Flat in Peckham, London</div>
+						<div class="meta">26 Sep - 3 Oct · £48 p/night</div>
+						<div class="status teal"><span class="dot t"></span>Offer received — tap to respond</div>
+					</div>
+					<div class="chev">›</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="option">
+			<div class="opt-label"><span>B</span>Photo banner</div>
+			<div class="opt-note">The place leads: full-width photo with the status pill floated on it, clean text block below. Most visual, takes the most vertical space.</div>
+			<div class="canvas">
+				<div class="section-title">Booking requests</div>
+				<div class="card-b">
+					<div class="thumb ryan"><i></i><i></i><i></i><span class="chip amber">In review by host</span></div>
+					<div class="body">
+						<div class="title">Ryan's Apartment in Hackney, London</div>
+						<div class="meta">26 - 29 Aug · £67 p/night</div>
+					</div>
+				</div>
+				<div class="card-b">
+					<div class="thumb nina"><span class="sofa"></span><span class="win"></span><span class="floor"></span><span class="chip teal-chip">Offer received</span></div>
+					<div class="body">
+						<div class="title">Nina's Flat in Peckham, London</div>
+						<div class="meta">26 Sep - 3 Oct · £48 p/night</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="option">
+			<div class="opt-label"><span>C</span>Borderless list</div>
+			<div class="opt-note">No card chrome at all — rows with dividers, like the app's flat sections (3.3's design language). Calmest; the section title does the framing.</div>
+			<div class="canvas">
+				<div class="section-title">Booking requests</div>
+				<div class="list-c">
+					<div class="row">
+						<div class="thumb ryan"><i></i><i></i><i></i></div>
+						<div class="body">
+							<div class="title">Ryan's Apartment in Hackney, London</div>
+							<div class="meta">26 - 29 Aug · £67 p/night</div>
+							<div class="status amber">In review by host</div>
+						</div>
+						<div class="chev">›</div>
+					</div>
+					<div class="row">
+						<div class="thumb nina"><span class="sofa"></span><span class="win"></span><span class="floor"></span></div>
+						<div class="body">
+							<div class="title">Nina's Flat in Peckham, London</div>
+							<div class="meta">26 Sep - 3 Oct · £48 p/night</div>
+							<div class="status teal">Offer received — tap to respond</div>
+						</div>
+						<div class="chev">›</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="option">
+			<div class="opt-label"><span>D</span>Status edge</div>
+			<div class="opt-note">The card wears its state: a coloured left edge plus a status line, no pill. Quick to scan for "which of these needs me" without reading.</div>
+			<div class="canvas">
+				<div class="section-title">Booking requests</div>
+				<div class="card-d">
+					<div class="thumb ryan"><i></i><i></i><i></i></div>
+					<div class="body">
+						<div class="title">Ryan's Apartment in Hackney, London</div>
+						<div class="meta">26 - 29 Aug · £67 p/night</div>
+						<div class="status amber">In review by host</div>
+					</div>
+				</div>
+				<div class="card-d t">
+					<div class="thumb nina"><span class="sofa"></span><span class="win"></span><span class="floor"></span></div>
+					<div class="body">
+						<div class="title">Nina's Flat in Peckham, London</div>
+						<div class="meta">26 Sep - 3 Oct · £48 p/night</div>
+						<div class="status teal">Offer received — tap to respond</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
