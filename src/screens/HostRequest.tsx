@@ -202,6 +202,75 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		moveInLabel: 'Thursday 1 Oct',
 		moveOutLabel: 'Tuesday 15 Dec',
 	},
+	// Settled before the demo starts — declined, but still openable
+	Sara: {
+		avatar: 'sara',
+		initial: 'S',
+		flag: '🇪🇸',
+		occupation: 'Teacher',
+		age: 27,
+		gender: 'Female',
+		kikiMatches: 1,
+		hometown: 'Seville, Spain',
+		fullName: 'Sara Ortega',
+		stayOrdinal: 'second',
+		nights: 2,
+		range: [26, 28],
+		datesValue: '26 - 28 Aug 2026 · 2 nights',
+		guestsLabel: '1 guest · Sara',
+		intro:
+			"Hola Ryan! I'm Sara, a teacher from Seville up for a friend's birthday weekend. Quiet guest, early riser — your place looks lovely.",
+		questions: 'Is there a kettle? I run on tea.',
+		email: 'sara.ortega@gmail.com',
+		instagram: '@sara.enroute',
+		phone: '+34 612 555 940',
+	},
+	Marco: {
+		avatar: 'marco',
+		initial: 'M',
+		flag: '🇮🇹',
+		occupation: 'Chef',
+		age: 31,
+		gender: 'Male',
+		kikiMatches: 3,
+		hometown: 'Milan, Italy',
+		fullName: 'Marco & Elena Ferri',
+		personLine: 'Couple, 31 & 29',
+		stayOrdinal: 'third',
+		nights: 3,
+		range: [26, 29],
+		datesValue: '26 - 29 Aug 2026 · 3 nights',
+		guestsLabel: '2 guests · Marco & Elena',
+		intro:
+			"Ciao Ryan! Marco and Elena here, over from Milan for a food festival. We cook more than we eat out — we'd leave your kitchen happier than we found it.",
+		questions: 'How is the hob — gas or induction?',
+		email: 'marco.ferri@gmail.com',
+		instagram: '@marco.cooks',
+		phone: '+39 340 555 218',
+		partner: { name: 'Elena', avatar: 'generic', initial: 'E' },
+		displayName: 'Marco & Elena',
+		pronoun: 'their',
+		people: [
+			{
+				name: 'Marco Ferri',
+				avatar: 'marco',
+				initial: 'M',
+				line: '31 · Chef',
+				grewUp: 'Grew up in Milan, Italy',
+				insta: '@marco.cooks',
+			},
+			{
+				name: 'Elena Ferri',
+				avatar: 'generic',
+				initial: 'E',
+				line: '29 · Sommelier',
+				grewUp: 'Grew up in Milan, Italy',
+				insta: '@elena.pours',
+			},
+		],
+		occupantsLine: 'Marco Ferri and Elena Ferri',
+		leadFullName: 'Marco Ferri',
+	},
 };
 
 /** Monthly rent instalments for stays over 30 nights: month 1 is paid up
@@ -428,7 +497,7 @@ export function BookerCard({ guest }: { guest: string }) {
 	const matchesLabel =
 		preview.kikiMatches === 0
 			? 'First Kiki match'
-			: `${preview.kikiMatches} Kiki matches`;
+			: `${preview.kikiMatches} Kiki match${preview.kikiMatches === 1 ? '' : 'es'}`;
 	const cards = preview.people ?? [
 		{
 			name: preview.fullName,

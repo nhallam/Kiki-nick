@@ -17,6 +17,8 @@ export interface SwapState {
 	aisha: GuestRequestState;
 	tash: GuestRequestState;
 	priya: GuestRequestState;
+	sara: GuestRequestState;
+	marco: GuestRequestState;
 	/** Reserved checklist: has each party signed the rental agreement? */
 	guestSigned: boolean;
 	hostSigned: boolean;
@@ -48,6 +50,9 @@ const INITIAL_STATE: SwapState = {
 	aisha: 'new',
 	tash: 'new',
 	priya: 'new',
+	// Settled before the demo starts — their snapshots stay readable
+	sara: 'declined',
+	marco: 'declined',
 	guestSigned: false,
 	hostSigned: false,
 	depositPaid: false,
@@ -60,7 +65,13 @@ const INITIAL_STATE: SwapState = {
 	reservedDeadline: null,
 	guestConfirmedMatch: false,
 	hostConfirmedMatch: false,
-	declines: {},
+	declines: {
+		Sara: { category: 'The dates are no longer available', note: '' },
+		Marco: {
+			category: 'Not the right fit for this stay',
+			note: 'Sorry Marco — another couple asked for almost the same dates just before you.',
+		},
+	},
 };
 
 let state: SwapState = INITIAL_STATE;
@@ -91,11 +102,16 @@ export function useSwapState(): SwapState {
 }
 
 /** Guests the host can act on, keyed by display name. */
-const GUEST_KEYS: Record<string, 'melissa' | 'aisha' | 'tash' | 'priya'> = {
+const GUEST_KEYS: Record<
+	string,
+	'melissa' | 'aisha' | 'tash' | 'priya' | 'sara' | 'marco'
+> = {
 	Melissa: 'melissa',
 	Aisha: 'aisha',
 	Tash: 'tash',
 	Priya: 'priya',
+	Sara: 'sara',
+	Marco: 'marco',
 };
 
 /** Request state for a guest by display name ('Melissa' / 'Aisha' / 'Tash'). */
