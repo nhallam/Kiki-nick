@@ -371,7 +371,8 @@ export function MatchDetailScreen({
 						{preview.nights} nights
 					</div>
 					<div className="match-where">
-						{preview.displayName ?? guest} at Ryan's apartment
+						{preview.displayName ?? guest} {preview.partner ? 'stay' : 'stays'} at
+						Ryan's home
 					</div>
 				</div>
 				<div className="match-links">
