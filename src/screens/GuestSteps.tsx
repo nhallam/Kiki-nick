@@ -479,7 +479,7 @@ export function GuestStepsScreen({
 										{rentCheques}
 									</div>
 									<p className="wz-fine">
-										The deposit is refunded in full after your stay.
+										The deposit will be refunded in full after your stay assuming no damages/problems.
 									</p>
 								</div>
 							</div>
@@ -619,7 +619,7 @@ export function GuestStepsScreen({
 							{rentCheques}
 						</div>
 						<div className="check-note">
-							The deposit is refunded in full after your stay.
+							The deposit will be refunded in full after your stay assuming no damages/problems.
 						</div>
 					</div>
 				</div>
