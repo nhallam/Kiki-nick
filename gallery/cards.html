@@ -44,7 +44,7 @@
 
 	/* Status colors: amber = waiting on someone, teal = your move */
 	.amber { color: var(--pending); }
-	.teal { color: var(--primary-dark); }
+	.teal { color: #157a70; }
 
 	/* ---------- Current (reference) ---------- */
 	.card-cur { display: flex; gap: 12px; border: 1px solid var(--border-light); border-radius: 12px; padding: 10px; background: var(--white); margin-bottom: 12px; }
@@ -125,8 +125,8 @@
 	.leg-row + .leg-row { border-top: 1px solid var(--border-light); }
 	.leg-row .hstat { min-width: 210px; }
 	.leg-row .why { font-size: 13px; color: var(--gray); line-height: 1.45; }
-	.hstat.done { color: var(--primary); }
-	.hstat.gray { color: var(--gray); }
+	.hstat.done { color: #157a70; }
+	.hstat.red { color: #f44336; }
 
 	/* Big groups: faces cap at the lead (or lead pair); a count badge
 	   carries the rest inside the same 46px slot */
@@ -138,6 +138,14 @@
 	.pair .count-badge { right: -6px; bottom: -5px; }
 	.mini-label { font-size: 12.5px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 0.04em; margin: 14px 2px 8px; }
 	.mini-label:first-child { margin-top: 0; }
+
+	/* Legend pills mirror the app's badge components exactly */
+	.lg-pill { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.03em; border-radius: 7px; padding: 3px 9px; }
+	.lg-pill.act { background: #12796f; color: var(--white); }
+	.lg-pill.wait { background: var(--pending-tint); border: 1px solid var(--pending); color: var(--pending); }
+	.lg-pill.done { background: var(--primary-tint); border: 1px solid #12796f; color: #12796f; }
+	.lg-pill.closed { background: rgba(244, 67, 54, 0.07); border: 1px solid #f44336; color: #f44336; }
+	.leg-row .lg-wrap { min-width: 210px; }
 </style>
 </head>
 <body>
@@ -152,14 +160,14 @@
 	<div class="pane on" id="pane-guest">
 		<div class="option">
 			<div class="opt-label"><span>※</span>All guest statuses</div>
-			<div class="opt-note">Every state a sent request can be in, with the tone rule: amber = waiting on the host, teal = your move, filled teal = done, grey = closed.</div>
+			<div class="opt-note">Every state a sent request can be in, using the app’s badge system: solid teal = act now, amber = waiting on the host, outlined teal = done, red = closed.</div>
 			<div class="canvas">
 				<div class="section-title">Statuses</div>
-				<div class="leg-row"><span class="hstat amber"><span class="dot"></span>In review by host</span><span class="why">Request sent; the host hasn't acted yet.</span></div>
-				<div class="leg-row"><span class="hstat teal"><span class="dot"></span>Offer received — tap to respond</span><span class="why">The host offered; accepting reserves the stay.</span></div>
-				<div class="leg-row"><span class="hstat teal"><span class="dot"></span>Reserved — complete your steps</span><span class="why">Sign and pay inside the 48-hour window.</span></div>
-				<div class="leg-row"><span class="hstat done"><span class="dot"></span>Confirmed</span><span class="why">Both sides confirmed — it's a match.</span></div>
-				<div class="leg-row"><span class="hstat gray"><span class="dot"></span>Declined</span><span class="why">The host declined the request.</span></div>
+								<div class="leg-row"><span class="lg-wrap"><span class="lg-pill wait">In review by host</span></span><span class="why">Request sent; the host hasn't acted yet.</span></div>
+				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill act">Offer received</span></span><span class="why">The host offered — accept to reserve the stay.</span></div>
+				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill act">Reserved</span></span><span class="why">Sign and pay inside the 48-hour window.</span></div>
+				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill done">Confirmed</span></span><span class="why">Both sides confirmed — it's a match.</span></div>
+				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill closed">Declined</span></span><span class="why">The host declined the request.</span></div>
 			</div>
 		</div>
 		<div class="option">
@@ -242,14 +250,14 @@
 	<div class="pane" id="pane-host">
 		<div class="option">
 			<div class="opt-label"><span>※</span>All host statuses</div>
-			<div class="opt-note">Every state a received request can be in: amber = waiting on the guest, teal = your move, filled teal = done, grey = closed.</div>
+			<div class="opt-note">Every state a received request can be in, using the app’s badge system: solid teal = act now, amber = waiting on the guest, outlined teal = done, red = closed.</div>
 			<div class="canvas">
 				<div class="section-title">Statuses</div>
-				<div class="leg-row"><span class="hstat teal"><span class="dot"></span>New</span><span class="why">A request waiting for your review.</span></div>
-				<div class="leg-row"><span class="hstat amber"><span class="dot"></span>Offer sent</span><span class="why">Waiting for the guest to accept your offer.</span></div>
-				<div class="leg-row"><span class="hstat teal"><span class="dot"></span>Reserved</span><span class="why">Guest accepted — sign and confirm inside the window.</span></div>
-				<div class="leg-row"><span class="hstat done"><span class="dot"></span>Confirmed</span><span class="why">Both sides confirmed — it's a match.</span></div>
-				<div class="leg-row"><span class="hstat gray"><span class="dot"></span>Declined</span><span class="why">You declined; kept in the Declined fold.</span></div>
+								<div class="leg-row"><span class="lg-wrap"><span class="lg-pill act">New</span></span><span class="why">A request waiting for your review.</span></div>
+				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill wait">Offer sent</span></span><span class="why">Waiting for the guest to accept your offer.</span></div>
+				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill wait">Reserved</span></span><span class="why">Guest accepted — both complete steps in the window.</span></div>
+				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill done">Confirmed</span></span><span class="why">Both sides confirmed — it's a match.</span></div>
+				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill closed">Declined</span></span><span class="why">You declined; kept in the Declined fold.</span></div>
 			</div>
 		</div>
 		<div class="option">
