@@ -107,19 +107,30 @@
 	.list-h2 .body { flex: 1; min-width: 0; }
 	.list-h2 .chev { color: var(--border-medium); font-size: 20px; }
 	.declined-fold { font-size: 14px; font-weight: 700; color: var(--gray); padding: 14px 2px 2px; }
+
+	/* Tabs: guest / host */
+	.tabs { display: inline-flex; gap: 6px; padding: 4px; background: var(--white); border: 1px solid var(--border-light); border-radius: 11px; margin-bottom: 26px; }
+	.tab { padding: 9px 22px; border-radius: 8px; font-size: 14.5px; font-weight: 700; color: var(--gray); border: none; background: none; cursor: pointer; font-family: inherit; }
+	.tab.on { background: var(--primary); color: var(--white); }
+	.pane { display: none; }
+	.pane.on { display: flex; flex-wrap: wrap; gap: 28px; }
 </style>
 </head>
 <body>
 <div class="page">
 	<h1>Booking request cards — options</h1>
 	<p class="intro">
-		Card directions for both sides: options A and C for the guest’s Booking requests,
-		then the same two languages applied to the host’s request rows (H1 and H2).
-		Real photos where the prototype has them — only Melissa’s profile photo is embedded,
-		so the other guests keep the app’s initial avatars. Amber = waiting, teal = new / your move.
+		Card directions for both sides — the Guest tab holds the Booking requests options,
+		the Host tab applies the same two languages to Ryan’s request rows.
+		Real photos where the prototype has them. Amber = waiting, teal = new / your move.
 	</p>
 
-	<div class="options">
+	<div class="tabs" role="tablist">
+		<button class="tab on" data-pane="guest">Guest</button>
+		<button class="tab" data-pane="host">Host</button>
+	</div>
+
+	<div class="pane on" id="pane-guest">
 		<div class="option">
 			<div class="opt-label"><span>—</span>Current, for reference</div>
 			<div class="opt-note">Big square photo forces the title into one truncated line ("…in Hac…"); the pill floats loose in the whitespace.</div>
@@ -143,7 +154,6 @@
 				</div>
 			</div>
 		</div>
-
 		<div class="option">
 			<div class="opt-label"><span>A</span>Compact row</div>
 			<div class="opt-note">Small rounded thumb, title free to wrap, status as a coloured dot + text. Densest option — scales best when someone has five requests out.</div>
@@ -169,8 +179,6 @@
 				</div>
 			</div>
 		</div>
-
-
 		<div class="option">
 			<div class="opt-label"><span>C</span>Borderless list</div>
 			<div class="opt-note">No card chrome at all — rows with dividers, like the app's flat sections (3.3's design language). Calmest; the section title does the framing.</div>
@@ -198,8 +206,9 @@
 				</div>
 			</div>
 		</div>
+	</div>
 
-
+	<div class="pane" id="pane-host">
 		<div class="option">
 			<div class="opt-label"><span>H1</span>Host — compact cards</div>
 			<div class="opt-note">Ryan's request rows in the same language as option A: name and meta breathe, the status is a coloured dot + word instead of a pill fighting the name.</div>
@@ -244,7 +253,6 @@
 				<div class="declined-fold">Declined (2) ⌄</div>
 			</div>
 		</div>
-
 		<div class="option">
 			<div class="opt-label"><span>H2</span>Host — borderless list</div>
 			<div class="opt-note">Option C's flat rows for the host: dividers only, status as a coloured word. Calmest, and the Declined fold reads as part of the same list.</div>
@@ -291,8 +299,15 @@
 				<div class="declined-fold">Declined (2) ⌄</div>
 			</div>
 		</div>
-
 	</div>
 </div>
+<script>
+	document.querySelectorAll('.tab').forEach((t) => {
+		t.addEventListener('click', () => {
+			document.querySelectorAll('.tab').forEach((x) => x.classList.toggle('on', x === t));
+			document.querySelectorAll('.pane').forEach((p) => p.classList.toggle('on', p.id === 'pane-' + t.dataset.pane));
+		});
+	});
+</script>
 </body>
 </html>
