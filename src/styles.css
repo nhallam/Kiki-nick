@@ -5224,3 +5224,31 @@ input {
 	padding: 0 4px;
 	box-shadow: 0 0 0 2px var(--white);
 }
+
+/* Confetti on the confirmation screens */
+.confetti {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 5;
+}
+.confetti span {
+	position: absolute;
+	top: -14px;
+	opacity: 0;
+	animation: confetti-fall linear forwards;
+}
+@keyframes confetti-fall {
+	0% {
+		opacity: 1;
+		transform: translate3d(0, 0, 0) rotate(0);
+	}
+	85% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+		transform: translate3d(var(--drift), 870px, 0) rotate(var(--spin));
+	}
+}

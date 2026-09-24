@@ -6,7 +6,8 @@
  */
 import React from 'react';
 
-import { Avatar, IconChevronLeft, IconPin, StatusBar } from '../ui';
+import { Avatar, IconChevronLeft, StatusBar } from '../ui';
+import { Confetti } from './Confetti';
 import { HostFlowSteps, REQUEST_PREVIEWS } from './HostRequest';
 
 export function ConfirmedScreen({
@@ -23,6 +24,7 @@ export function ConfirmedScreen({
 
 	return (
 		<div className="screen">
+			<Confetti />
 			<StatusBar time="12:13" />
 			{/* Same header chrome as the other two stages — back + stepper */}
 			<div className="form-header review-head with-back">
@@ -63,18 +65,11 @@ export function ConfirmedScreen({
 						/>
 					</span>
 				)}
-				<h1 className="confirmed-title">Awesome!</h1>
+				<h1 className="confirmed-title">Your match is confirmed!</h1>
 				<p className="confirmed-sub">
-					{who} will be staying in your place for {preview.nights} nights
-					in August!
+					{who} will be staying in your place for {preview.nights} nights{' '}
+					{preview.stayWhen ?? 'in August'}!
 				</p>
-				<span className="guest-hometown">
-					<IconPin size={15} /> {preview.hometown}
-				</span>
-				<span className="stay-badge">
-					This is {preview.pronoun ?? 'her'} {preview.stayOrdinal} stay in a
-					Kiki!
-				</span>
 			</div>
 
 			<div className="form-footer">

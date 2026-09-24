@@ -74,6 +74,9 @@ interface RequestPreview {
 	/** Match-timeline day labels, when they differ from the default trip */
 	moveInLabel?: string;
 	moveOutLabel?: string;
+	/** When the stay happens, for the host's confirmation line
+	    (defaults to 'in August') */
+	stayWhen?: string;
 }
 
 export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
@@ -201,6 +204,7 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		splitDues: ['1 Nov 2026', '1 Dec 2026'],
 		moveInLabel: 'Thursday 1 Oct',
 		moveOutLabel: 'Tuesday 15 Dec',
+		stayWhen: 'from 1 October',
 	},
 	// Settled before the demo starts — declined, but still openable
 	Sara: {

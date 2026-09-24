@@ -433,7 +433,7 @@ export function MatchDetailScreen({
 				<div className="match-farewell">
 					<img className="mf-logo" src={KIKI_LOGO} alt="Kiki" />
 					<div className="mf-text">
-						Have a great stay!
+						{isGuest ? 'Have a great stay!' : 'Dm us on instagram if you need anything'}
 						<br />
 						From Toby and the Kiki Team
 					</div>

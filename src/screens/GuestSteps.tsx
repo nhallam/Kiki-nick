@@ -54,6 +54,7 @@ const BANK_DETAILS = [
 	{ label: 'Account number', value: '55671234' },
 	{ label: 'Reference', value: 'KI-2026-0826' },
 ];
+import { Confetti } from './Confetti';
 import { PhotoDeck } from './PhotoDeck';
 import { AgreementModal, DocIllustration, ScheduledCheque } from './Reserved';
 import { ReserveTimer } from './ReserveTimer';
@@ -159,6 +160,7 @@ export function GuestStepsScreen({
 	if (guestStateNow === 'confirmed') {
 		return (
 			<div className="screen">
+				<Confetti />
 				<StatusBar time="12:13" />
 				<div className="form-header review-head with-back">
 					<button className="icon-btn review-back" onClick={onBack} aria-label="Back">
@@ -169,7 +171,7 @@ export function GuestStepsScreen({
 				</div>
 				<div className="confirmed-hero">
 					<PhotoDeck />
-					<h1 className="confirmed-title">You're booked!</h1>
+					<h1 className="confirmed-title">Your stay is confirmed!</h1>
 					<p className="confirmed-sub">
 						Ryan confirmed your stay. {preview.nights} nights at his place in
 						Hackney, {preview.datesValue.split(' · ')[0].replace(' 2026', '')}.
