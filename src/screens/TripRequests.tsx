@@ -153,21 +153,19 @@ export function TripRequestsScreen({
 				className={`req-row${status === 'declined' ? ' muted' : ''}`}
 				onClick={onOpen}
 			>
+				{/* Lead + count: one clear face, a badge for the rest — the
+				    same 44px slot whatever the group size */}
 				{partner ? (
-					<span className="pair-avatars">
+					<span className="lead-slot">
 						<Avatar variant={r.avatar} initial={r.initial} size={44} />
-						<Avatar
-							variant={partner.avatar}
-							initial={partner.initial}
-							size={44}
-						/>
+						<span className="lead-count">+1</span>
 					</span>
 				) : (
 					<Avatar variant={r.avatar} initial={r.initial} size={44} />
 				)}
 				<span className="tr-body">
 					<span className="tr-title">
-						{REQUEST_PREVIEWS[r.name]?.displayName ?? r.name}
+						{partner ? `${r.name} +1` : r.name}
 						{status === 'new' && <span className="new-badge">New</span>}
 						{status === 'inReview' && (
 							<span className="review-badge">In review</span>
