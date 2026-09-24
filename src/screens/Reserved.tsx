@@ -434,7 +434,7 @@ export function ReservedScreen({
 								   the rest evenly spaced through the stay */
 								<>
 									<PayCheque
-										label="Rent — month 1"
+										label="Rent - month 1"
 										payer={who}
 										amount={instalments.first}
 										paid={swap.rentPaid}
@@ -445,7 +445,7 @@ export function ReservedScreen({
 									{instalments.rest.map((inst, i) => (
 										<ScheduledCheque
 											key={i}
-											label={`Rent — month ${i + 2}`}
+											label={`Rent - month ${i + 2}`}
 											due={inst.due}
 											amount={inst.amount}
 											paid={swap.rentSchedPaid[i] ?? false}
@@ -496,7 +496,7 @@ export function ReservedScreen({
 				{allDone ? (
 					swap.hostConfirmedMatch ? (
 						<div className="confirm-waiting">
-							You've confirmed — waiting for {who} to confirm.
+							You've confirmed. Waiting for {who} to confirm.
 						</div>
 					) : (
 						<button
@@ -508,7 +508,7 @@ export function ReservedScreen({
 					)
 				) : bothSigned ? (
 					<div className="withdraw-locked">
-						Both parties have signed — the reservation can no longer be
+						Both parties have signed, so the reservation can no longer be
 						withdrawn.
 					</div>
 				) : (

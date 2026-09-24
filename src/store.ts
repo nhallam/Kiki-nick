@@ -69,7 +69,7 @@ const INITIAL_STATE: SwapState = {
 		Sara: { category: 'The dates are no longer available', note: '' },
 		Marco: {
 			category: 'Not the right fit for this stay',
-			note: 'Sorry Marco — another couple asked for almost the same dates just before you.',
+			note: 'Sorry Marco, another couple asked for almost the same dates just before you.',
 		},
 	},
 };

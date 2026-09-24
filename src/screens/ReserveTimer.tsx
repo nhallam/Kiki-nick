@@ -79,7 +79,7 @@ export function ReserveTimer({
 						<div className="dialog-sub">
 							Accepting a request reserves the dates, but the booking isn't
 							final yet. Both parties have 48 hours to finish the remaining
-							steps — signing the rental agreement and paying the deposit and
+							steps: signing the rental agreement and paying the deposit and
 							rent.
 						</div>
 						<div className="dialog-sub">

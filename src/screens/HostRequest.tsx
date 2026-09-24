@@ -92,7 +92,7 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		datesValue: '26 - 29 Aug 2026 · 3 nights',
 		guestsLabel: '1 guest · Melissa',
 		intro:
-			"Hi Ryan! I'm Melissa, a marketing manager from Melbourne over in London for a work sprint. I'm tidy, quiet, and out most of the day — your balcony sold me. Happy to answer anything before you decide.",
+			"Hi Ryan! I'm Melissa, a marketing manager from Melbourne over in London for a work sprint. I'm tidy, quiet, and out most of the day. Your balcony sold me. Happy to answer anything before you decide.",
 		questions:
 			'Is it okay to use the balcony in the evenings, and is there somewhere to lock a bike?',
 		email: 'melissa.hart@gmail.com',
@@ -115,7 +115,7 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		datesValue: '27 - 29 Aug 2026 · 2 nights',
 		guestsLabel: '1 guest · Aisha',
 		intro:
-			"Hi Ryan! I'm Aisha, a product designer from Manchester in London for a client workshop. I keep things spotless and mostly need a quiet desk in the evenings — your place looks perfect for it.",
+			"Hi Ryan! I'm Aisha, a product designer from Manchester in London for a client workshop. I keep things spotless and mostly need a quiet desk in the evenings. Your place looks perfect for it.",
 		questions:
 			'Would an early check-in on the 27th be possible? And is the wifi okay for video calls?',
 		email: 'aisha.khan@outlook.com',
@@ -143,7 +143,7 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		datesValue: '26 Aug - 26 Sep 2026 · 31 nights',
 		guestsLabel: '2 guests · Tash & Jordan',
 		intro:
-			"Kia ora Ryan! We're Tash and Jordan, a couple from Wellington over for a friend's wedding and a month of remote work after. We're easy-going, tidy, and out exploring most days — your place looks like the perfect base.",
+			"Kia ora Ryan! We're Tash and Jordan, a couple from Wellington over for a friend's wedding and a month of remote work after. We're easy-going, tidy, and out exploring most days. Your place looks like the perfect base.",
 		questions:
 			'Is the sofa bed comfy enough if one of us is jet-lagged? And any good coffee nearby?',
 		email: 'tash.reeves@gmail.com',
@@ -192,7 +192,7 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		datesValue: '1 Oct - 15 Dec 2026 · 75 nights',
 		guestsLabel: '1 guest · Priya',
 		intro:
-			"Hi Ryan! I'm Priya, a UX researcher from Mumbai joining a London client for the autumn. I'm after a proper home base for two and a half months — I work from the office most days and keep things calm and tidy at home.",
+			"Hi Ryan! I'm Priya, a UX researcher from Mumbai joining a London client for the autumn. I'm after a proper home base for two and a half months. I work from the office most days and keep things calm and tidy at home.",
 		questions:
 			'Would you be okay with me setting up a small desk by the window? And is there a good gym nearby?',
 		email: 'priya.sharma@gmail.com',
@@ -219,7 +219,7 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		datesValue: '26 - 28 Aug 2026 · 2 nights',
 		guestsLabel: '1 guest · Sara',
 		intro:
-			"Hola Ryan! I'm Sara, a teacher from Seville up for a friend's birthday weekend. Quiet guest, early riser — your place looks lovely.",
+			"Hola Ryan! I'm Sara, a teacher from Seville up for a friend's birthday weekend. Quiet guest, early riser. Your place looks lovely.",
 		questions: 'Is there a kettle? I run on tea.',
 		email: 'sara.ortega@gmail.com',
 		instagram: '@sara.enroute',
@@ -242,8 +242,8 @@ export const REQUEST_PREVIEWS: Record<string, RequestPreview> = {
 		datesValue: '26 - 29 Aug 2026 · 3 nights',
 		guestsLabel: '2 guests · Marco & Elena',
 		intro:
-			"Ciao Ryan! Marco and Elena here, over from Milan for a food festival. We cook more than we eat out — we'd leave your kitchen happier than we found it.",
-		questions: 'How is the hob — gas or induction?',
+			"Ciao Ryan! Marco and Elena here, over from Milan for a food festival. We cook more than we eat out. We'd leave your kitchen happier than we found it.",
+		questions: 'How is the hob, gas or induction?',
 		email: 'marco.ferri@gmail.com',
 		instagram: '@marco.cooks',
 		phone: '+39 340 555 218',
@@ -767,12 +767,12 @@ export function HostRequestScreen({
 				<div className="inline-actions">
 				{declined ? (
 					<div className="footer-note">
-						This request is closed — {who} has been notified.
+						This request is closed. {who} has been notified.
 					</div>
 				) : offered ? (
 					<>
 						<div className="footer-note">
-							Offer sent — waiting for {who} to accept. Nothing is
+							Offer sent. Waiting for {who} to accept. Nothing is
 							reserved until {preview.partner ? 'they' : 'she'} accept
 							{preview.partner ? '' : 's'}.
 						</div>
@@ -824,7 +824,7 @@ export function HostRequestScreen({
 					<div className="dialog-card" onClick={(e) => e.stopPropagation()}>
 						<div className="dialog-title">Decline {who}'s request?</div>
 						<div className="dialog-sub">
-							{who} will see the reason you choose — and your message, if
+							{who} will see the reason you choose, and your message, if
 							you add one.
 						</div>
 						<div className="decline-opts">

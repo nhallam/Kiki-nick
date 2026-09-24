@@ -171,7 +171,7 @@ export function GuestStepsScreen({
 					<PhotoDeck />
 					<h1 className="confirmed-title">You're booked!</h1>
 					<p className="confirmed-sub">
-						Ryan confirmed your stay — {preview.nights} nights at his place in
+						Ryan confirmed your stay. {preview.nights} nights at his place in
 						Hackney, {preview.datesValue.split(' · ')[0].replace(' 2026', '')}.
 					</p>
 				</div>
@@ -335,14 +335,14 @@ export function GuestStepsScreen({
 				<>
 					<PayCheque
 						which="rent"
-						label="Rent — month 1"
+						label="Rent - month 1"
 						amount={rent1}
 						shot={swap.rentShot}
 					/>
 					{instalments.rest.map((inst, i) => (
 						<ScheduledCheque
 							key={i}
-							label={`Rent — month ${i + 2}`}
+							label={`Rent - month ${i + 2}`}
 							due={inst.due}
 							amount={inst.amount}
 							paid={swap.rentSchedPaid[i] ?? false}
@@ -523,7 +523,7 @@ export function GuestStepsScreen({
 							(stepsDone === 3 ? (
 								swap.guestConfirmedMatch ? (
 									<div className="confirm-waiting">
-										You've confirmed — waiting for Ryan to confirm.
+										You've confirmed. Waiting for Ryan to confirm.
 									</div>
 								) : (
 									<button
@@ -564,7 +564,7 @@ export function GuestStepsScreen({
 				</div>
 
 				<p className="reserved-note">
-					Ryan reserved your dates — complete your steps below to confirm the
+					Ryan reserved your dates. Complete your steps below to confirm the
 					booking.
 				</p>
 
@@ -646,7 +646,7 @@ export function GuestStepsScreen({
 				{stepsDone === 3 ? (
 					swap.guestConfirmedMatch ? (
 						<div className="confirm-waiting">
-							You've confirmed — waiting for Ryan to confirm.
+							You've confirmed. Waiting for Ryan to confirm.
 						</div>
 					) : (
 						<button
@@ -658,7 +658,7 @@ export function GuestStepsScreen({
 					)
 				) : bothSigned ? (
 					<div className="withdraw-locked">
-						Both parties have signed — the reservation can no longer be
+						Both parties have signed, so the reservation can no longer be
 						withdrawn.
 					</div>
 				) : (
@@ -726,7 +726,7 @@ export function GuestStepsScreen({
 										: swap.rentSplit
 											? rent1
 											: rentTotal}{' '}
-									to Kiki — choose how to pay.
+									to Kiki. Choose how to pay.
 								</div>
 								<button
 									className="pay-opt"
@@ -735,7 +735,7 @@ export function GuestStepsScreen({
 									<span className="po-body">
 										<span className="po-name">Bank transfer</span>
 										<span className="po-sub">
-											Kiki's UK account — upload your confirmation after
+											Kiki's UK account. Upload your confirmation after
 										</span>
 									</span>
 									<IconChevronRight size={18} />

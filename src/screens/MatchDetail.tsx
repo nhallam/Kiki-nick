@@ -295,7 +295,7 @@ export function MatchDetailScreen({
 							<div className="ins-title">Lock box</div>
 							<div className="ins-text">
 								Mounted on the railing just left of the front door. The code
-								is 2608 — inside you'll find the keys.
+								is 2608. Inside you'll find the keys.
 							</div>
 							{/* placeholder video: finding and opening the lock box */}
 							<div className="ins-video" aria-label="Video: opening the lock box">
