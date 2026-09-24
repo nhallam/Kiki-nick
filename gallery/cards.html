@@ -85,6 +85,16 @@
 	.list-c .body { flex: 1; min-width: 0; }
 	.list-c .chev { color: var(--border-medium); font-size: 20px; }
 
+	/* ---------- E: photo banner + status edge (B + D) ---------- */
+	.card-e { position: relative; border: 1px solid var(--border-light); border-left: none; border-radius: 12px; overflow: hidden; background: var(--white); margin-bottom: 14px; }
+	.card-e::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--pending); z-index: 2; }
+	.card-e.t::before { background: var(--primary); }
+	.card-e .thumb { width: 100%; height: 126px; }
+	.card-e .body { padding: 11px 14px 13px 16px; }
+	.card-e .title { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+	.card-e .meta { font-size: 13.5px; color: var(--gray); }
+	.card-e .status { font-size: 12.5px; font-weight: 700; margin-top: 5px; }
+
 	/* ---------- D: status edge ---------- */
 	.card-d { position: relative; display: flex; gap: 12px; align-items: center; border: 1px solid var(--border-light); border-left: none; border-radius: 12px; padding: 12px 12px 12px 16px; background: var(--white); margin-bottom: 10px; overflow: hidden; }
 	.card-d::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--pending); }
@@ -229,6 +239,30 @@
 				</div>
 			</div>
 		</div>
+		<div class="option">
+			<div class="opt-label"><span>E</span>Photo banner + status edge (B × D)</div>
+			<div class="opt-note">The blend: the place leads with the full-width photo, while the coloured edge and status line carry the state — no pill competing with the image.</div>
+			<div class="canvas">
+				<div class="section-title">Booking requests</div>
+				<div class="card-e">
+					<div class="thumb ryan"></div>
+					<div class="body">
+						<div class="title">Ryan's Apartment in Hackney, London</div>
+						<div class="meta">26 - 29 Aug · £67 p/night</div>
+						<div class="status amber">In review by host</div>
+					</div>
+				</div>
+				<div class="card-e t">
+					<div class="thumb nina"></div>
+					<div class="body">
+						<div class="title">Nina's Flat in Peckham, London</div>
+						<div class="meta">26 Sep - 3 Oct · £48 p/night</div>
+						<div class="status teal">Offer received — tap to respond</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
 	</div>
 </div>
 </body>
