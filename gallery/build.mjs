@@ -145,6 +145,15 @@ const VERSIONS = [
 		wide: true,
 	},
 	{
+		id: 'cards36',
+		label: '3.6 · card options',
+		section: 'mf-round3',
+		blurb:
+			'Design options for the booking-request cards — four directions next to the current design, each in both status states.',
+		file: 'gallery/cards.html',
+		wide: true,
+	},
+	{
 		id: 'option3',
 		label: '1.3',
 		section: 'br-round1',
@@ -197,18 +206,23 @@ const readBranchDist = (branch) =>
 
 const payload = {};
 for (const v of VERSIONS) {
-	if (!v.branch || v.alias) continue; // aliases reuse another id's payload
-	const html = readBranchDist(v.branch);
+	if (v.alias) continue; // aliases reuse another id's payload
+	let html;
+	if (v.file) html = readFileSync(join(root, v.file), 'utf8');
+	else if (v.branch) html = readBranchDist(v.branch);
+	else continue;
 	payload[v.id] = Buffer.from(html, 'utf8').toString('base64');
-	console.log(`${v.id}: ${v.branch} (${(html.length / 1024).toFixed(0)} kB)`);
+	console.log(
+		`${v.id}: ${v.branch ?? v.file} (${(html.length / 1024).toFixed(0)} kB)`,
+	);
 }
 
 const cardFor = (v) =>
-	v.branch
+	v.branch || v.file
 		? `<button class="card" data-version="${v.id}">
 				<span class="card-head"><span class="card-label">${v.label}</span><span class="card-go">Open →</span></span>
 				<span class="card-blurb">${v.blurb}</span>
-				<span class="card-branch">${v.branch}</span>
+				<span class="card-branch">${v.branch ?? 'design exploration'}</span>
 			</button>`
 		: `<div class="card placeholder">
 				<span class="card-head"><span class="card-label">${v.label}</span><span class="card-soon">Coming soon</span></span>
