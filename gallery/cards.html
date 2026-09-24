@@ -160,14 +160,14 @@
 	<div class="pane on" id="pane-guest">
 		<div class="option">
 			<div class="opt-label"><span>※</span>All guest statuses</div>
-			<div class="opt-note">Every state a sent request can be in, using the app’s badge system: solid teal = act now, amber = waiting on the host, outlined teal = done, red = closed.</div>
+			<div class="opt-note">Every state a sent request can be in: teal = yours to act on (or done), amber = waiting on the host, red = closed.</div>
 			<div class="canvas">
 				<div class="section-title">Statuses</div>
-								<div class="leg-row"><span class="lg-wrap"><span class="lg-pill wait">In review by host</span></span><span class="why">Request sent; the host hasn't acted yet.</span></div>
-				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill act">Offer received</span></span><span class="why">The host offered — accept to reserve the stay.</span></div>
-				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill act">Reserved</span></span><span class="why">Sign and pay inside the 48-hour window.</span></div>
-				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill done">Confirmed</span></span><span class="why">Both sides confirmed — it's a match.</span></div>
-				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill closed">Declined</span></span><span class="why">The host declined the request.</span></div>
+												<div class="leg-row"><span class="hstat amber"><span class="dot"></span>In review by host</span><span class="why">Request sent; the host hasn't acted yet.</span></div>
+				<div class="leg-row"><span class="hstat teal"><span class="dot"></span>Offer received</span><span class="why">The host offered — accept to reserve the stay.</span></div>
+				<div class="leg-row"><span class="hstat teal"><span class="dot"></span>Reserved</span><span class="why">Sign and pay inside the 48-hour window.</span></div>
+				<div class="leg-row"><span class="hstat teal"><span class="dot"></span>Confirmed</span><span class="why">Both sides confirmed — it's a match.</span></div>
+				<div class="leg-row"><span class="hstat red"><span class="dot"></span>Declined</span><span class="why">The host declined the request.</span></div>
 			</div>
 		</div>
 		<div class="option">
@@ -250,14 +250,14 @@
 	<div class="pane" id="pane-host">
 		<div class="option">
 			<div class="opt-label"><span>※</span>All host statuses</div>
-			<div class="opt-note">Every state a received request can be in, using the app’s badge system: solid teal = act now, amber = waiting on the guest, outlined teal = done, red = closed.</div>
+			<div class="opt-note">Every state a received request can be in: teal = yours to act on (or done), amber = waiting on the guest, red = closed.</div>
 			<div class="canvas">
 				<div class="section-title">Statuses</div>
-								<div class="leg-row"><span class="lg-wrap"><span class="lg-pill act">New</span></span><span class="why">A request waiting for your review.</span></div>
-				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill wait">Offer sent</span></span><span class="why">Waiting for the guest to accept your offer.</span></div>
-				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill wait">Reserved</span></span><span class="why">Guest accepted — both complete steps in the window.</span></div>
-				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill done">Confirmed</span></span><span class="why">Both sides confirmed — it's a match.</span></div>
-				<div class="leg-row"><span class="lg-wrap"><span class="lg-pill closed">Declined</span></span><span class="why">You declined; kept in the Declined fold.</span></div>
+												<div class="leg-row"><span class="hstat teal"><span class="dot"></span>New</span><span class="why">A request waiting for your review.</span></div>
+				<div class="leg-row"><span class="hstat amber"><span class="dot"></span>Offer sent</span><span class="why">Waiting for the guest to accept your offer.</span></div>
+				<div class="leg-row"><span class="hstat amber"><span class="dot"></span>Reserved</span><span class="why">Guest accepted — both complete steps in the window.</span></div>
+				<div class="leg-row"><span class="hstat teal"><span class="dot"></span>Confirmed</span><span class="why">Both sides confirmed — it's a match.</span></div>
+				<div class="leg-row"><span class="hstat red"><span class="dot"></span>Declined</span><span class="why">You declined; kept in the Declined fold.</span></div>
 			</div>
 		</div>
 		<div class="option">
