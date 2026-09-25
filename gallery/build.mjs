@@ -96,7 +96,7 @@ const VERSIONS = [
 		label: '3.1',
 		section: 'mf-round3',
 		blurb:
-			'Adds the Match screen: stay timeline with condition photos, host instructions, contacts — plus real profile photos.',
+			'Adds the Match screen: stay timeline with condition photos, host instructions, contacts, plus real profile photos.',
 		branch: 'matching-v31',
 		wide: true,
 	},
@@ -140,7 +140,7 @@ const VERSIONS = [
 		label: '3.6',
 		section: 'mf-round3',
 		blurb:
-			'Client-review round: two-step offers, >30-night split rent, profile cards with Instagram, inline CTA — latest.',
+			'Client-review round: two-step offers, >30-night split rent, profile cards with Instagram, inline CTA. Latest.',
 		branch: 'matching-v36',
 		wide: true,
 	},
@@ -149,7 +149,7 @@ const VERSIONS = [
 		label: '3.6 · card options',
 		section: 'mf-round3',
 		blurb:
-			'Design options for the booking-request cards — four directions next to the current design, each in both status states.',
+			'Design options for the booking-request cards: four directions next to the current design, each in both status states.',
 		file: 'gallery/cards.html',
 		wide: true,
 	},
@@ -603,7 +603,7 @@ ${featurePages}
 	function open(id) {
 		var src = aliases[id] || id;
 		if (!data[src]) return;
-		frame.srcdoc = decode(data[src]); // fresh document each open — flow restarts
+		frame.srcdoc = decode(data[src]); // fresh document each open, flow restarts
 		document.querySelector('.phone-stage').classList.toggle('wide', !!wides[id]);
 		barTitle.textContent = features[id] + ' \u00b7 ' + labels[id];
 		launcher.classList.add('hidden');
@@ -685,11 +685,11 @@ ${featurePages}
 
 writeFileSync(
 	join(root, 'gallery/artifact.html'),
-	'<title>Kiki — Booking Flow Versions</title>\n' + body,
+	'<title>Kiki - Booking Flow Versions</title>\n' + body,
 );
 writeFileSync(
 	join(root, 'gallery/index.html'),
-	'<!doctype html>\n<html lang="en">\n<head>\n<meta charset="UTF-8" />\n<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n<title>Kiki — Booking Flow Versions</title>\n</head>\n<body>' +
+	'<!doctype html>\n<html lang="en">\n<head>\n<meta charset="UTF-8" />\n<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n<title>Kiki - Booking Flow Versions</title>\n</head>\n<body>' +
 		body +
 		'</body>\n</html>\n',
 );
