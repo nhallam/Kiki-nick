@@ -780,7 +780,7 @@ export function HostRequestScreen({
 							unsend the decline message.
 						</div>
 						<button
-							className="reopen-btn"
+							className="btn-primary"
 							onClick={() => reopenRequest(guest)}
 						>
 							Reopen request

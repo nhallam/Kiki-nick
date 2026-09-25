@@ -2875,16 +2875,6 @@ input {
 	font-weight: 700;
 	color: var(--error);
 }
-/* Undo for a decline: positive twin of the withdraw text button */
-.reopen-btn {
-	display: block;
-	width: 100%;
-	padding: 12px;
-	text-align: center;
-	font-size: 14.5px;
-	font-weight: 700;
-	color: var(--primary-strong);
-}
 .withdraw-locked {
 	padding: 10px 12px;
 	text-align: center;
