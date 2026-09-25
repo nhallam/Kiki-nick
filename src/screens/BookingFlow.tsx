@@ -286,7 +286,7 @@ function DatesStep({
 			<div className="step-title">When do you want to move in and out?</div>
 			<div className="avail-context">
 				<IconCalendar size={15} />
-				{listing.listerName}'s dates: {formatDoMMM(availStart)} –{' '}
+				{listing.listerName}'s dates: {formatDoMMM(availStart)} -{' '}
 				{formatDoMMM(availEnd)} · {availNights} {nightsWord(availNights)}
 			</div>
 			<button

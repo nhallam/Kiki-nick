@@ -224,7 +224,7 @@ function DatesSheet({
 									aria-haspopup="listbox"
 									aria-expanded={menuOpen}
 								>
-									{fmtShort(currentWin.start)} – {fmtShort(currentWin.end)}
+									{fmtShort(currentWin.start)} - {fmtShort(currentWin.end)}
 									<span className="ws-nights">
 										· {diffDays(currentWin.end, currentWin.start)}{' '}
 										{nightsWord(diffDays(currentWin.end, currentWin.start))}
@@ -233,7 +233,7 @@ function DatesSheet({
 								</button>
 							) : (
 								<span className="ws-range">
-									{fmtShort(currentWin.start)} – {fmtShort(currentWin.end)}
+									{fmtShort(currentWin.start)} - {fmtShort(currentWin.end)}
 									<span className="ws-nights">
 										· {diffDays(currentWin.end, currentWin.start)}{' '}
 										{nightsWord(diffDays(currentWin.end, currentWin.start))}
@@ -268,7 +268,7 @@ function DatesSheet({
 											>
 												<span className="ws-option-main">
 													<span className="ws-option-range">
-														{fmtShort(w.start)} – {fmtShort(w.end)}
+														{fmtShort(w.start)} - {fmtShort(w.end)}
 													</span>
 													<span className="ws-option-nights">
 														{diffDays(w.end, w.start)}{' '}
@@ -811,7 +811,7 @@ export function ReviewRequestScreen({
 	};
 
 	const datesValue = hasDates
-		? `${formatDoMMM(moveInDate!)} – ${formatDoMMM(moveOutDate!)} 2026 · ${nights} ${nightsWord(nights)}`
+		? `${formatDoMMM(moveInDate!)} - ${formatDoMMM(moveOutDate!)} 2026 · ${nights} ${nightsWord(nights)}`
 		: null;
 
 	// Back is contextual: pages 2–3 step back through the flow, page 1

@@ -125,7 +125,7 @@ export function ListingDetailScreen({
 									<span className="dates-block">
 										<span className="dates">
 											{shortDate(parseISODate(w.start))}
-											<span className="dash">–</span>
+											<span className="dash">-</span>
 											{shortDate(parseISODate(w.end))}
 										</span>
 										{requested && (
