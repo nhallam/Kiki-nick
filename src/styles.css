@@ -2462,6 +2462,34 @@ input {
 	color: var(--gray);
 	font-weight: 600;
 }
+/* H4b: the status is its own right-aligned column (dot + text) */
+.row-stat {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12.5px;
+	font-weight: 700;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+.row-stat .rs-dot {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: currentColor;
+}
+.row-stat.teal {
+	color: var(--primary-strong);
+}
+.row-stat.amber {
+	color: var(--pending);
+}
+.row-stat.red {
+	color: var(--error);
+}
+.row-stat.grey {
+	color: var(--gray);
+}
 .req-row > svg {
 	color: var(--gray);
 	flex-shrink: 0;

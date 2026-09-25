@@ -55,12 +55,23 @@ interface TripBookingRequest {
 	status?: 'new' | 'inReview' | 'declined' | 'reserved' | 'confirmed';
 }
 
+/* H4b treatment: label + colour class for the right-aligned status column */
+const ROW_STAT: Record<string, [string, string]> = {
+	new: ['New', 'teal'],
+	inReview: ['In review', 'amber'],
+	offered: ['Offer sent', 'amber'],
+	reserved: ['Reserved', 'amber'],
+	confirmed: ['Confirmed', 'teal'],
+	revoked: ['Offer revoked', 'grey'],
+	declined: ['Declined', 'red'],
+};
+
 export const TRIP_REQUESTS: TripBookingRequest[] = [
 	{
 		id: 1,
 		name: 'Melissa',
 		avatar: 'melissa',
-		sub: '1 guest · 26 - 29 Aug · £201 + deposit',
+		sub: '26 - 29 Aug · £201',
 		status: 'new',
 	},
 	{
@@ -68,7 +79,7 @@ export const TRIP_REQUESTS: TripBookingRequest[] = [
 		name: 'Aisha',
 		avatar: 'aisha',
 		initial: 'A',
-		sub: '1 guest · 27 - 29 Aug · £134 + deposit',
+		sub: '27 - 29 Aug · £134',
 		status: 'new',
 	},
 	{
@@ -77,7 +88,7 @@ export const TRIP_REQUESTS: TripBookingRequest[] = [
 		name: 'Tash',
 		avatar: 'tash',
 		initial: 'T',
-		sub: '2 guests · 26 Aug - 26 Sep · £2,077 + deposit',
+		sub: '26 Aug - 26 Sep · £2,077',
 		status: 'new',
 	},
 	{
@@ -86,7 +97,7 @@ export const TRIP_REQUESTS: TripBookingRequest[] = [
 		name: 'Priya',
 		avatar: 'priya',
 		initial: 'P',
-		sub: '1 guest · 1 Oct - 15 Dec · £5,025 + deposit',
+		sub: '1 Oct - 15 Dec · £5,025',
 		status: 'new',
 	},
 	{
@@ -94,7 +105,7 @@ export const TRIP_REQUESTS: TripBookingRequest[] = [
 		name: 'Sara',
 		avatar: 'sara',
 		initial: 'S',
-		sub: '1 guest · 26 - 28 Aug · £134 + deposit',
+		sub: '26 - 28 Aug · £134',
 		status: 'declined',
 	},
 	{
@@ -102,7 +113,7 @@ export const TRIP_REQUESTS: TripBookingRequest[] = [
 		name: 'Marco',
 		avatar: 'marco',
 		initial: 'M',
-		sub: '2 guests · 26 - 29 Aug · £201 + deposit',
+		sub: '26 - 29 Aug · £201',
 		status: 'declined',
 	},
 ];
@@ -167,24 +178,13 @@ export function TripRequestsScreen({
 				<span className="tr-body">
 					<span className="tr-title">
 						{partner ? `${r.name} +1` : r.name}
-						{status === 'new' && <span className="new-badge">New</span>}
-						{status === 'inReview' && (
-							<span className="review-badge">In review</span>
-						)}
-						{status === 'offered' && (
-							<span className="review-badge">Offer sent</span>
-						)}
-						{status === 'revoked' && (
-							<span className="declined-badge">Offer revoked</span>
-						)}
-						{status === 'reserved' && (
-							<span className="review-badge">Reserved</span>
-						)}
-						{status === 'confirmed' && (
-							<span className="confirmed-badge">Confirmed</span>
-						)}
 					</span>
 					<span className="tr-sub">{r.sub}</span>
+				</span>
+				{/* H4b: the status is its own right-aligned column, dot + text */}
+				<span className={`row-stat ${ROW_STAT[status ?? 'new'][1]}`}>
+					<span className="rs-dot" />
+					{ROW_STAT[status ?? 'new'][0]}
 				</span>
 				{onOpen && <IconChevronRight size={18} />}
 			</button>
