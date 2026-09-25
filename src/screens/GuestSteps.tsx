@@ -191,6 +191,48 @@ export function GuestStepsScreen({
 		);
 	}
 
+	// The offer went to someone else: another guest accepted first, so
+	// Ryan's offer was revoked before she acted on it.
+	if (guestStateNow === 'revoked') {
+		return (
+			<div className="screen">
+				<StatusBar time="12:13" />
+				<div className="form-header review-head with-back no-rule">
+					<button
+						className="icon-btn review-back"
+						onClick={onBack}
+						aria-label="Back"
+					>
+						<IconChevronLeft size={26} />
+					</button>
+					<HostFlowSteps current={1} />
+					<span style={{ width: 44 }} />
+				</div>
+				<div className="form-content offer-content" style={{ paddingTop: 0 }}>
+					<div className="revoked-deck">
+						<PhotoDeck />
+					</div>
+					<h2 className="offer-title">This offer is no longer available</h2>
+					<p className="offer-sub">
+						Another guest accepted an offer for Ryan's Apartment,{' '}
+						{preview.datesValue.split(' · ')[0].replace(' 2026', '')},
+						before you responded. Nothing has been charged, and your
+						other requests are not affected.
+					</p>
+					<div className="revoked-note">
+						Homes for these dates are still available on Explore. Send a
+						few requests to keep your options open.
+					</div>
+				</div>
+				<div className="form-footer">
+					<button className="btn-primary" onClick={onBack}>
+						Find another stay
+					</button>
+				</div>
+			</div>
+		);
+	}
+
 	// Two-step consent: Ryan sent an offer — nothing is reserved until she
 	// accepts, and her other requests stay live meanwhile.
 	if (guestStateNow === 'offered') {

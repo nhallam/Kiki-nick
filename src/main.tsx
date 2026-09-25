@@ -8,7 +8,13 @@ import ReactDOM from 'react-dom/client';
 
 import App from './App';
 import { HOST_PROFILE } from './data';
-import { activeGuest, resetSwapState, useSwapState } from './store';
+import {
+	activeGuest,
+	guestState,
+	resetSwapState,
+	setViewGuest,
+	useSwapState,
+} from './store';
 import { REQUEST_PREVIEWS } from './screens/HostRequest';
 import { Avatar, SelfAvatarContext } from './ui';
 import './styles.css';
@@ -31,6 +37,12 @@ function DuoStage() {
 	// self-avatar follow along.
 	const swap = useSwapState();
 	const guest = REQUEST_PREVIEWS[activeGuest(swap)];
+	// A revoked guest's phone is off the main path (the demo follows the
+	// winner) — this pill flips the left phone over to them and back.
+	const revokedGuest = ['Melissa', 'Aisha', 'Tash', 'Priya'].find(
+		(g) => guestState(swap, g) === 'revoked',
+	);
+	const peeking = swap.viewGuest != null;
 
 	useLayoutEffect(() => {
 		const fit = () => {
@@ -89,6 +101,18 @@ function DuoStage() {
 						<span className="duo-name">
 							{guest.displayName ?? activeGuest(swap)} {guest.flag}
 						</span>
+						{(revokedGuest || peeking) && (
+							<button
+								className="duo-switch"
+								onClick={() =>
+									setViewGuest(peeking ? null : revokedGuest!)
+								}
+							>
+								{peeking
+									? 'Back'
+									: `View ${revokedGuest}'s phone`}
+							</button>
+						)}
 					</div>
 					<div className="phone">
 						<SelfAvatarContext.Provider value={guest.avatar}>

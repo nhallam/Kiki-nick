@@ -164,6 +164,22 @@ input {
 	font-weight: 700;
 	color: var(--dark);
 }
+/* Demo control: flip the left phone to a revoked guest's view and back */
+.duo-switch {
+	border: 1px solid var(--border-medium);
+	background: var(--white);
+	color: var(--primary-strong);
+	font-weight: 700;
+	font-size: 12.5px;
+	border-radius: 14px;
+	padding: 4px 11px;
+	margin-left: 4px;
+	cursor: pointer;
+	white-space: nowrap;
+}
+.duo-switch:hover {
+	background: #f4f8f7;
+}
 /* Inside the duo the frame keeps its phone proportions at every width;
    the stage scales, not the phone. */
 .duo .phone {
@@ -4866,6 +4882,21 @@ input {
 	border-top: 1px solid var(--border-light);
 	margin-top: 4px;
 	padding-top: 16px;
+}
+
+/* The guest's revoked-offer screen: the stay went to someone else */
+.revoked-deck {
+	filter: grayscale(1) opacity(0.55);
+}
+.revoked-note {
+	margin-top: 16px;
+	border: 1px solid var(--border-light);
+	background: #fafafa;
+	border-radius: 12px;
+	padding: 13px 15px;
+	font-size: 13.5px;
+	color: var(--gray);
+	line-height: 1.5;
 }
 
 /* The guest's offer screen: accept to reserve (two-step consent) */

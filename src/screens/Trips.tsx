@@ -114,6 +114,7 @@ export function TripsScreen({
 		if (activeState === 'offered') return 'Offer received - tap to respond';
 		if (activeState === 'reserved') return 'Reserved - complete your steps';
 		if (activeState === 'confirmed') return 'Confirmed';
+		if (activeState === 'revoked') return 'Offer revoked';
 		if (guestState(swap, 'Melissa') === 'declined') return 'Declined';
 		return r.status;
 	};

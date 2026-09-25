@@ -182,7 +182,10 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 						const s = guestState(swap, activeGuest(swap));
 						if (
 							listingId === 2 &&
-							(s === 'offered' || s === 'reserved' || s === 'confirmed')
+							(s === 'offered' ||
+								s === 'reserved' ||
+								s === 'confirmed' ||
+								s === 'revoked')
 						) {
 							setRoute({ name: 'guestSteps' });
 							return;

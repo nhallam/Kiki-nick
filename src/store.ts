@@ -49,6 +49,9 @@ export interface SwapState {
 	/** Guests in the order their offers went out. The guest phone plays
 	    the most recent outstanding offer, so the demo follows the host. */
 	offeredOrder: string[];
+	/** Demo control: pin the left phone to a specific guest (used to peek
+	    at a revoked guest's phone after the flow moved on). null = auto. */
+	viewGuest: string | null;
 }
 
 const INITIAL_STATE: SwapState = {
@@ -79,6 +82,7 @@ const INITIAL_STATE: SwapState = {
 		},
 	},
 	offeredOrder: [],
+	viewGuest: null,
 };
 
 let state: SwapState = INITIAL_STATE;
@@ -133,6 +137,7 @@ export function setGuestState(guest: string, s: GuestRequestState) {
     reserved or matched; with several offers out, whoever he offered most
     recently; Melissa until he acts on someone. */
 export const activeGuest = (swap: SwapState): string => {
+	if (swap.viewGuest) return swap.viewGuest;
 	const settled = ['Melissa', 'Aisha', 'Tash', 'Priya'].find((g) => {
 		const s = guestState(swap, g);
 		return s === 'reserved' || s === 'confirmed';
@@ -163,7 +168,14 @@ export function sendOffer(guest: string) {
 			...state.offeredOrder.filter((g) => g !== guest),
 			guest,
 		],
+		// A fresh offer pulls the demo phone back to auto-follow
+		viewGuest: null,
 	});
+}
+
+/** Demo control: pin the left phone to one guest, or null to auto-follow. */
+export function setViewGuest(guest: string | null) {
+	setSwapState({ viewGuest: guest });
 }
 
 /** The guest accepting the offer starts the 48-hour completion window.
@@ -192,6 +204,7 @@ export function withdrawReservation(guest: string) {
 		if (state[GUEST_KEYS[g]] === 'revoked') setGuestState(g, 'new');
 	}
 	setSwapState({
+		viewGuest: null,
 		guestSigned: false,
 		hostSigned: false,
 		depositPaid: false,
