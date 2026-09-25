@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kiki - booking request pathways</title>
+<style>
+	:root {
+		--primary: #20a598;
+		--primary-strong: #157a70;
+		--host: #2f4a72;
+		--dark: #1f2937;
+		--gray: #9ca3af;
+		--slate: #667080;
+		--border-light: #eee;
+		--border-medium: #ddd;
+		--white: #fff;
+		--pending: #b7791f;
+		--danger: #f44336;
+	}
+	* { margin: 0; padding: 0; box-sizing: border-box; }
+	body {
+		font-family: 'Inter', -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
+		background: #e7e9ec;
+		color: var(--dark);
+		-webkit-font-smoothing: antialiased;
+		padding: 36px 16px 80px;
+	}
+	.page { max-width: 1080px; margin: 0 auto; }
+	h1 { font-size: 26px; margin-bottom: 6px; }
+	.intro { font-size: 15px; color: var(--slate); margin-bottom: 26px; max-width: 720px; line-height: 1.5; }
+	.legend { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 18px; font-size: 13.5px; color: var(--slate); }
+	.legend span { display: inline-flex; align-items: center; gap: 7px; }
+	.swatch { width: 26px; height: 0; border-top: 2.5px solid; border-radius: 2px; }
+	.swatch.host { border-color: var(--host); }
+	.swatch.guest { border-color: var(--primary-strong); }
+	.swatch.both { border-color: var(--dark); }
+	.swatch.auto { border-color: var(--gray); border-top-style: dashed; }
+	figure { background: var(--white); border-radius: 8px; padding: 26px 22px 18px; margin-bottom: 30px; }
+	figure svg { display: block; max-width: 100%; height: auto; }
+	figcaption { font-size: 13.5px; color: var(--slate); line-height: 1.55; margin-top: 14px; max-width: 860px; }
+	h2 { font-size: 19px; margin: 34px 0 12px; }
+	.after { background: var(--white); border-radius: 8px; padding: 22px; font-size: 14.5px; line-height: 1.65; color: var(--dark); }
+	.after li { margin-left: 20px; margin-bottom: 6px; }
+	.after li::marker { color: var(--primary-strong); }
+</style>
+</head>
+<body>
+<div class="page">
+	<h1>Booking request pathways</h1>
+	<p class="intro">
+		Every route a booking request can take in prototype 3.6, from the moment it
+		lands in Ryan's inbox to a confirmed match. Each box shows the state name as
+		the host and the guest each see it.
+	</p>
+
+	<div class="legend">
+		<span><span class="swatch host"></span>Host action</span>
+		<span><span class="swatch guest"></span>Guest action</span>
+		<span><span class="swatch both"></span>Either / both sides</span>
+		<span><span class="swatch auto"></span>Automatic</span>
+	</div>
+
+	<figure>
+		<svg viewBox="0 0 1210 592" role="img" aria-label="State diagram of a booking request: New, Offered, Reserved, Confirmed on the main path, with Declined and Revoked below, and every transition between them labeled by who triggers it.">
+			<defs>
+				<marker id="ah-host" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+					<path d="M0 0 L10 5 L0 10 z" fill="#2f4a72" />
+				</marker>
+				<marker id="ah-guest" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+					<path d="M0 0 L10 5 L0 10 z" fill="#157a70" />
+				</marker>
+				<marker id="ah-both" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+					<path d="M0 0 L10 5 L0 10 z" fill="#1f2937" />
+				</marker>
+				<marker id="ah-auto" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+					<path d="M0 0 L10 5 L0 10 z" fill="#9ca3af" />
+				</marker>
+			</defs>
+
+			<!-- ===== top return arcs (anchored on node tops) ===== -->
+			<!-- Either side withdraws the reservation -->
+			<path d="M 765 250 C 765 5, 60 5, 60 250" fill="none" stroke="#1f2937" stroke-width="2" marker-end="url(#ah-both)" />
+			<text x="410" y="26" font-size="14" font-weight="700" fill="#1f2937" text-anchor="middle">Either side: Withdraw during the window</text>
+			<text x="410" y="44" font-size="12" fill="#667080" text-anchor="middle">steps unwind · revoked offers come back</text>
+
+			<!-- Host withdraws the offer -->
+			<path d="M 400 250 C 400 95, 110 95, 110 250" fill="none" stroke="#2f4a72" stroke-width="2" marker-end="url(#ah-host)" />
+			<text x="255" y="122" font-size="14" font-weight="700" fill="#2f4a72" text-anchor="middle">Host: Withdraw offer</text>
+
+			<!-- Guest declines the offer -->
+			<path d="M 470 250 C 470 170, 170 170, 170 250" fill="none" stroke="#157a70" stroke-width="2" marker-end="url(#ah-guest)" />
+			<text x="320" y="178" font-size="14" font-weight="700" fill="#157a70" text-anchor="middle">Guest: Decline offer</text>
+
+			<!-- ===== main row forward arrows ===== -->
+			<line x1="210" y1="292" x2="352" y2="292" stroke="#2f4a72" stroke-width="2" marker-end="url(#ah-host)" />
+			<text x="285" y="276" font-size="14" font-weight="700" fill="#2f4a72" text-anchor="middle">Host: Send offer</text>
+			<text x="285" y="314" font-size="11.5" fill="#667080" text-anchor="middle">several can be out at once</text>
+
+			<line x1="530" y1="292" x2="672" y2="292" stroke="#157a70" stroke-width="2" marker-end="url(#ah-guest)" />
+			<text x="605" y="276" font-size="14" font-weight="700" fill="#157a70" text-anchor="middle">Guest: Accept offer</text>
+			<text x="605" y="314" font-size="11.5" fill="#667080" text-anchor="middle">48h window starts</text>
+
+			<line x1="850" y1="292" x2="992" y2="292" stroke="#1f2937" stroke-width="2" marker-end="url(#ah-both)" />
+			<text x="925" y="276" font-size="14" font-weight="700" fill="#1f2937" text-anchor="middle">Both: Confirm match</text>
+			<text x="925" y="314" font-size="11.5" fill="#667080" text-anchor="middle">after all steps are done</text>
+
+			<!-- ===== vertical edges to the bottom row ===== -->
+			<!-- Decline / Reopen -->
+			<line x1="105" y1="334" x2="105" y2="442" stroke="#2f4a72" stroke-width="2" marker-end="url(#ah-host)" />
+			<text x="95" y="382" font-size="13.5" font-weight="700" fill="#2f4a72" text-anchor="end">Host: Decline</text>
+			<text x="95" y="398" font-size="11.5" fill="#667080" text-anchor="end">reason + note sent</text>
+			<line x1="145" y1="450" x2="145" y2="342" stroke="#2f4a72" stroke-width="2" marker-end="url(#ah-host)" />
+			<text x="155" y="392" font-size="13.5" font-weight="700" fill="#2f4a72" text-anchor="start">Host: Reopen</text>
+
+			<!-- Offer auto-revoked -->
+			<line x1="445" y1="334" x2="445" y2="442" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#ah-auto)" />
+			<text x="457" y="382" font-size="13.5" font-weight="700" fill="#6b7280" text-anchor="start">Auto: another guest accepts</text>
+			<text x="457" y="398" font-size="11.5" fill="#667080" text-anchor="start">an offer for the same dates</text>
+
+			<!-- Revoked offer reinstated when the reservation unwinds -->
+			<path d="M 360 496 C 280 496, 235 420, 212 338" fill="none" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#ah-auto)" />
+			<text x="300" y="562" font-size="12.5" fill="#6b7280" text-anchor="middle">Auto: offer reinstated if that reservation is withdrawn</text>
+
+			<!-- ===== nodes: main row ===== -->
+			<g>
+				<rect x="40" y="250" width="170" height="84" rx="12" fill="#fff" stroke="#ddd" />
+				<rect x="42" y="252" width="166" height="5" rx="2.5" fill="#20a598" />
+				<text x="125" y="284" font-size="16.5" font-weight="800" fill="#1f2937" text-anchor="middle">New</text>
+				<text x="125" y="305" font-size="12" fill="#667080" text-anchor="middle">Host: New</text>
+				<text x="125" y="321" font-size="12" fill="#667080" text-anchor="middle">Guest: In review</text>
+			</g>
+			<g>
+				<rect x="360" y="250" width="170" height="84" rx="12" fill="#fff" stroke="#ddd" />
+				<rect x="362" y="252" width="166" height="5" rx="2.5" fill="#b7791f" />
+				<text x="445" y="284" font-size="16.5" font-weight="800" fill="#1f2937" text-anchor="middle">Offered</text>
+				<text x="445" y="305" font-size="12" fill="#667080" text-anchor="middle">Host: Offer sent</text>
+				<text x="445" y="321" font-size="12" fill="#667080" text-anchor="middle">Guest: Offer received</text>
+			</g>
+			<g>
+				<rect x="680" y="250" width="170" height="84" rx="12" fill="#fff" stroke="#ddd" />
+				<rect x="682" y="252" width="166" height="5" rx="2.5" fill="#b7791f" />
+				<text x="765" y="284" font-size="16.5" font-weight="800" fill="#1f2937" text-anchor="middle">Reserved</text>
+				<text x="765" y="305" font-size="12" fill="#667080" text-anchor="middle">48h checklist runs</text>
+				<text x="765" y="321" font-size="12" fill="#667080" text-anchor="middle">see figure below</text>
+			</g>
+			<g>
+				<rect x="1000" y="250" width="170" height="84" rx="12" fill="#fff" stroke="#ddd" />
+				<rect x="1002" y="252" width="166" height="5" rx="2.5" fill="#157a70" />
+				<text x="1085" y="284" font-size="16.5" font-weight="800" fill="#1f2937" text-anchor="middle">Confirmed</text>
+				<text x="1085" y="305" font-size="12" fill="#667080" text-anchor="middle">It's a match</text>
+				<text x="1085" y="321" font-size="12" fill="#667080" text-anchor="middle">match screen opens</text>
+			</g>
+
+			<!-- ===== nodes: bottom row ===== -->
+			<g>
+				<rect x="40" y="450" width="170" height="84" rx="12" fill="#fff" stroke="#ddd" />
+				<rect x="42" y="452" width="166" height="5" rx="2.5" fill="#f44336" />
+				<text x="125" y="484" font-size="16.5" font-weight="800" fill="#1f2937" text-anchor="middle">Declined</text>
+				<text x="125" y="505" font-size="12" fill="#667080" text-anchor="middle">request stays readable</text>
+				<text x="125" y="521" font-size="12" fill="#667080" text-anchor="middle">reason kept on record</text>
+			</g>
+			<g>
+				<rect x="360" y="450" width="170" height="84" rx="12" fill="#fff" stroke="#ddd" />
+				<rect x="362" y="452" width="166" height="5" rx="2.5" fill="#9ca3af" />
+				<text x="445" y="484" font-size="16.5" font-weight="800" fill="#1f2937" text-anchor="middle">Revoked</text>
+				<text x="445" y="505" font-size="12" fill="#667080" text-anchor="middle">both sides: Offer revoked</text>
+				<text x="445" y="521" font-size="12" fill="#667080" text-anchor="middle">nothing charged</text>
+			</g>
+		</svg>
+		<figcaption>
+			The main path runs left to right: the host offers, the guest accepts, both
+			confirm. Declining sends the guest a reason and an optional note; reopening
+			puts the request back as New but does not unsend that message. Offers on
+			non-overlapping dates (a different trip) are not revoked when someone else
+			accepts, and only a reservation, never a mere offer, blocks new offers.
+		</figcaption>
+	</figure>
+
+	<h2>Inside Reserved: the 48-hour checklist</h2>
+	<figure>
+		<svg viewBox="0 0 1210 400" role="img" aria-label="Pipeline of the reserved window: both sign the rental agreement, the guest pays the deposit, then the rent, in full or split monthly for stays over 30 nights, then both sides press Confirm match.">
+			<defs>
+				<marker id="ah2-dark" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+					<path d="M0 0 L10 5 L0 10 z" fill="#1f2937" />
+				</marker>
+				<marker id="ah2-guest" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+					<path d="M0 0 L10 5 L0 10 z" fill="#157a70" />
+				</marker>
+			</defs>
+
+			<!-- pipeline -->
+			<g>
+				<rect x="40" y="60" width="220" height="90" rx="12" fill="#fff" stroke="#ddd" />
+				<text x="150" y="95" font-size="15.5" font-weight="800" fill="#1f2937" text-anchor="middle">1 · Sign the agreement</text>
+				<text x="150" y="117" font-size="12" fill="#667080" text-anchor="middle">guest and host each sign</text>
+				<text x="150" y="133" font-size="12" fill="#667080" text-anchor="middle">full-screen terms + confirm</text>
+			</g>
+			<line x1="260" y1="105" x2="322" y2="105" stroke="#1f2937" stroke-width="2" marker-end="url(#ah2-dark)" />
+
+			<g>
+				<rect x="330" y="60" width="220" height="90" rx="12" fill="#fff" stroke="#ddd" />
+				<text x="440" y="95" font-size="15.5" font-weight="800" fill="#1f2937" text-anchor="middle">2 · Pay the deposit</text>
+				<text x="440" y="117" font-size="12" fill="#667080" text-anchor="middle">bank transfer or Stripe;</text>
+				<text x="440" y="133" font-size="12" fill="#667080" text-anchor="middle">one method covers everything</text>
+			</g>
+			<line x1="550" y1="105" x2="612" y2="105" stroke="#1f2937" stroke-width="2" marker-end="url(#ah2-dark)" />
+
+			<g>
+				<rect x="620" y="60" width="220" height="90" rx="12" fill="#fff" stroke="#ddd" />
+				<text x="730" y="95" font-size="15.5" font-weight="800" fill="#1f2937" text-anchor="middle">3 · Pay the rent</text>
+				<text x="730" y="117" font-size="12" fill="#667080" text-anchor="middle">upload the transfer</text>
+				<text x="730" y="133" font-size="12" fill="#667080" text-anchor="middle">confirmation screenshot</text>
+			</g>
+			<line x1="840" y1="105" x2="902" y2="105" stroke="#1f2937" stroke-width="2" marker-end="url(#ah2-dark)" />
+
+			<g>
+				<rect x="910" y="60" width="240" height="90" rx="12" fill="#fff" stroke="#ddd" />
+				<rect x="912" y="62" width="236" height="5" rx="2.5" fill="#157a70" />
+				<text x="1030" y="95" font-size="15.5" font-weight="800" fill="#1f2937" text-anchor="middle">Confirm match</text>
+				<text x="1030" y="117" font-size="12" fill="#667080" text-anchor="middle">both sides press it;</text>
+				<text x="1030" y="133" font-size="12" fill="#667080" text-anchor="middle">celebration + match screen</text>
+			</g>
+
+			<!-- rent branch -->
+			<line x1="680" y1="150" x2="600" y2="222" stroke="#157a70" stroke-width="2" marker-end="url(#ah2-guest)" />
+			<text x="590" y="196" font-size="12" fill="#667080" text-anchor="end">default for every stay</text>
+			<line x1="780" y1="150" x2="860" y2="222" stroke="#157a70" stroke-width="2" marker-end="url(#ah2-guest)" />
+			<text x="872" y="196" font-size="12" fill="#667080" text-anchor="start">choice for stays over 30 nights</text>
+
+			<g>
+				<rect x="440" y="230" width="240" height="76" rx="12" fill="#fff" stroke="#ddd" />
+				<text x="560" y="262" font-size="14.5" font-weight="800" fill="#1f2937" text-anchor="middle">Pay in full</text>
+				<text x="560" y="284" font-size="12" fill="#667080" text-anchor="middle">whole rent inside the window</text>
+			</g>
+			<g>
+				<rect x="760" y="230" width="300" height="106" rx="12" fill="#fff" stroke="#ddd" />
+				<text x="910" y="262" font-size="14.5" font-weight="800" fill="#1f2937" text-anchor="middle">Split monthly</text>
+				<text x="910" y="284" font-size="12" fill="#667080" text-anchor="middle">month 1 inside the window;</text>
+				<text x="910" y="300" font-size="12" fill="#667080" text-anchor="middle">months 2+ evenly spaced, scheduled,</text>
+				<text x="910" y="316" font-size="12" fill="#667080" text-anchor="middle">paid later from the match screen</text>
+			</g>
+		</svg>
+		<figcaption>
+			The countdown runs for 48 hours from acceptance. All three steps sit in a
+			guided flow on the guest's phone with a progress lockup; the host only
+			signs. Either side can withdraw at any point during the window, which
+			unwinds the steps and returns the request to New.
+		</figcaption>
+	</figure>
+
+	<h2>After the match</h2>
+	<div class="after">
+		<ul>
+			<li>The match screen shows the stay timeline: agreement (view / download PDF), deposit held by Kiki, rent paid to the host 3 days after move-in.</li>
+			<li>If rent was split, the remaining months appear as scheduled payments with their due dates, each payable from the timeline when it comes up.</li>
+			<li>Condition photos: the host adds the "before" set; the guest adds the "after" set when they move out.</li>
+			<li>Move-in and move-out complete automatically on the day.</li>
+			<li>The security deposit returns to the guest 3 days after move-out, unless contested.</li>
+		</ul>
+	</div>
+</div>
+</body>
+</html>

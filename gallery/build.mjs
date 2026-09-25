@@ -154,6 +154,15 @@ const VERSIONS = [
 		wide: true,
 	},
 	{
+		id: 'flow36',
+		label: '3.6 · flow map',
+		section: 'mf-round3',
+		blurb:
+			'Every pathway a booking request can take: offer, accept, decline, reopen, revoke, the 48h checklist, and what follows the match.',
+		file: 'gallery/flow.html',
+		wide: true,
+	},
+	{
 		id: 'option3',
 		label: '1.3',
 		section: 'br-round1',
