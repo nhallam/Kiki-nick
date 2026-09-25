@@ -2122,12 +2122,25 @@ input {
 	min-width: 0;
 	text-align: left;
 }
+.trip-card .photo-wrap {
+	position: relative;
+	flex-shrink: 0;
+	align-self: center;
+}
 .trip-card .photo {
 	width: 96px;
 	height: 96px;
 	border-radius: 8px;
 	overflow: hidden;
-	flex-shrink: 0;
+}
+/* The host's face over their home's photo */
+.trip-card .tc-host {
+	position: absolute;
+	right: -7px;
+	bottom: -7px;
+	display: flex;
+	border-radius: 50%;
+	box-shadow: 0 0 0 2px var(--white);
 }
 .trip-card .body {
 	flex: 1;

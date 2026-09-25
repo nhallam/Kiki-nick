@@ -4,8 +4,15 @@
  */
 import React, { useRef, useState } from 'react';
 
-import { SentRequest } from '../data';
-import { IconChevronRight, IconDrag, IconInfo, RoomPhoto, StatusBar } from '../ui';
+import { LISTINGS, SentRequest } from '../data';
+import {
+	Avatar,
+	IconChevronRight,
+	IconDrag,
+	IconInfo,
+	RoomPhoto,
+	StatusBar,
+} from '../ui';
 
 /* H4b treatment: the long status strings compress to a short label +
    colour for the right-aligned dot + text column */
@@ -30,11 +37,27 @@ export function TripRequestCard({
 		request.status,
 		'amber',
 	];
+	// The host's face rides on the corner of their home's photo — the
+	// same person-over-place pairing as the celebration screens.
+	const listing = request.listingId
+		? LISTINGS.find((l) => l.id === request.listingId)
+		: undefined;
 	return (
 		<Tag className="trip-card" onClick={onOpen}>
-			<div className="photo">
-				<RoomPhoto variant={request.photoVariant} />
-			</div>
+			<span className="photo-wrap">
+				<div className="photo">
+					<RoomPhoto variant={request.photoVariant} />
+				</div>
+				{listing && (
+					<span className="tc-host">
+						<Avatar
+							variant={listing.hostAvatar ?? 'generic'}
+							initial={listing.listerName[0]}
+							size={32}
+						/>
+					</span>
+				)}
+			</span>
 			<div className="body">
 				<div className="title">{request.title}</div>
 				<div className="meta">
