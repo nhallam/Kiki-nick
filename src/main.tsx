@@ -36,13 +36,20 @@ function DuoStage() {
 	// The left phone plays whichever guest Ryan reserved — its label and
 	// self-avatar follow along.
 	const swap = useSwapState();
-	const guest = REQUEST_PREVIEWS[activeGuest(swap)];
-	// A revoked guest's phone is off the main path (the demo follows the
-	// winner) — this pill flips the left phone over to them and back.
-	const revokedGuest = ['Melissa', 'Aisha', 'Tash', 'Priya'].find(
-		(g) => guestState(swap, g) === 'revoked',
-	);
-	const peeking = swap.viewGuest != null;
+	const viewing = activeGuest(swap);
+	const guest = REQUEST_PREVIEWS[viewing];
+	// Every guest holds their own state now, so the label is a picker:
+	// choose whose phone the left column plays.
+	const [pickerOpen, setPickerOpen] = useState(false);
+	const GUEST_STATUS: Record<string, string> = {
+		new: 'Request sent',
+		offered: 'Offer received',
+		reserved: 'Reserved',
+		confirmed: 'Confirmed',
+		declined: 'Declined',
+		revoked: 'Offer revoked',
+	};
+	const PICKABLE = ['Melissa', 'Aisha', 'Tash', 'Priya', 'Sara', 'Marco'];
 
 	useLayoutEffect(() => {
 		const fit = () => {
@@ -86,32 +93,90 @@ function DuoStage() {
 				style={{ width: DUO_W, height: DUO_H, transform: `scale(${scale})` }}
 			>
 				<div className="duo-col">
-					<div className="duo-label">
-						<Avatar variant={guest.avatar} initial={guest.initial} size={30} />
-						{guest.partner && (
-							<span style={{ marginLeft: -14, display: 'inline-flex' }}>
-								<Avatar
-									variant={guest.partner.avatar}
-									initial={guest.partner.initial}
-									size={30}
-								/>
+					<div className="duo-label picker">
+						<button
+							className="duo-pick-btn"
+							onClick={() => setPickerOpen((o) => !o)}
+							aria-expanded={pickerOpen}
+							aria-haspopup="listbox"
+						>
+							<Avatar
+								variant={guest.avatar}
+								initial={guest.initial}
+								size={30}
+							/>
+							{guest.partner && (
+								<span style={{ marginLeft: -14, display: 'inline-flex' }}>
+									<Avatar
+										variant={guest.partner.avatar}
+										initial={guest.partner.initial}
+										size={30}
+									/>
+								</span>
+							)}
+							<span className="duo-role">Guest</span>
+							<span className="duo-name">
+								{guest.displayName ?? viewing} {guest.flag}
 							</span>
-						)}
-						<span className="duo-role">Guest</span>
-						<span className="duo-name">
-							{guest.displayName ?? activeGuest(swap)} {guest.flag}
-						</span>
-						{(revokedGuest || peeking) && (
-							<button
-								className="duo-switch"
-								onClick={() =>
-									setViewGuest(peeking ? null : revokedGuest!)
-								}
+							<svg
+								className={`duo-chev${pickerOpen ? ' open' : ''}`}
+								width="15"
+								height="15"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2.6"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								aria-hidden
 							>
-								{peeking
-									? 'Back'
-									: `View ${revokedGuest}'s phone`}
-							</button>
+								<polyline points="6 9 12 15 18 9" />
+							</svg>
+						</button>
+						{pickerOpen && (
+							<>
+								<div
+									className="duo-menu-overlay"
+									onClick={() => setPickerOpen(false)}
+								/>
+								<div className="duo-menu" role="listbox">
+									{PICKABLE.map((g) => {
+										const p = REQUEST_PREVIEWS[g];
+										const current = g === viewing;
+										return (
+											<button
+												key={g}
+												className={`duo-menu-row${current ? ' current' : ''}`}
+												role="option"
+												aria-selected={current}
+												onClick={() => {
+													setViewGuest(g);
+													setPickerOpen(false);
+												}}
+											>
+												<Avatar
+													variant={p.avatar}
+													initial={p.initial}
+													size={28}
+												/>
+												<span className="dm-body">
+													<span className="dm-name">
+														{p.displayName ?? g}
+													</span>
+													<span className="dm-status">
+														{GUEST_STATUS[
+															guestState(swap, g)
+														] ?? 'Request sent'}
+													</span>
+												</span>
+												{current && (
+													<span className="dm-check">✓</span>
+												)}
+											</button>
+										);
+									})}
+								</div>
+							</>
 						)}
 					</div>
 					<div className="phone">

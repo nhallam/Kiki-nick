@@ -164,21 +164,89 @@ input {
 	font-weight: 700;
 	color: var(--dark);
 }
-/* Demo control: flip the left phone to a revoked guest's view and back */
-.duo-switch {
-	border: 1px solid var(--border-medium);
-	background: var(--white);
-	color: var(--primary-strong);
-	font-weight: 700;
-	font-size: 12.5px;
-	border-radius: 14px;
-	padding: 4px 11px;
-	margin-left: 4px;
-	cursor: pointer;
-	white-space: nowrap;
+/* Demo control: the guest label is a picker — choose whose phone the
+   left column plays. */
+.duo-label.picker {
+	position: relative;
+	padding: 0;
 }
-.duo-switch:hover {
-	background: #f4f8f7;
+.duo-pick-btn {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	background: none;
+	border: none;
+	font: inherit;
+	cursor: pointer;
+	padding: 6px 14px 6px 7px;
+	border-radius: 24px;
+}
+.duo-pick-btn:hover {
+	background: #f6f8f8;
+}
+.duo-chev {
+	color: var(--gray);
+	transition: transform 0.15s ease;
+}
+.duo-chev.open {
+	transform: rotate(180deg);
+}
+.duo-menu-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 40;
+}
+.duo-menu {
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 0;
+	z-index: 41;
+	background: var(--white);
+	border: 1px solid var(--border-medium);
+	border-radius: 16px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+	padding: 6px;
+	min-width: 240px;
+}
+.duo-menu-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	background: none;
+	border: none;
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+	padding: 8px 10px;
+	border-radius: 11px;
+}
+.duo-menu-row:hover {
+	background: #f6f8f8;
+}
+.duo-menu-row.current {
+	background: #eef6f5;
+}
+.dm-body {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	flex: 1;
+	min-width: 0;
+}
+.dm-name {
+	font-weight: 700;
+	font-size: 14px;
+	color: var(--dark);
+}
+.dm-status {
+	font-size: 12px;
+	color: var(--gray);
+}
+.dm-check {
+	color: var(--primary-strong);
+	font-weight: 800;
+	font-size: 14px;
 }
 /* Inside the duo the frame keeps its phone proportions at every width;
    the stage scales, not the phone. */

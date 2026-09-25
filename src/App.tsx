@@ -104,7 +104,8 @@ export default function App({ persona }: { persona?: 'guest' | 'host' }) {
 					requestDeclined={
 						persona === 'guest' &&
 						route.listing.id === 2 &&
-						getSwapState().melissa === 'declined'
+						guestState(getSwapState(), activeGuest(getSwapState())) ===
+							'declined'
 					}
 					onBack={() =>
 						setRoute(

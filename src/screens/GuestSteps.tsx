@@ -98,6 +98,14 @@ export function GuestStepsScreen({
 	// deposit, the rent skips the sheet.
 	const [methodChosen, setMethodChosen] = useState(false);
 	const [copiedField, setCopiedField] = useState<string | null>(null);
+
+	// This screen only exists past an offer. If the demo's guest picker
+	// switches to a guest without one (new or declined), fall back to
+	// Trips, where their request card tells their story.
+	const offTrack = guestStateNow === 'new' || guestStateNow === 'declined';
+	useEffect(() => {
+		if (offTrack) onBack();
+	}, [offTrack, onBack]);
 	const copyDetail = (label: string, value: string) => {
 		try {
 			navigator.clipboard?.writeText(value);
@@ -160,6 +168,8 @@ export function GuestStepsScreen({
 		}
 		setUploadFor(null);
 	};
+
+	if (offTrack) return null;
 
 	// Ryan confirmed — this route turns into the celebration.
 	if (guestStateNow === 'confirmed') {
