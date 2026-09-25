@@ -143,6 +143,7 @@ export function TripRequestsScreen({
 					: REQUEST_PREVIEWS[r.name] &&
 						  (status === 'new' ||
 								status === 'offered' ||
+								status === 'revoked' ||
 								status === 'declined')
 						? () => onOpenRequest(r.name)
 						: undefined;
@@ -150,7 +151,7 @@ export function TripRequestsScreen({
 		return (
 			<button
 				key={r.id}
-				className={`req-row${status === 'declined' ? ' muted' : ''}`}
+				className={`req-row${status === 'declined' || status === 'revoked' ? ' muted' : ''}`}
 				onClick={onOpen}
 			>
 				{/* Lead + count: one clear face, a badge for the rest — the
@@ -172,6 +173,9 @@ export function TripRequestsScreen({
 						)}
 						{status === 'offered' && (
 							<span className="review-badge">Offer sent</span>
+						)}
+						{status === 'revoked' && (
+							<span className="declined-badge">Offer revoked</span>
 						)}
 						{status === 'reserved' && (
 							<span className="review-badge">Reserved</span>

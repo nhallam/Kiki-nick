@@ -28,7 +28,12 @@ import {
 	useSwapState,
 	withdrawReservation,
 } from '../store';
-import { HostFlowSteps, REQUEST_PREVIEWS, rentInstalments } from './HostRequest';
+import {
+	HostFlowSteps,
+	REQUEST_PREVIEWS,
+	rangesOverlap,
+	rentInstalments,
+} from './HostRequest';
 
 const IconCopy = ({ size = 15 }: { size?: number }) => (
 	<svg
@@ -232,7 +237,22 @@ export function GuestStepsScreen({
 				<div className="form-footer">
 					<button
 						className="btn-primary"
-						onClick={() => reserveGuest(guest)}
+						onClick={() =>
+							// First to accept wins: the host's other outstanding
+							// offers on overlapping dates are revoked.
+							reserveGuest(
+								guest,
+								Object.keys(REQUEST_PREVIEWS).filter(
+									(g) =>
+										g !== guest &&
+										guestState(swap, g) === 'offered' &&
+										rangesOverlap(
+											REQUEST_PREVIEWS[g].range,
+											preview.range,
+										),
+								),
+							)
+						}
 					>
 						Accept offer
 					</button>

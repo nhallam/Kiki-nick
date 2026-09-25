@@ -10,7 +10,10 @@ export type GuestRequestState =
 	| 'offered'
 	| 'reserved'
 	| 'confirmed'
-	| 'declined';
+	| 'declined'
+	/** The host's offer was pulled automatically: another guest accepted
+	    an offer for the same dates first. */
+	| 'revoked';
 
 export interface SwapState {
 	melissa: GuestRequestState;
@@ -43,6 +46,9 @@ export interface SwapState {
 	/** What the host sent when declining, kept per guest — the host can
 	    always see back exactly what went out. */
 	declines: Record<string, { category: string; note: string }>;
+	/** Guests in the order their offers went out. The guest phone plays
+	    the most recent outstanding offer, so the demo follows the host. */
+	offeredOrder: string[];
 }
 
 const INITIAL_STATE: SwapState = {
@@ -72,6 +78,7 @@ const INITIAL_STATE: SwapState = {
 			note: 'Sorry Marco, another couple asked for almost the same dates just before you.',
 		},
 	},
+	offeredOrder: [],
 };
 
 let state: SwapState = INITIAL_STATE;
@@ -123,12 +130,19 @@ export function setGuestState(guest: string, s: GuestRequestState) {
 }
 
 /** The guest whose journey the left phone is playing: whoever Ryan has
-    reserved or matched; Melissa until he acts on someone. */
-export const activeGuest = (swap: SwapState): string =>
-	['Melissa', 'Aisha', 'Tash', 'Priya'].find((g) => {
+    reserved or matched; with several offers out, whoever he offered most
+    recently; Melissa until he acts on someone. */
+export const activeGuest = (swap: SwapState): string => {
+	const settled = ['Melissa', 'Aisha', 'Tash', 'Priya'].find((g) => {
 		const s = guestState(swap, g);
-		return s === 'offered' || s === 'reserved' || s === 'confirmed';
-	}) ?? 'Melissa';
+		return s === 'reserved' || s === 'confirmed';
+	});
+	if (settled) return settled;
+	const offered = [...swap.offeredOrder]
+		.reverse()
+		.find((g) => guestState(swap, g) === 'offered');
+	return offered ?? 'Melissa';
+};
 
 /** Declining sends the guest a reason (category + optional note) and
     keeps a copy for the host's records. */
@@ -139,23 +153,44 @@ export function declineGuest(guest: string, category: string, note: string) {
 	});
 }
 
-/** Two-step consent: the host offers; nothing is reserved yet. */
+/** Two-step consent: the host offers; nothing is reserved yet. The host
+    can have several offers out for the same trip at once. */
 export function sendOffer(guest: string) {
-	setGuestState(guest, 'offered');
+	if (!GUEST_KEYS[guest]) return;
+	setSwapState({
+		[GUEST_KEYS[guest]]: 'offered',
+		offeredOrder: [
+			...state.offeredOrder.filter((g) => g !== guest),
+			guest,
+		],
+	});
 }
 
-/** The guest accepting the offer starts the 48-hour completion window
-    (and puts their other requests on hold). */
-export function reserveGuest(guest: string) {
-	setGuestState(guest, 'reserved');
-	// Start a touch under 48h so the countdown reads "47:59:xx" immediately
-	setSwapState({ reservedDeadline: Date.now() + 48 * 3600_000 - 45_000 });
+/** The guest accepting the offer starts the 48-hour completion window.
+    First to accept wins: every other outstanding offer on the same dates
+    (`alsoRevoke`, computed by the caller from the date ranges) is revoked. */
+export function reserveGuest(guest: string, alsoRevoke: string[] = []) {
+	if (!GUEST_KEYS[guest]) return;
+	const patch: Partial<SwapState> = {
+		// Start a touch under 48h so the countdown reads "47:59:xx" immediately
+		reservedDeadline: Date.now() + 48 * 3600_000 - 45_000,
+	};
+	patch[GUEST_KEYS[guest]] = 'reserved';
+	for (const g of alsoRevoke) {
+		if (GUEST_KEYS[g] && state[GUEST_KEYS[g]] === 'offered')
+			patch[GUEST_KEYS[g]] = 'revoked';
+	}
+	setSwapState(patch);
 }
 
 /** Either party backing out during the window: the reservation unwinds and
-    the request returns to the host's inbox (keeps the demo re-runnable). */
+    the request returns to the host's inbox (keeps the demo re-runnable).
+    Offers that were revoked when this guest accepted come back too. */
 export function withdrawReservation(guest: string) {
 	setGuestState(guest, 'new');
+	for (const g of Object.keys(GUEST_KEYS)) {
+		if (state[GUEST_KEYS[g]] === 'revoked') setGuestState(g, 'new');
+	}
 	setSwapState({
 		guestSigned: false,
 		hostSigned: false,

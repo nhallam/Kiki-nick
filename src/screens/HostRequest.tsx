@@ -697,16 +697,18 @@ export function HostRequestScreen({
 	const [declineNote, setDeclineNote] = useState('');
 	const declined = guestState(swap, guest) === 'declined';
 	const offered = guestState(swap, guest) === 'offered';
+	const revoked = guestState(swap, guest) === 'revoked';
 	const declineInfo = swap.declines[guest];
-	// Only one reservation per overlapping date range; requests for other
-	// dates are unaffected.
-	const otherReserved = Object.keys(REQUEST_PREVIEWS).some(
+	// Several offers can be out at once; only an accepted offer (a
+	// reservation) closes the door on overlapping dates.
+	const reservedOther = Object.keys(REQUEST_PREVIEWS).find(
 		(g) =>
 			g !== guest &&
-			guestState(swap, g) !== 'new' &&
-			guestState(swap, g) !== 'declined' &&
+			(guestState(swap, g) === 'reserved' ||
+				guestState(swap, g) === 'confirmed') &&
 			rangesOverlap(REQUEST_PREVIEWS[g].range, preview.range),
 	);
+	const otherReserved = reservedOther != null;
 	const who = preview.displayName ?? guest;
 
 	return (
@@ -790,17 +792,27 @@ export function HostRequestScreen({
 							Withdraw offer
 						</button>
 					</>
+				) : revoked ? (
+					<div className="footer-note">
+						Your offer to {who} was revoked when{' '}
+						{reservedOther
+							? REQUEST_PREVIEWS[reservedOther].displayName ??
+								reservedOther
+							: 'another guest'}{' '}
+						accepted first. {who} has been notified.
+					</div>
 				) : otherReserved ? (
 					<div className="footer-note">
-						You already have an offer out or a reserved guest for
-						overlapping dates.
+						{REQUEST_PREVIEWS[reservedOther!].displayName ??
+							reservedOther}{' '}
+						already accepted an offer for these dates.
 					</div>
 				) : (
 					<div className="footer-note soft">
 						Sending an offer lets {who} accept and reserve the stay.
 					</div>
 				)}
-				{!declined && !offered && (
+				{!declined && !offered && !revoked && (
 					<div className="request-actions">
 						<button
 							className="btn-decline"
