@@ -260,7 +260,7 @@ export const EXISTING_REQUESTS: SentRequest[] = [
 	{
 		id: 902,
 		listingId: 2,
-		title: "Ryan's Apartment in Hackney, London",
+		title: "Ryan's Apartment",
 		dates: '26 - 29 Aug',
 		nightlyRate: 67,
 		status: 'In review by host',
@@ -269,7 +269,7 @@ export const EXISTING_REQUESTS: SentRequest[] = [
 	{
 		id: 901,
 		listingId: 3,
-		title: "Nina's Flat in Peckham, London",
+		title: "Nina's Flat",
 		dates: '26 Sep - 3 Oct',
 		nightlyRate: 48,
 		status: 'In review by host',

@@ -5,7 +5,18 @@
 import React, { useRef, useState } from 'react';
 
 import { SentRequest } from '../data';
-import { IconDrag, IconInfo, RoomPhoto, StatusBar } from '../ui';
+import { IconChevronRight, IconDrag, IconInfo, RoomPhoto, StatusBar } from '../ui';
+
+/* H4b treatment: the long status strings compress to a short label +
+   colour for the right-aligned dot + text column */
+const CARD_STAT: Record<string, [string, string]> = {
+	'In review by host': ['In review', 'amber'],
+	'Offer received - tap to respond': ['Offer received', 'teal'],
+	'Reserved - complete your steps': ['Reserved', 'teal'],
+	Confirmed: ['Confirmed', 'teal'],
+	'Offer revoked': ['Offer revoked', 'grey'],
+	Declined: ['Declined', 'red'],
+};
 
 export function TripRequestCard({
 	request,
@@ -15,6 +26,10 @@ export function TripRequestCard({
 	onOpen?: () => void;
 }) {
 	const Tag = onOpen ? 'button' : 'div';
+	const [statLabel, statColor] = CARD_STAT[request.status] ?? [
+		request.status,
+		'amber',
+	];
 	return (
 		<Tag className="trip-card" onClick={onOpen}>
 			<div className="photo">
@@ -26,7 +41,13 @@ export function TripRequestCard({
 					{request.dates} <span className="sep">|</span> £{request.nightlyRate}{' '}
 					p/night
 				</div>
-				<span className="status-chip">{request.status}</span>
+			</div>
+			<div className="rcol">
+				<span className={`row-stat ${statColor}`}>
+					<span className="rs-dot" />
+					{statLabel}
+				</span>
+				{onOpen && <IconChevronRight size={18} />}
 			</div>
 		</Tag>
 	);
