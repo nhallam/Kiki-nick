@@ -148,6 +148,13 @@
 	.card-gb .gb-face { position: absolute; left: 14px; bottom: -16px; border-radius: 50%; box-shadow: 0 0 0 3px var(--white); display: flex; }
 	.card-gb .gb-face .pav { width: 40px; height: 40px; font-size: 16px; }
 	.card-gb .gb-body { padding: 22px 14px 13px; display: flex; align-items: center; gap: 8px; }
+	.card-gc { border: 1px solid var(--border-light); border-radius: 12px; background: var(--white); margin-bottom: 12px; overflow: hidden; }
+	.card-gc .gc-photo { height: 156px; background-size: cover; background-position: center; }
+	.card-gc .gc-body { padding: 12px 14px; display: flex; align-items: center; gap: 11px; }
+	.card-gc .gc-body .pav { width: 40px; height: 40px; font-size: 16px; flex-shrink: 0; }
+	.card-gb .gb-body .body, .card-gc .gc-body .body { flex: 1; min-width: 0; }
+	.card-gb .rcol, .card-gc .rcol { display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-left: auto; }
+	.card-gb .chev, .card-gc .chev { color: var(--border-medium); font-size: 20px; }
 
 	/* Tabs: guest / host */
 	.tabs { display: inline-flex; gap: 6px; padding: 4px; background: var(--white); border: 1px solid var(--border-light); border-radius: 11px; margin-bottom: 26px; }
@@ -295,6 +302,35 @@
 				<div class="card-gb">
 					<div class="gb-photo thumb nina"><span class="gb-face"><span class="pav ngrey">N</span></span></div>
 					<div class="gb-body">
+						<div class="body">
+							<div class="title">Nina's Flat</div>
+							<div class="meta">26 Sep - 3 Oct | £48 p/night</div>
+						</div>
+						<div class="rcol"><span class="hstat teal"><span class="dot"></span>Offer received</span><span class="chev">›</span></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="option">
+			<div class="opt-label"><span>G4</span>Photo banner, avatar with the info</div>
+			<div class="opt-note">G3 with the photo 30% taller and the host's face moved down into the info row beside the title, so the photo stays clean and the person sits with the words.</div>
+			<div class="canvas">
+				<div class="section-title">Booking requests</div>
+				<div class="card-gc">
+					<div class="gc-photo thumb ryan"></div>
+					<div class="gc-body">
+						<span class="pav ryanface"></span>
+						<div class="body">
+							<div class="title">Ryan's Apartment</div>
+							<div class="meta">26 - 29 Aug | £67 p/night</div>
+						</div>
+						<div class="rcol"><span class="hstat amber"><span class="dot"></span>In review</span><span class="chev">›</span></div>
+					</div>
+				</div>
+				<div class="card-gc">
+					<div class="gc-photo thumb nina"></div>
+					<div class="gc-body">
+						<span class="pav ngrey">N</span>
 						<div class="body">
 							<div class="title">Nina's Flat</div>
 							<div class="meta">26 Sep - 3 Oct | £48 p/night</div>
