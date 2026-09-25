@@ -61,6 +61,76 @@
 		<span><span class="swatch auto"></span>Automatic</span>
 	</div>
 
+	<h2 style="margin-top: 0">The trip: where requests come from</h2>
+	<figure>
+		<svg viewBox="0 0 1210 320" role="img" aria-label="The host lists his home and adds available dates, which creates a trip; many guests request to book the same trip; each request enters the state map as New.">
+			<defs>
+				<marker id="ah0-host" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+					<path d="M0 0 L10 5 L0 10 z" fill="#2f4a72" />
+				</marker>
+				<marker id="ah0-guest" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+					<path d="M0 0 L10 5 L0 10 z" fill="#157a70" />
+				</marker>
+				<marker id="ah0-dark" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+					<path d="M0 0 L10 5 L0 10 z" fill="#1f2937" />
+				</marker>
+			</defs>
+
+			<!-- host lists + adds dates -->
+			<g>
+				<rect x="40" y="40" width="230" height="84" rx="12" fill="#fff" stroke="#ddd" />
+				<rect x="42" y="42" width="226" height="5" rx="2.5" fill="#2f4a72" />
+				<text x="155" y="74" font-size="15.5" font-weight="800" fill="#1f2937" text-anchor="middle">Host lists his home</text>
+				<text x="155" y="96" font-size="12" fill="#667080" text-anchor="middle">Ryan's Apartment · Hackney</text>
+				<text x="155" y="112" font-size="12" fill="#667080" text-anchor="middle">photos, price, house rules</text>
+			</g>
+			<path d="M 270 82 C 360 82, 400 125, 472 148" fill="none" stroke="#2f4a72" stroke-width="2" marker-end="url(#ah0-host)" />
+			<text x="368" y="56" font-size="13.5" font-weight="700" fill="#2f4a72" text-anchor="middle">Host: Add dates</text>
+			<text x="368" y="73" font-size="11.5" fill="#667080" text-anchor="middle">creates the trip</text>
+
+			<!-- guests request -->
+			<g>
+				<rect x="40" y="196" width="230" height="84" rx="12" fill="#fff" stroke="#ddd" />
+				<rect x="42" y="198" width="226" height="5" rx="2.5" fill="#157a70" />
+				<text x="155" y="230" font-size="15.5" font-weight="800" fill="#1f2937" text-anchor="middle">Guests find it on Explore</text>
+				<text x="155" y="252" font-size="12" fill="#667080" text-anchor="middle">pick dates and guests,</text>
+				<text x="155" y="268" font-size="12" fill="#667080" text-anchor="middle">write an intro message</text>
+			</g>
+			<path d="M 270 238 C 360 238, 400 195, 472 174" fill="none" stroke="#157a70" stroke-width="2" marker-end="url(#ah0-guest)" />
+			<text x="368" y="266" font-size="13.5" font-weight="700" fill="#157a70" text-anchor="middle">Guest: Request to book</text>
+			<text x="368" y="283" font-size="11.5" fill="#667080" text-anchor="middle">many guests, same trip</text>
+
+			<!-- the trip -->
+			<g>
+				<rect x="480" y="112" width="260" height="96" rx="12" fill="#fff" stroke="#ddd" />
+				<rect x="482" y="114" width="256" height="5" rx="2.5" fill="#2f4a72" />
+				<text x="610" y="148" font-size="16.5" font-weight="800" fill="#1f2937" text-anchor="middle">Trip · 26 - 29 Aug</text>
+				<text x="610" y="170" font-size="12" fill="#667080" text-anchor="middle">the host's listed dates;</text>
+				<text x="610" y="186" font-size="12" fill="#667080" text-anchor="middle">collects its booking requests</text>
+			</g>
+
+			<!-- into the inbox -->
+			<line x1="740" y1="160" x2="912" y2="160" stroke="#1f2937" stroke-width="2" marker-end="url(#ah0-dark)" />
+			<text x="826" y="144" font-size="13.5" font-weight="700" fill="#1f2937" text-anchor="middle">each request lands</text>
+			<text x="826" y="182" font-size="11.5" fill="#667080" text-anchor="middle">Melissa · Aisha · Tash +1 · Priya</text>
+			<g>
+				<rect x="920" y="118" width="200" height="84" rx="12" fill="#fff" stroke="#ddd" />
+				<rect x="922" y="120" width="196" height="5" rx="2.5" fill="#20a598" />
+				<text x="1020" y="152" font-size="15.5" font-weight="800" fill="#1f2937" text-anchor="middle">New request</text>
+				<text x="1020" y="174" font-size="12" fill="#667080" text-anchor="middle">one per guest; each follows</text>
+				<text x="1020" y="190" font-size="12" fill="#667080" text-anchor="middle">the state map below</text>
+			</g>
+		</svg>
+		<figcaption>
+			A trip is one set of listed dates on the host's home; Ryan's August trip
+			holds all six requests in the prototype. The host can have offers out to
+			several of a trip's requesters at once, but the trip's dates can only be
+			reserved once: the first guest to accept takes them. Requests against a
+			different trip (other dates, like Priya's autumn stay) run independently.
+		</figcaption>
+	</figure>
+
+	<h2>The booking request state map</h2>
 	<figure>
 		<svg viewBox="0 0 1210 592" role="img" aria-label="State diagram of a booking request: New, Offered, Reserved, Confirmed on the main path, with Declined and Revoked below, and every transition between them labeled by who triggers it.">
 			<defs>
