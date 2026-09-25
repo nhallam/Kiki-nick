@@ -158,6 +158,14 @@ export function declineGuest(guest: string, category: string, note: string) {
 	});
 }
 
+/** Undoing a decline: the request goes back to the inbox as an open
+    request. The guest can't be un-notified, so this reopens rather than
+    erases; the decline record stays until a new decline overwrites it. */
+export function reopenRequest(guest: string) {
+	if (GUEST_KEYS[guest] && state[GUEST_KEYS[guest]] === 'declined')
+		setGuestState(guest, 'new');
+}
+
 /** Two-step consent: the host offers; nothing is reserved yet. The host
     can have several offers out for the same trip at once. */
 export function sendOffer(guest: string) {

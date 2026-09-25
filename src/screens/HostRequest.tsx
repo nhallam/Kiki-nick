@@ -18,6 +18,7 @@ import {
 import {
 	declineGuest,
 	guestState,
+	reopenRequest,
 	sendOffer,
 	setGuestState,
 	useSwapState,
@@ -772,9 +773,19 @@ export function HostRequestScreen({
 				    footer — you read everything, then act */}
 				<div className="inline-actions">
 				{declined ? (
-					<div className="footer-note">
-						This request is closed. {who} has been notified.
-					</div>
+					<>
+						<div className="footer-note">
+							This request is closed. {who} has been notified.
+							Reopening puts it back in your requests; it does not
+							unsend the decline message.
+						</div>
+						<button
+							className="reopen-btn"
+							onClick={() => reopenRequest(guest)}
+						>
+							Reopen request
+						</button>
+					</>
 				) : offered ? (
 					<>
 						<div className="footer-note">
