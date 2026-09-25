@@ -4,9 +4,7 @@
  */
 import React, { useRef, useState } from 'react';
 
-import { SentRequest } from '../data';
-import { activeGuest, useSwapState } from '../store';
-import { REQUEST_PREVIEWS } from './HostRequest';
+import { LISTINGS, SentRequest } from '../data';
 import {
 	Avatar,
 	IconChevronRight,
@@ -39,26 +37,24 @@ export function TripRequestCard({
 		request.status,
 		'amber',
 	];
-	// The requester's own face rides on the corner of the home's photo:
-	// this is your trip. Groups get the lead face + count treatment.
-	const swap = useSwapState();
-	const guestPreview = REQUEST_PREVIEWS[activeGuest(swap)];
+	// The host's face rides on the corner of their home's photo — the
+	// same person-over-place pairing as the celebration screens.
+	const listing = request.listingId
+		? LISTINGS.find((l) => l.id === request.listingId)
+		: undefined;
 	return (
 		<Tag className="trip-card" onClick={onOpen}>
 			<span className="photo-wrap">
 				<div className="photo">
 					<RoomPhoto variant={request.photoVariant} />
 				</div>
-				{guestPreview && (
-					<span className="tc-face">
+				{listing && (
+					<span className="tc-host">
 						<Avatar
-							variant={guestPreview.avatar}
-							initial={guestPreview.initial}
+							variant={listing.hostAvatar ?? 'generic'}
+							initial={listing.listerName[0]}
 							size={32}
 						/>
-						{guestPreview.partner && (
-							<span className="lead-count">+1</span>
-						)}
 					</span>
 				)}
 			</span>

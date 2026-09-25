@@ -2133,22 +2133,14 @@ input {
 	border-radius: 8px;
 	overflow: hidden;
 }
-/* The requester's face over the home's photo (lead + count for groups) */
-.trip-card .tc-face {
+/* The host's face over their home's photo */
+.trip-card .tc-host {
 	position: absolute;
 	right: -7px;
 	bottom: -7px;
 	display: flex;
 	border-radius: 50%;
 	box-shadow: 0 0 0 2px var(--white);
-}
-.trip-card .tc-face .lead-count {
-	min-width: 17px;
-	height: 17px;
-	border-radius: 9px;
-	font-size: 9.5px;
-	right: -6px;
-	bottom: -4px;
 }
 .trip-card .body {
 	flex: 1;
