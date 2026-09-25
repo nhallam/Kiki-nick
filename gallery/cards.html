@@ -112,6 +112,20 @@
 	.list-h2 .chev { color: var(--border-medium); font-size: 20px; }
 	.declined-fold { font-size: 14px; font-weight: 700; color: var(--gray); padding: 14px 2px 2px; }
 
+	/* H4 status-placement variants */
+	.h4a .name { display: flex; align-items: center; gap: 9px; }
+	.h4a .name .hstat { font-size: 12px; }
+	.h4a .meta { margin-bottom: 0; }
+	.h4b .rcol { display: flex; align-items: center; gap: 10px; }
+	.h4b .meta { margin-bottom: 0; }
+	.h4c .meta { margin-bottom: 0; }
+	.h4c .mstat { font-weight: 700; }
+	.h4d .meta { margin-bottom: 0; }
+	.stat-dot { position: absolute; top: -2px; right: -2px; width: 13px; height: 13px; border-radius: 50%; box-shadow: 0 0 0 2px var(--white); }
+	.stat-dot.tealbg { background: #157a70; }
+	.stat-dot.amberbg { background: var(--pending); }
+	.avatar-slot { display: block; position: relative; width: 46px; height: 46px; flex-shrink: 0; }
+
 	/* Tabs: guest / host */
 	.tabs { display: inline-flex; gap: 6px; padding: 4px; background: var(--white); border: 1px solid var(--border-light); border-radius: 11px; margin-bottom: 26px; }
 	.tab { padding: 9px 22px; border-radius: 8px; font-size: 14.5px; font-weight: 700; color: var(--gray); border: none; background: none; cursor: pointer; font-family: inherit; }
@@ -444,6 +458,143 @@
 		</div>
 
 		<div class="option">
+			<div class="opt-label"><span>H4a</span>Status with the name</div>
+			<div class="opt-note">The status sits inline after the name, so the card drops to two lines. Strong pairing of who + where they stand; long names and long statuses have to share the line.</div>
+			<div class="canvas">
+				<div class="section-title">Booking requests</div>
+				<div class="card-h1 h4a">
+					<span class="pav mel"></span>
+					<div class="body">
+						<div class="name">Melissa <span class="hstat teal"><span class="dot"></span>New</span></div>
+						<div class="meta">26 - 29 Aug · £201</div>
+					</div>
+					<div class="chev">›</div>
+				</div>
+				<div class="card-h1 h4a">
+					<span class="pav aisha"></span>
+					<div class="body">
+						<div class="name">Aisha <span class="hstat amber"><span class="dot"></span>Offer sent</span></div>
+						<div class="meta">27 - 29 Aug · £134</div>
+					</div>
+					<div class="chev">›</div>
+				</div>
+				<div class="card-h1 h4a">
+					<span class="pair"><span class="pav tash"></span><span class="pav jordan"></span></span>
+					<div class="body">
+						<div class="name">Tash &amp; Jordan <span class="hstat amber"><span class="dot"></span>Reserved</span></div>
+						<div class="meta">26 Aug - 26 Sep · £2,077</div>
+					</div>
+					<div class="chev">›</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="option">
+			<div class="opt-label"><span>H4b</span>Status on the right edge</div>
+			<div class="opt-note">Two-line card with the status right-aligned by the chevron. Scans as its own column down the list, like an inbox; pulls the eye away from the name.</div>
+			<div class="canvas">
+				<div class="section-title">Booking requests</div>
+				<div class="card-h1 h4b">
+					<span class="pav mel"></span>
+					<div class="body">
+						<div class="name">Melissa</div>
+						<div class="meta">26 - 29 Aug · £201</div>
+					</div>
+					<div class="rcol">
+						<span class="hstat teal"><span class="dot"></span>New</span>
+						<div class="chev">›</div>
+					</div>
+				</div>
+				<div class="card-h1 h4b">
+					<span class="pav aisha"></span>
+					<div class="body">
+						<div class="name">Aisha</div>
+						<div class="meta">27 - 29 Aug · £134</div>
+					</div>
+					<div class="rcol">
+						<span class="hstat amber"><span class="dot"></span>Offer sent</span>
+						<div class="chev">›</div>
+					</div>
+				</div>
+				<div class="card-h1 h4b">
+					<span class="pair"><span class="pav tash"></span><span class="pav jordan"></span></span>
+					<div class="body">
+						<div class="name">Tash &amp; Jordan</div>
+						<div class="meta">26 Aug - 26 Sep · £2,077</div>
+					</div>
+					<div class="rcol">
+						<span class="hstat amber"><span class="dot"></span>Reserved</span>
+						<div class="chev">›</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="option">
+			<div class="opt-label"><span>H4c</span>Status on the details line</div>
+			<div class="opt-note">The status joins the dates-and-rent line as the last, coloured item. Quietest text treatment that still says the words; easy to miss when skimming names.</div>
+			<div class="canvas">
+				<div class="section-title">Booking requests</div>
+				<div class="card-h1 h4c">
+					<span class="pav mel"></span>
+					<div class="body">
+						<div class="name">Melissa</div>
+						<div class="meta">26 - 29 Aug · £201 · <span class="mstat teal">New</span></div>
+					</div>
+					<div class="chev">›</div>
+				</div>
+				<div class="card-h1 h4c">
+					<span class="pav aisha"></span>
+					<div class="body">
+						<div class="name">Aisha</div>
+						<div class="meta">27 - 29 Aug · £134 · <span class="mstat amber">Offer sent</span></div>
+					</div>
+					<div class="chev">›</div>
+				</div>
+				<div class="card-h1 h4c">
+					<span class="pair"><span class="pav tash"></span><span class="pav jordan"></span></span>
+					<div class="body">
+						<div class="name">Tash &amp; Jordan</div>
+						<div class="meta">26 Aug - 26 Sep · £2,077 · <span class="mstat amber">Reserved</span></div>
+					</div>
+					<div class="chev">›</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="option">
+			<div class="opt-label"><span>H4d</span>Status on the avatar</div>
+			<div class="opt-note">No status text at all: a coloured dot pinned to the avatar, like a presence indicator. The cleanest two-line card, but the colours have to be learned and there's no word to read.</div>
+			<div class="canvas">
+				<div class="section-title">Booking requests</div>
+				<div class="card-h1 h4d">
+					<span class="avatar-slot"><span class="pav mel"></span><span class="stat-dot tealbg"></span></span>
+					<div class="body">
+						<div class="name">Melissa</div>
+						<div class="meta">26 - 29 Aug · £201</div>
+					</div>
+					<div class="chev">›</div>
+				</div>
+				<div class="card-h1 h4d">
+					<span class="avatar-slot"><span class="pav aisha"></span><span class="stat-dot amberbg"></span></span>
+					<div class="body">
+						<div class="name">Aisha</div>
+						<div class="meta">27 - 29 Aug · £134</div>
+					</div>
+					<div class="chev">›</div>
+				</div>
+				<div class="card-h1 h4d">
+					<span class="pair"><span class="pav tash"></span><span class="pav jordan"></span><span class="stat-dot amberbg"></span></span>
+					<div class="body">
+						<div class="name">Tash &amp; Jordan</div>
+						<div class="meta">26 Aug - 26 Sep · £2,077</div>
+					</div>
+					<div class="chev">›</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="option">
 			<div class="opt-label"><span>G5</span>Five guests: lead + count (chosen)</div>
 			<div class="opt-note">The chosen treatment: one clear face plus a count badge in the same 46px slot, title as first name + N. The full roster lives behind See profiles.</div>
 			<div class="canvas">
@@ -454,8 +605,6 @@
 						<div class="meta">5 guests · 26 - 29 Aug · £335 + deposit</div>
 						<div class="hstat teal"><span class="dot"></span>New</div>
 					</div>
-					<div class="chev">›</div>
-				</div>
 					<div class="chev">›</div>
 				</div>
 			</div>
