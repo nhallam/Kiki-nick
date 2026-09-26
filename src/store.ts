@@ -75,10 +75,10 @@ const INITIAL_STATE: SwapState = {
 	guestConfirmedMatch: false,
 	hostConfirmedMatch: false,
 	declines: {
-		Sara: { category: 'The dates are no longer available', note: '' },
+		Sara: { category: 'Not booked enough of our dates', note: '' },
 		Marco: {
 			category: 'Not the right fit for this stay',
-			note: 'Sorry Marco, another couple asked for almost the same dates just before you.',
+			note: 'Another couple asked for almost the same dates just before Marco did.',
 		},
 	},
 	offeredOrder: [],

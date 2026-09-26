@@ -668,9 +668,10 @@ export function GuestProfileCard({
 /** The reasons a host can send with a decline — the guest sees the one
     chosen, phrased about the stay rather than the person. */
 const DECLINE_REASONS = [
-	'The dates are no longer available',
+	'Not booked enough of our dates',
+	'Looking for a female',
 	'Not the right fit for this stay',
-	'The home is no longer available',
+	'Our home is no longer available',
 ];
 
 export function HostRequestScreen({
@@ -731,10 +732,13 @@ export function HostRequestScreen({
 					<div className="declined-banner">
 						<span className="db-title">You declined this request</span>
 						<span className="db-line">
-							Reason sent: {declineInfo?.category ?? 'No reason recorded'}
+							Reason sent to {who}:{' '}
+							{declineInfo?.category ?? 'No reason recorded'}
 						</span>
 						{declineInfo?.note && (
-							<span className="db-note">“{declineInfo.note}”</span>
+							<span className="db-note">
+								Shared with Kiki only: “{declineInfo.note}”
+							</span>
 						)}
 					</div>
 				)}
@@ -851,15 +855,17 @@ export function HostRequestScreen({
 					<div className="dialog-card" onClick={(e) => e.stopPropagation()}>
 						<div className="dialog-title">Decline {who}'s request?</div>
 						<div className="dialog-sub">
-							{who} will see the reason you choose, and your message, if
-							you add one.
+							{who} will see the reason you choose below.
 						</div>
 						<div className="decline-opts">
 							{DECLINE_REASONS.map((r) => (
 								<button
 									key={r}
 									className={`decline-opt${declineCategory === r ? ' on' : ''}`}
-									onClick={() => setDeclineCategory(r)}
+									onClick={() =>
+										// Tapping the chosen reason again clears it
+										setDeclineCategory(declineCategory === r ? null : r)
+									}
 									aria-pressed={declineCategory === r}
 								>
 									<span className="radio" aria-hidden />
@@ -867,9 +873,14 @@ export function HostRequestScreen({
 								</button>
 							))}
 						</div>
+						{/* The free text goes to Kiki, never to the guest — the
+						    label carries that so nobody writes a farewell note */}
+						<div className="decline-kiki-label">
+							Only shared with the Kiki team, not with {who}
+						</div>
 						<textarea
 							className="decline-note"
-							placeholder="Add a personal message (optional)"
+							placeholder="Tell us why you're declining (optional)"
 							value={declineNote}
 							onChange={(e) => setDeclineNote(e.target.value)}
 						/>
