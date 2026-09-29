@@ -53,17 +53,14 @@ export function TripRequestCard({
 						<Avatar
 							variant={listing.hostAvatar ?? 'generic'}
 							initial={listing.listerName[0]}
-							size={32}
+							size={24}
 						/>
 					</span>
 				)}
 			</span>
 			<div className="body">
 				<div className="title">{request.title}</div>
-				<div className="meta">
-					{request.dates} <span className="sep">|</span> £{request.nightlyRate}{' '}
-					p/night
-				</div>
+				<div className="meta">{request.dates}</div>
 			</div>
 			<div className="rcol">
 				<span className={`row-stat ${statColor}`}>
@@ -76,7 +73,7 @@ export function TripRequestCard({
 	);
 }
 
-const ROW_HEIGHT = 118 + 12; // card min-height + gap, for drag math
+const ROW_HEIGHT = 81 + 12; // card height + gap, for drag math
 
 export function RankScreen({
 	requests,

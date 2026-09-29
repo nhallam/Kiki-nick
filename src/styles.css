@@ -2128,16 +2128,16 @@ input {
 	align-self: center;
 }
 .trip-card .photo {
-	width: 96px;
-	height: 96px;
-	border-radius: 8px;
+	width: 56px;
+	height: 56px;
+	border-radius: 10px;
 	overflow: hidden;
 }
 /* The host's face over their home's photo */
 .trip-card .tc-host {
 	position: absolute;
-	right: -7px;
-	bottom: -7px;
+	right: -5px;
+	bottom: -5px;
 	display: flex;
 	border-radius: 50%;
 	box-shadow: 0 0 0 2px var(--white);
