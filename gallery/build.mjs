@@ -145,6 +145,15 @@ const VERSIONS = [
 		wide: true,
 	},
 	{
+		id: 'match37',
+		label: '3.7',
+		section: 'mf-round3',
+		blurb:
+			'Who-can-stay restrictions: chips on cards and listings, tappable explainers, and a request-anyway flow with inline warnings.',
+		branch: 'matching-v37',
+		wide: true,
+	},
+	{
 		id: 'cards36',
 		label: '3.6 · card options',
 		section: 'mf-round3',
