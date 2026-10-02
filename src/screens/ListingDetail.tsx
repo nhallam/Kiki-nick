@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
 	Listing,
+	ListingRestriction,
+	RESTRICTION_FOOTNOTE,
+	RESTRICTION_INFO,
 	isWindowRequested,
 	listingWindows,
 	parseISODate,
@@ -54,6 +57,9 @@ export function ListingDetailScreen({
 	/** The viewer's request for this place was declined */
 	requestDeclined?: boolean;
 }) {
+	// Which who-can-stay restriction's explainer sheet is open
+	const [restrictionInfo, setRestrictionInfo] =
+		useState<ListingRestriction | null>(null);
 	return (
 		<div className="screen">
 			<StatusBar />
@@ -100,6 +106,27 @@ export function ListingDetailScreen({
 						))}
 					</span>
 				</div>
+
+				{listing.restrictions && listing.restrictions.length > 0 && (
+				/* Who can stay: one chip per restriction, each opens an
+				   explainer. Listings without restrictions skip the section:
+				   absence means open to everyone. */
+				<div className="detail-section">
+						<h2>Who can stay</h2>
+						<div className="restrict-row">
+							{listing.restrictions.map((r) => (
+								<button
+									key={r}
+									className="restrict-pill"
+									onClick={() => setRestrictionInfo(r)}
+								>
+									{RESTRICTION_INFO[r].label}
+									<span className="rp-info">i</span>
+								</button>
+							))}
+						</div>
+					</div>
+				)}
 
 				<div className="detail-section">
 					<h2>Description</h2>
@@ -213,6 +240,34 @@ export function ListingDetailScreen({
 					</button>
 				)}
 			</div>
+				{restrictionInfo && (
+				<div
+					className="sheet-overlay"
+					onClick={() => setRestrictionInfo(null)}
+				>
+					<div className="dialog-card" onClick={(e) => e.stopPropagation()}>
+						<div className="dialog-title">
+							{RESTRICTION_INFO[restrictionInfo].label}
+						</div>
+						<div className="dialog-sub">
+							{RESTRICTION_INFO[restrictionInfo].body(listing.listerName)}
+						</div>
+						{!RESTRICTION_INFO[restrictionInfo].soft && (
+							<div className="dialog-sub" style={{ marginTop: 8 }}>
+								{RESTRICTION_FOOTNOTE}
+							</div>
+						)}
+						<div className="dialog-actions">
+							<button
+								className="btn-dialog-confirm"
+								onClick={() => setRestrictionInfo(null)}
+							>
+								Got it
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }

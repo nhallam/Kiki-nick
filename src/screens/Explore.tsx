@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { LISTINGS, Listing, availabilityRange } from '../data';
+import { LISTINGS, Listing, availabilityRange, RESTRICTION_INFO } from '../data';
 import {
 	Avatar,
 	IconBell,
@@ -39,6 +39,14 @@ function ListingCard({
 						<IconPin size={18} /> {listing.area}, {listing.city}
 					</span>
 					<span className="date-chip">{dates}</span>
+					{listing.restrictions && listing.restrictions.length > 0 && (
+						/* Flag restricted homes before the tap; absence = open to all */
+						<span className="restrict-chip">
+							{listing.restrictions
+								.map((r) => RESTRICTION_INFO[r].chip)
+								.join(' · ')}
+						</span>
+					)}
 				</div>
 				<IconHeart size={28} color="#ef4444" />
 			</div>

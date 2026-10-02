@@ -570,7 +570,9 @@ function GuestInfoStep({
 	formData: BookingFormData;
 	onChange: (d: Partial<BookingFormData>) => void;
 }) {
-	const isCoupleDisabled = !listing.openToCouples;
+	// 3.7: outside-preference choices stay selectable — the guest can
+	// request anyway, they just get told it's unlikely to be accepted.
+	const coupleConflict = !listing.openToCouples;
 	const isGroup = formData.whoIsStaying === 'group';
 
 	const setType = (value: WhoIsStaying) => {
@@ -590,19 +592,19 @@ function GuestInfoStep({
 			<div className="options">
 				{GUEST_TYPE_OPTIONS.map((option) => {
 					const isSelected = formData.whoIsStaying === option.value;
-					const isDisabled = option.value === 'couple' && isCoupleDisabled;
+					const conflicts =
+						option.value !== 'individual' && coupleConflict;
 					return (
 						<button
 							key={option.value}
-							className={`option-card${isDisabled ? ' disabled' : ''}`}
-							disabled={isDisabled}
+							className="option-card"
 							onClick={() => setType(option.value)}
 						>
 							<span>
 								<div className="option-label">{option.label}</div>
-								<div className="option-desc">
-									{isDisabled
-										? `${listing.listerName}'s place isn't open to couples`
+								<div className={`option-desc${conflicts ? ' conflict' : ''}`}>
+									{conflicts
+										? `Outside ${listing.listerName}'s preferences: solo travellers only`
 										: option.description}
 								</div>
 							</span>
@@ -613,6 +615,12 @@ function GuestInfoStep({
 					);
 				})}
 			</div>
+			{coupleConflict && formData.whoIsStaying !== 'individual' && (
+				<div className="restrict-warn">
+					{listing.listerName} hosts solo travellers only. You can still
+					send this request, but it's unlikely to be accepted.
+				</div>
+			)}
 
 			<div className="profile-section">
 				<div className="booking-info-card">

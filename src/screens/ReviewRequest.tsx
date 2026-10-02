@@ -383,7 +383,8 @@ function GuestsSheet({
 		guestProfiles.slice(1),
 	);
 
-	// Not open to couples ⇒ single-occupancy: no adding guests at all.
+	// Not open to couples: adding guests stays possible (request anyway),
+	// but the editor says it's outside the host's preferences.
 	const soloOnly = !listing.openToCouples;
 
 	const derivedWho: BookingFormData['whoIsStaying'] =
@@ -428,13 +429,14 @@ function GuestsSheet({
 						</div>
 					</div>
 
-					{soloOnly ? (
-						<div className="slot-helper centered">
-							This place is only open for one person.
+					{soloOnly && (
+						<div className="restrict-warn" style={{ marginBottom: 14 }}>
+							{listing.listerName} hosts solo travellers only. You can
+							still add a guest and request anyway, but it's unlikely
+							to be accepted.
 						</div>
-					) : (
-						<>
-							{extras.map((profile, i) => (
+					)}
+					{extras.map((profile, i) => (
 								<div key={i} className="guest-hero">
 									{profile ? (
 										<Avatar initial={profile.name[0]} size={84} />
@@ -466,21 +468,17 @@ function GuestsSheet({
 								</div>
 							))}
 
-							{hasEmptySlot && (
-								<div className="slot-helper centered" style={{ marginTop: 10 }}>
-									A profile is required for each person staying.
-								</div>
-							)}
-						</>
+				{hasEmptySlot && (
+						<div className="slot-helper centered" style={{ marginTop: 10 }}>
+							A profile is required for each person staying.
+						</div>
 					)}
 				</div>
 				<div className="editor-footer">
 					{/* Pinned above Save so it stays put as guest slots grow */}
-					{!soloOnly && (
-						<button className="add-guest-btn pinned" onClick={addGuest}>
-							+ Add guest
-						</button>
-					)}
+					<button className="add-guest-btn pinned" onClick={addGuest}>
+						+ Add guest
+					</button>
 					<button
 						className="btn-primary square"
 						onClick={() => onSave(derivedWho, [me, ...extras])}

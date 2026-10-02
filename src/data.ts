@@ -25,6 +25,8 @@ export interface Listing {
 	 */
 	requestedWindows?: string[];
 	openToCouples: boolean;
+	/** Who-can-stay restrictions, shown on the card, listing and flow */
+	restrictions?: ListingRestriction[];
 	securityDeposit: number;
 	nationalityFlag: string; // emoji flag
 	description: string;
@@ -44,6 +46,41 @@ export interface Listing {
 
 export type PhotoVariant = 'ieva' | 'tash' | 'jake' | 'nina';
 
+/* 3.7: who-can-stay restrictions a host can put on their listing. The
+   real category list is coming from the client; these three cover the
+   complaints we've heard (no couples / women only / prefers women). */
+export type ListingRestriction = 'soloOnly' | 'womenOnly' | 'womenPreferred';
+
+export const RESTRICTION_INFO: Record<
+	ListingRestriction,
+	{ label: string; chip: string; body: (host: string) => string; soft?: boolean }
+> = {
+	soloOnly: {
+		label: 'Solo travellers only',
+		chip: 'Solo only',
+		body: (host) =>
+			`${host} hosts one guest at a time, so requests that include a partner or friends don't fit this home. Hosts usually set this for smaller homes or for their own comfort.`,
+	},
+	womenOnly: {
+		label: 'Women only',
+		chip: 'Women only',
+		body: (host) =>
+			`${host} only hosts women. For many hosts this is about feeling safe having someone in their own home.`,
+	},
+	womenPreferred: {
+		label: 'Women preferred',
+		chip: 'Women preferred',
+		body: (host) =>
+			`${host} prefers hosting women but considers every request. Your request won't be hidden; it may just be less likely to be chosen.`,
+		soft: true,
+	},
+};
+
+/** The note under every explainer: requests stay possible, just unlikely. */
+export const RESTRICTION_FOOTNOTE =
+	'You can still send a request. Hosts see it either way, but stays outside their preferences are rarely accepted.';
+
+
 export const LISTINGS: Listing[] = [
 	{
 		id: 1,
@@ -61,6 +98,7 @@ export const LISTINGS: Listing[] = [
 			{ start: '2026-10-02', end: '2026-10-09' },
 		],
 		openToCouples: false,
+		restrictions: ['soloOnly', 'womenOnly'],
 		securityDeposit: 160,
 		nationalityFlag: '🇱🇹',
 		description:
@@ -127,6 +165,7 @@ export const LISTINGS: Listing[] = [
 		],
 		requestedWindows: ['2026-09-26'],
 		openToCouples: true,
+		restrictions: ['womenPreferred'],
 		securityDeposit: 200,
 		nationalityFlag: '🇪🇸',
 		description:
