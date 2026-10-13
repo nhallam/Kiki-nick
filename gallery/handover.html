@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kiki - designer handover</title>
+<style>
+	:root {
+		--primary: #20a598;
+		--primary-strong: #12796f;
+		--primary-dark: #0f6e56;
+		--primary-tint: rgba(32, 165, 152, 0.1);
+		--dark: #1f2937;
+		--gray: #667080;
+		--light-gray: #f6f6f6;
+		--border-light: #eee;
+		--border-medium: #ddd;
+		--white: #fff;
+		--pending: #8a5a00;
+		--pending-tint: #fdf0d9;
+		--error: #c62828;
+		--host: #2f4a72;
+	}
+	* { margin: 0; padding: 0; box-sizing: border-box; }
+	body {
+		font-family: 'Inter', -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
+		background: #e7e9ec;
+		color: var(--dark);
+		-webkit-font-smoothing: antialiased;
+		padding: 36px 16px 90px;
+	}
+	.page { max-width: 880px; margin: 0 auto; }
+	h1 { font-size: 28px; margin-bottom: 4px; }
+	.byline { font-size: 14px; color: var(--gray); margin-bottom: 26px; }
+	h2 { font-size: 20px; margin: 42px 0 12px; }
+	h3 { font-size: 15.5px; margin: 22px 0 8px; }
+	p, li { font-size: 14.5px; line-height: 1.65; color: var(--dark); }
+	p + p { margin-top: 10px; }
+	ul, ol { margin: 8px 0 8px 22px; }
+	li { margin-bottom: 5px; }
+	a { color: var(--primary-strong); font-weight: 600; }
+	.panel { background: var(--white); border-radius: 8px; padding: 22px; margin-bottom: 14px; }
+	.muted { color: var(--gray); }
+	.small { font-size: 13px; }
+
+	/* version timeline */
+	.ver { background: var(--white); border-radius: 8px; padding: 18px 20px; margin-bottom: 10px; }
+	.ver-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+	.ver-num { font-size: 17px; font-weight: 800; color: var(--primary-strong); }
+	.ver-name { font-size: 15px; font-weight: 700; }
+	.ver p { font-size: 14px; }
+	.why { margin-top: 8px; padding: 10px 13px; background: var(--light-gray); border-radius: 8px; font-size: 13.5px; }
+	.why b { color: var(--gray); font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 0.04em; display: block; margin-bottom: 3px; }
+
+	/* quotes */
+	.quote { border-left: 3px solid var(--primary); padding: 2px 0 2px 14px; margin: 10px 0; font-size: 14px; font-style: italic; color: #3b4454; }
+	.quote .who { display: block; font-style: normal; font-size: 12px; color: var(--gray); margin-top: 3px; }
+
+	/* tokens */
+	table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+	th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border-light); vertical-align: middle; }
+	th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--gray); }
+	.sw { display: inline-block; width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--border-light); vertical-align: middle; margin-right: 8px; }
+	code { background: var(--light-gray); border-radius: 5px; padding: 1px 6px; font-size: 12.5px; }
+
+	/* component inventory */
+	.comp { background: var(--white); border-radius: 8px; padding: 18px 20px; margin-bottom: 12px; }
+	.comp-title { font-size: 14.5px; font-weight: 800; margin-bottom: 4px; }
+	.comp-note { font-size: 13px; color: var(--gray); line-height: 1.5; margin-bottom: 12px; }
+	.demo { background: #fafafa; border: 1px dashed var(--border-medium); border-radius: 10px; padding: 16px; }
+
+	.hstat { font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; margin: 0 14px 6px 0; }
+	.hstat .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+	.teal { color: var(--primary-strong); }
+	.amber { color: var(--pending); }
+	.red { color: var(--error); }
+	.grey { color: var(--gray); }
+
+	.btn-primary { display: inline-block; background: var(--primary); color: var(--white); font-weight: 700; font-size: 14px; border: none; border-radius: 24px; padding: 11px 26px; }
+	.btn-decline { display: inline-block; background: var(--white); color: var(--error); font-weight: 700; font-size: 14px; border: 1px solid var(--border-medium); border-radius: 24px; padding: 11px 26px; }
+	.withdraw { display: inline-block; color: var(--error); font-weight: 700; font-size: 13.5px; padding: 11px 8px; }
+	.textbtn { display: inline-block; color: var(--primary-strong); font-weight: 700; font-size: 13.5px; padding: 11px 8px; }
+
+	.req-row { display: flex; align-items: center; gap: 11px; background: var(--white); border: 1px solid var(--border-light); border-radius: 12px; padding: 12px; max-width: 380px; margin-bottom: 8px; }
+	.av { width: 44px; height: 44px; border-radius: 50%; color: #fff; font-weight: 700; font-size: 17px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+	.slot { position: relative; width: 44px; height: 44px; flex-shrink: 0; }
+	.slot .av { width: 44px; height: 44px; }
+	.lead-count { position: absolute; right: -5px; bottom: -3px; min-width: 20px; height: 20px; border-radius: 10px; background: var(--dark); color: #fff; font-size: 10.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 4px; box-shadow: 0 0 0 2px #fafafa; }
+	.rb { flex: 1; min-width: 0; }
+	.rt { font-size: 15px; font-weight: 700; }
+	.rs { font-size: 12.5px; color: var(--gray); font-weight: 600; margin-top: 1px; }
+	.chev { color: var(--border-medium); font-size: 20px; }
+	.thumb56 { width: 56px; height: 56px; border-radius: 10px; flex-shrink: 0; background: #35524a; position: relative; }
+	.homeface { position: absolute; right: -5px; bottom: -5px; width: 24px; height: 24px; border-radius: 50%; background: #b58a63; box-shadow: 0 0 0 2px #fafafa; color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+	.steps-lockup { max-width: 380px; }
+	.steps-track { display: flex; gap: 5px; margin-bottom: 8px; }
+	.seg { flex: 1; height: 5px; border-radius: 3px; background: var(--border-medium); }
+	.seg.done { background: var(--primary); }
+	.steps-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; }
+	.timer { color: var(--pending); font-weight: 700; font-size: 13px; }
+
+	.cheque { display: flex; align-items: center; justify-content: space-between; background: var(--white); border: 1px solid var(--border-medium); border-radius: 12px; padding: 13px 15px; max-width: 380px; margin-bottom: 8px; }
+	.cq-l .t { font-size: 14px; font-weight: 700; }
+	.cq-l .s { font-size: 12px; color: var(--gray); margin-top: 1px; }
+	.cq-r { text-align: right; }
+	.cq-r .a { font-size: 15px; font-weight: 800; }
+	.cq-r .st { font-size: 12px; font-weight: 700; }
+
+	.restrict-pill { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 700; color: var(--dark); background: var(--white); border: 1px solid var(--border-medium); border-radius: 18px; padding: 8px 13px; margin-right: 8px; }
+	.rp-info { width: 17px; height: 17px; border-radius: 50%; background: var(--light-gray); color: var(--gray); font-size: 11px; font-weight: 800; font-style: italic; display: inline-flex; align-items: center; justify-content: center; font-family: Georgia, serif; }
+	.restrict-warn { background: var(--pending-tint); border: 1px solid var(--pending); color: var(--pending); border-radius: 12px; padding: 11px 14px; font-size: 13.5px; font-weight: 600; line-height: 1.5; max-width: 420px; }
+	.restrict-chip { display: inline-block; font-size: 12px; font-weight: 700; color: var(--pending); background: var(--pending-tint); border: 1px solid var(--pending); border-radius: 8px; padding: 3px 9px; }
+
+	.gap-list li { margin-bottom: 8px; }
+	.toc { columns: 2; column-gap: 30px; }
+	.toc li { break-inside: avoid; }
+	@media (max-width: 640px) { .toc { columns: 1; } }
+</style>
+</head>
+<body>
+<div class="page">
+	<h1>Designer handover</h1>
+	<div class="byline">Kiki booking-request and matches-flow prototypes · last updated 13 October 2026</div>
+
+	<div class="panel">
+		<p>Welcome! This page is the map to everything in this gallery: what was built, in what order, why it changed along the way, and the pieces it's made of. The prototypes are fully interactive HTML builds of two areas of the Kiki home-swap app: the <b>Booking Request Flow</b> (a guest asking to stay) and the <b>Matches Flow</b> (what happens between a request landing and a confirmed stay). Every numbered version in the gallery is frozen and stays openable, so you can compare any two rounds side by side. The highest number is always the live one; right now that's <b>3.7</b>.</p>
+	</div>
+
+	<h2>Contents</h2>
+	<div class="panel">
+		<ol class="toc">
+			<li>Driving the demos</li>
+			<li>The two flows at a glance</li>
+			<li>Version history (1.0 to 3.7)</li>
+			<li>Decisions that shaped the design</li>
+			<li>Components and tokens</li>
+			<li>Known gaps and open threads</li>
+			<li>Practical notes (branches, deploys)</li>
+		</ol>
+	</div>
+
+	<h2>1 · Driving the demos</h2>
+	<div class="panel">
+		<p>From 3.0 onwards each prototype is <b>two live phones side by side</b>: the guest on the left (Melissa by default), the host Ryan on the right. They share state, so the host acting on a request updates the guest's phone instantly. Three bits of demo chrome sit outside the phones:</p>
+		<ul>
+			<li><b>Restart demo</b> (top right) resets everything to the starting point.</li>
+			<li><b>The guest label above the left phone is a picker</b>: tap it to play any of the six requesters (Melissa, Aisha, Tash &amp; Jordan, Priya, Sara, Marco), each with their live status. Guests mid-journey resume exactly where they were.</li>
+			<li>When an offer gets revoked, the picker is also how you peek at that guest's "offer revoked" screen, since the demo follows the winning guest.</li>
+		</ul>
+		<p>The canonical demo run: host opens his trip &rarr; sends offers &rarr; guest accepts (others get revoked) &rarr; both sign the agreement &rarr; guest pays deposit + rent &rarr; both press Confirm match &rarr; celebrations &rarr; the match screen with the stay timeline.</p>
+		<p>Two supporting pages live beside the prototypes: the <a href="https://kiki-nick.vercel.app/flow.html" target="_blank">flow map</a> (every pathway a request can take, including the trip model and the 48-hour checklist) and the <a href="https://kiki-nick.vercel.app/cards.html" target="_blank">card options</a> page (the explorations behind the current card designs, kept for reference).</p>
+	</div>
+
+	<h2>2 · The two flows at a glance</h2>
+	<div class="panel">
+		<h3>Booking Request Flow (rounds 1 and 2)</h3>
+		<p>Round 1 rebuilt the shipped 4-step flow faithfully (1.0), then explored three directions: best-practice polish (1.1), a restructured 3-step flow (1.2), and a review-centric, Airbnb-style hub with editor sheets (1.3). <b>The client chose 1.3</b>, and round 2 (2.0&ndash;2.4) refined that direction through client feedback: window stepper, the Staying/Hosting Trips split, the amber pending state, calendar work and an accessibility pass. 2.4 was the last active booking-flow build; its ideas carried into round 3.</p>
+		<h3>Matches Flow (round 3, the main body of work)</h3>
+		<p>Everything after a request is sent: the host's inbox and consent model, the 48-hour reserved window (signing + payments), mutual confirmation, the match screen, declines and revocations, and (3.7) listing restrictions. The full state machine is drawn on the <a href="https://kiki-nick.vercel.app/flow.html" target="_blank">flow map</a>; the short version: <b>New &rarr; Offered &rarr; Reserved &rarr; Confirmed</b>, with Declined (reopenable) and Revoked (automatic) as the side exits.</p>
+	</div>
+
+	<h2>3 · Version history</h2>
+
+	<div class="ver"><div class="ver-head"><span class="ver-num">1.0&ndash;1.3</span><span class="ver-name">Round 1: the fork in the road</span></div>
+		<p>1.0 is the control (the live app, rebuilt). 1.1 polished it, 1.2 restructured it, 1.3 replaced the wizard with one "Review and request" hub where Change buttons open dates/guests editor sheets. The client picked 1.3; every later flow builds on its editor-sheet pattern.</p>
+	</div>
+	<div class="ver"><div class="ver-head"><span class="ver-num">2.0&ndash;2.4</span><span class="ver-name">Round 2: refining the chosen direction</span></div>
+		<p>Client-feedback rounds on 1.3: a 3-page flow with a window stepper and host preview (2.0), trimmed review card and live Trips tabs (2.1), Nina's Flat with three date windows plus the Staying/Hosting split and an accessibility pass (2.2), the amber pending state and calendar legend from the product review (2.3), and 2.4 as the final working build.</p>
+	</div>
+	<div class="ver"><div class="ver-head"><span class="ver-num">3.0</span><span class="ver-name">The dual-phone stage</span></div>
+		<p>Guest and host side by side, both live and independent, sharing one state. This is the foundation every matches-flow idea is demoed on.</p>
+	</div>
+	<div class="ver"><div class="ver-head"><span class="ver-num">3.1</span><span class="ver-name">The match screen</span></div>
+		<p>The post-confirmation home: a stay timeline (agreement, payments, condition photos, move-in/out, deposit refund), host instructions, check-in details and contacts. Real photos arrive here.</p>
+	</div>
+	<div class="ver"><div class="ver-head"><span class="ver-num">3.2</span><span class="ver-name">Client review: rules of the window</span></div>
+		<p>The 48-hour reservation timer, withdrawal rules (either side can back out and everything unwinds), group bookings (Tash &amp; Jordan), and a check-in section on the match screen.</p>
+	</div>
+	<div class="ver"><div class="ver-head"><span class="ver-num">3.3</span><span class="ver-name">UI refinement round</span></div>
+		<p>The booker card, documents and cheques drawn as paper objects, the intro message as a letter, and a long back-and-forth on the footer: countdown placement, a tappable timer with a "why is there a countdown?" explainer, and the steps/CTA lockup.</p>
+		<div class="why"><b>Why</b>Nick's screenshot-driven passes: aligning the two greens, keeping prices from jumping when labels change, replacing a script-font signature idea with a simple "Signed" label.</div>
+	</div>
+	<div class="ver"><div class="ver-head"><span class="ver-num">3.4</span><span class="ver-name">The guided guest flow + mutual confirmation</span></div>
+		<p>Melissa's reserve steps became three horizontal screens (intro &rarr; sign &rarr; pay) instead of one checklist, and auto-confirmation was replaced by both sides explicitly pressing <b>Confirm match</b>. A signing "ceremony" was explored (flip the document over, sign with your finger).</p>
+		<div class="why"><b>Why</b>"We want the signing of the document to feel a bit more significant." The draw-to-sign idea was built, then cut in 3.5 for a confirm dialog: ceremony kept, gimmick dropped.</div>
+	</div>
+	<div class="ver"><div class="ver-head"><span class="ver-num">3.5</span><span class="ver-name">Full-screen agreement, groups, declines</span></div>
+		<p>The agreement opens as a full screen you scroll (X top right, buttons at the bottom), signing is a button plus a confirm dialog, group profiles appear, the first split-payments model lands, and the host gets a decline flow with reason categories. The left phone starts following whichever guest Ryan engages.</p>
+		<div class="why"><b>Why</b>Colleague feedback: "this pop-up feels weird, you can still see the next button; maybe a full screen where you can scroll the terms." And three client questions: how do groups go through the flow, how do split payments work, what does a declined user look like to the host?</div>
+	</div>
+	<div class="ver"><div class="ver-head"><span class="ver-num">3.6</span><span class="ver-name">The big client-review round (most of the current behaviour)</span></div>
+		<p>The longest round, driven by two client reviews and many walkthroughs with Nick:</p>
+		<ul>
+			<li><b>Two-step consent:</b> the host sends an offer; nothing is reserved until the guest accepts. Outs on both sides (withdraw offer, decline offer).</li>
+			<li><b>Multiple offers per trip:</b> first guest to accept wins; other overlapping offers are revoked automatically, with both sides seeing honest "offer revoked" states. Declined requests can be reopened.</li>
+			<li><b>Split rent corrected:</b> the trigger is stay duration (over 30 nights), not booking proximity. Deposit always upfront; a visible callout + toggle (pay in full / split monthly); month 1 inside the window, later months scheduled and payable from the match screen. Priya's 75-night stay demos three instalments.</li>
+			<li><b>Payments:</b> a method sheet (bank transfer with copyable UK details and Copy all; Stripe as a flagged placeholder); one method decision covers all payments.</li>
+			<li><b>Profiles:</b> full-screen swipeable profile cards with an Instagram screenshot (a client trust requirement) and position dots.</li>
+			<li><b>Statuses:</b> the dot + coloured text system on both sides, design-system colours only.</li>
+			<li><b>Cards:</b> host rows settled on H4b (two lines, right-aligned status column); guest cards on G1b (compact row, dates only, host's face on the photo corner).</li>
+			<li><b>Decline dialog reworked:</b> the multi-choice reason goes to the guest, the free-text box goes only to the Kiki team and says so; reasons from the client's list; selections can be un-tapped.</li>
+			<li><b>Celebrations:</b> "Your stay is confirmed!" / "Your match is confirmed!" with confetti; copy rules applied everywhere (no long dashes, the deposit-refund wording, the host-side "Dm us on instagram" farewell).</li>
+		</ul>
+	</div>
+	<div class="ver"><div class="ver-head"><span class="ver-num">3.7</span><span class="ver-name">Who-can-stay restrictions (current)</span></div>
+		<p>Listings can carry restrictions (currently placeholder categories: solo travellers only, women only, women preferred). They show as a chip on Explore cards, a tappable "Who can stay" section on the listing with plain-language explainer sheets, and inline warnings in the booking flow. <b>Requests outside a host's preferences stay possible</b> ("request anyway"), they're just clearly flagged as unlikely to be accepted.</p>
+		<div class="why"><b>Why</b>Users were frustrated to discover restrictions only after requesting. The client's category list is still to come; the categories live in one map (<code>RESTRICTION_INFO</code> in <code>src/data.ts</code>) so swapping in the real list is a one-file change.</div>
+	</div>
+
+	<h2>4 · Decisions that shaped the design</h2>
+	<div class="panel">
+		<h3>Statuses are words, not badges</h3>
+		<div class="quote">"I don't love these badge designs. I preferred the &bull; with the text."<span class="who">Nick, reviewing pill-badge options</span></div>
+		<div class="quote">"These colours are crazy. Two greens? Grey for decline? Can you look at the design system colours and try again."<span class="who">Nick, on an early status palette</span></div>
+		<p>Result: one teal, one amber, red for closed states, grey only for revoked; always a 7px dot + bold text, never a pill. The full taxonomy is in the components section below.</p>
+
+		<h3>Use the product's actual colours</h3>
+		<div class="quote">"That green is not a green I've seen in the product."<span class="who">Nick, on action-hint colours</span></div>
+		<p>Result: all primary buttons use the lighter brand teal (<code>--primary</code>), action hints too; the darker teal (<code>--primary-strong</code>) is reserved for text that needs contrast. Tokens were ported 1:1 from the real app.</p>
+
+		<h3>Features must announce themselves</h3>
+		<div class="quote">"There's no way of me knowing that I had to click that."<span class="who">Nick, on a hidden split-payments link</span></div>
+		<p>Result: the split option became a visible callout with an explicit toggle. Same principle later drove the tappable countdown explainer and the restriction chips: anything with rules behind it gets a tap-to-learn-more.</p>
+
+		<h3>Consent is symmetrical</h3>
+		<p>The client's core model: hosts offer, guests accept, and neither side can be locked in. Every state has an exit (withdraw offer, decline offer, withdraw reservation, reopen a decline), and automatic transitions (revocation) are explained to both sides in plain words.</p>
+
+		<h3>Who sees what, said out loud</h3>
+		<p>The decline dialog separates the reason (sent to the guest) from the note (Kiki only) and labels both. The restriction explainers say requests stay visible to hosts. The reopen button admits it can't unsend the decline message. When in doubt, the UI states its audience.</p>
+
+		<h3>Copy rules</h3>
+		<ul>
+			<li>No long dashes anywhere in product copy (periods, commas, colons or plain hyphens instead).</li>
+			<li>Deposit wording: "The deposit will be refunded in full after your stay assuming no damages/problems."</li>
+			<li>Celebrations: guest "Your stay is confirmed!", host "Your match is confirmed!".</li>
+			<li>Host-side match screen signs off "Dm us on instagram if you need anything"; guests get "Have a great stay!".</li>
+		</ul>
+	</div>
+
+	<h2>5 · Components and tokens</h2>
+
+	<div class="comp">
+		<div class="comp-title">Colour tokens (ported from the real app)</div>
+		<table>
+			<tr><th>Swatch</th><th>Token</th><th>Value</th><th>Used for</th></tr>
+			<tr><td><span class="sw" style="background:#20a598"></span></td><td><code>--primary</code></td><td>#20A598</td><td>Primary buttons, selection, action hints</td></tr>
+			<tr><td><span class="sw" style="background:#12796f"></span></td><td><code>--primary-strong</code></td><td>#12796F</td><td>Teal text/dots (5.26:1 on white), solid fills carrying white text</td></tr>
+			<tr><td><span class="sw" style="background:#8a5a00"></span></td><td><code>--pending</code></td><td>#8A5A00 on #FDF0D9</td><td>Amber waiting states, warnings (deliberately off-brand so it can't read as selection)</td></tr>
+			<tr><td><span class="sw" style="background:#c62828"></span></td><td><code>--error</code></td><td>#C62828</td><td>Declined, destructive actions</td></tr>
+			<tr><td><span class="sw" style="background:#667080"></span></td><td><code>--gray</code></td><td>#667080</td><td>Secondary text, revoked state</td></tr>
+			<tr><td><span class="sw" style="background:#1f2937"></span></td><td><code>--dark</code></td><td>#1F2937</td><td>Body text, count badges</td></tr>
+		</table>
+		<p class="small muted" style="margin-top:10px">Type is Inter throughout. Contrast ratios are annotated in <code>src/styles.css</code>; several tokens exist specifically to pass 4.5:1.</p>
+	</div>
+
+	<div class="comp">
+		<div class="comp-title">Status system (dot + text, both sides)</div>
+		<div class="comp-note">The same request, two vocabularies. Teal = yours to act on or done, amber = waiting, red = closed, grey = revoked. Never pills.</div>
+		<div class="demo">
+			<div class="small muted" style="margin-bottom:6px">Host sees:</div>
+			<span class="hstat teal"><span class="dot"></span>New</span>
+			<span class="hstat amber"><span class="dot"></span>Offer sent</span>
+			<span class="hstat amber"><span class="dot"></span>Reserved</span>
+			<span class="hstat teal"><span class="dot"></span>Confirmed</span>
+			<span class="hstat grey"><span class="dot"></span>Offer revoked</span>
+			<span class="hstat red"><span class="dot"></span>Declined</span>
+			<div class="small muted" style="margin:10px 0 6px">Guest sees:</div>
+			<span class="hstat amber"><span class="dot"></span>In review</span>
+			<span class="hstat teal"><span class="dot"></span>Offer received</span>
+			<span class="hstat teal"><span class="dot"></span>Reserved</span>
+			<span class="hstat teal"><span class="dot"></span>Confirmed</span>
+			<span class="hstat grey"><span class="dot"></span>Offer revoked</span>
+			<span class="hstat red"><span class="dot"></span>Declined</span>
+		</div>
+	</div>
+
+	<div class="comp">
+		<div class="comp-title">Request rows: host (H4b) and guest (G1b)</div>
+		<div class="comp-note">Both sides settled on the same shape: two-line body, status as its own right-aligned column, chevron when the row opens. Host rows lead with the person (lead face + count badge for groups); guest rows lead with the home (56px photo, host's face on its corner). Chosen from the explorations on the card options page.</div>
+		<div class="demo">
+			<div class="req-row">
+				<span class="slot"><span class="av" style="background:#b5763a">T</span><span class="lead-count">+1</span></span>
+				<span class="rb"><span class="rt">Tash +1</span><br /><span class="rs">26 Aug - 26 Sep · £2,077</span></span>
+				<span class="hstat amber" style="margin:0"><span class="dot"></span>Reserved</span>
+				<span class="chev">›</span>
+			</div>
+			<div class="req-row">
+				<span class="thumb56"><span class="homeface">R</span></span>
+				<span class="rb"><span class="rt">Ryan's Apartment</span><br /><span class="rs">26 - 29 Aug</span></span>
+				<span class="hstat teal" style="margin:0"><span class="dot"></span>Offer received</span>
+				<span class="chev">›</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="comp">
+		<div class="comp-title">Buttons</div>
+		<div class="comp-note">Primary actions are the lighter brand teal, full-width pills in context. Decline is an outlined red. Destructive escape hatches (withdraw) are bare red text; positive text actions use the strong teal. Dialogs pair a grey Cancel with a teal confirm (red when destructive).</div>
+		<div class="demo">
+			<span class="btn-primary">Send offer</span>&nbsp;&nbsp;
+			<span class="btn-decline">Decline</span>&nbsp;&nbsp;
+			<span class="withdraw">Withdraw offer</span>&nbsp;&nbsp;
+			<span class="textbtn">See profiles</span>
+		</div>
+	</div>
+
+	<div class="comp">
+		<div class="comp-title">Steps lockup + 48h timer</div>
+		<div class="comp-note">The reserved window's footer: a segmented progress track, "n of 3 steps complete", and the countdown inline. The timer is tappable and opens a "Why is there a countdown?" explainer. This lockup went through many layouts before settling here.</div>
+		<div class="demo">
+			<div class="steps-lockup">
+				<div class="steps-track"><span class="seg done"></span><span class="seg done"></span><span class="seg"></span></div>
+				<div class="steps-row"><span>2 of 3 steps complete</span><span class="timer">&#128337; 47:59:12 &#9432;</span></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="comp">
+		<div class="comp-title">Cheques: payments as paper objects</div>
+		<div class="comp-note">Deposit and rent are "cheques": tap to pay (method sheet on first tap, then screenshot upload), amounts stay fixed in place as statuses change. Scheduled instalments render the same shape with a due date, payable later from the match screen.</div>
+		<div class="demo">
+			<div class="cheque"><span class="cq-l"><span class="t">Security deposit</span><br /><span class="s">Melissa</span></span><span class="cq-r"><span class="a">£150</span><br /><span class="st teal">Paid</span></span></div>
+			<div class="cheque"><span class="cq-l"><span class="t">Rent - month 2</span><br /><span class="s">Due by 26 Sep 2026</span></span><span class="cq-r"><span class="a">£1,038</span><br /><span class="st grey">Scheduled</span></span></div>
+		</div>
+	</div>
+
+	<div class="comp">
+		<div class="comp-title">Restriction chips, pills and warnings (3.7)</div>
+		<div class="comp-note">Three escalation levels: a chip on the Explore card, tappable pills in the listing's "Who can stay" section (each opens an explainer sheet), and an amber inline warning wherever a choice conflicts. Absence of a chip means open to everyone.</div>
+		<div class="demo">
+			<div style="margin-bottom:10px"><span class="restrict-chip">Solo only · Women only</span></div>
+			<div style="margin-bottom:12px"><span class="restrict-pill">Solo travellers only <span class="rp-info">i</span></span><span class="restrict-pill">Women only <span class="rp-info">i</span></span></div>
+			<div class="restrict-warn">Ieva hosts solo travellers only. You can still send this request, but it's unlikely to be accepted.</div>
+		</div>
+	</div>
+
+	<div class="comp">
+		<div class="comp-title">Recurring patterns without a picture</div>
+		<ul>
+			<li><b>Explainer sheets:</b> any rule gets a tap-to-learn-more dialog (countdown, restrictions): title, plain-language body, one Got it button.</li>
+			<li><b>Full-screen agreement:</b> scrollable terms, X top right, Sign agreement at the bottom, then a confirm dialog ("You're signing as...").</li>
+			<li><b>Profile cards:</b> full-screen horizontal snap cards per group member, with an Instagram screenshot block and position dots.</li>
+			<li><b>Avatars:</b> one clear face whatever the group size; a dark +N badge carries the rest ("lead + count", chosen over pair collages after a five-guest stress test).</li>
+			<li><b>Celebrations:</b> hero (photo deck or avatars), one-line title, one-shot confetti in brand-ish colours.</li>
+			<li><b>Decline dialog:</b> radio reasons (sent to the guest, un-tappable to clear) + a free-text box labelled as Kiki-only.</li>
+		</ul>
+	</div>
+
+	<h2>6 · Known gaps and open threads</h2>
+	<div class="panel">
+		<ul class="gap-list">
+			<li><b>Restriction categories are placeholders.</b> The client owes the real list; it drops into <code>RESTRICTION_INFO</code> in <code>src/data.ts</code>. Also flagged to the client: "Looking for a female" as a decline reason goes to the guest verbatim, worth a policy/legal look before production.</li>
+			<li><b>Payments are design-only.</b> Stripe is a labelled placeholder; bank transfer is the real flow. The client scoped payments out of this sprint.</li>
+			<li><b>The guest's declined view is thin:</b> a declined guest sees the status and a listing banner, but not the host's chosen reason category yet.</li>
+			<li><b>Known data quirk:</b> Tash &amp; Jordan's 31-night request sits under a trip header that reads "26 - 29 Aug · 3 nights" (flagged, accepted for the demo).</li>
+			<li><b>Instagram mocks reuse Ryan's apartment photos</b> as the grid images.</li>
+			<li><b>Drag-to-reorder ranking</b> (prioritising your sent requests) exists but is unreachable from the current UI, kept in the codebase in case prioritisation returns.</li>
+			<li><b>Profile faces</b> are StyleGAN-generated (not real people), downscaled and embedded; Nina has no face asset yet (initial circle).</li>
+		</ul>
+	</div>
+
+	<h2>7 · Practical notes</h2>
+	<div class="panel">
+		<p><b>Where things live.</b> Repo: <code>nhallam/Kiki-nick</code> on GitHub. Each version is frozen on its own branch (<code>matching-v30-base</code> through <code>matching-v37</code>; round 1&ndash;2 on the <code>booking-flow-*</code> and <code>round2*</code> branches). The gallery launcher is built by <code>gallery/build.mjs</code> on the <code>flow-gallery</code> branch and served from <code>main</code> by Vercel at <a href="https://kiki-nick.vercel.app" target="_blank">kiki-nick.vercel.app</a>. The same gallery is mirrored to a private Claude artifact link for client sharing.</p>
+		<p><b>How a change ships.</b> Work lands on the current version branch (today: <code>matching-v37</code>), the single-file build (<code>dist/index.html</code>) is committed with it, the gallery is rebuilt on <code>flow-gallery</code> and merged to <code>main</code>. New explorations get a new <code>matching-v3x</code> branch and a gallery tile, so old versions never change under the client.</p>
+		<p><b>The app itself</b> is Vite + React + TypeScript, one self-contained HTML file per version. State for the whole two-phone demo lives in <code>src/store.ts</code>; most copy and data (listings, guests, restriction categories) in <code>src/data.ts</code> and <code>src/screens/HostRequest.tsx</code> (<code>REQUEST_PREVIEWS</code>).</p>
+	</div>
+</div>
+</body>
+</html>
