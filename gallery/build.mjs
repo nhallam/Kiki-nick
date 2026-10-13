@@ -172,6 +172,15 @@ const VERSIONS = [
 		wide: true,
 	},
 	{
+		id: 'handover',
+		label: 'Handover',
+		section: 'ho',
+		blurb:
+			'Designer handover: what was built, in what order, why it changed, and the components and tokens it uses.',
+		file: 'gallery/handover.html',
+		wide: true,
+	},
+	{
 		id: 'option3',
 		label: '1.3',
 		section: 'br-round1',
@@ -182,6 +191,7 @@ const VERSIONS = [
 ];
 
 const FEATURES = [
+	{ key: 'handover', title: 'Designer handover' },
 	{ key: 'booking', title: 'Booking Request Flow' },
 	{ key: 'matches', title: 'Matches flow' },
 	{ key: 'notifications', title: 'Notifications' },
@@ -194,6 +204,13 @@ const FEATURES = [
 ];
 
 const SECTIONS = [
+	{
+		key: 'ho',
+		feature: 'handover',
+		title: 'Handover',
+		note: 'Everything a new designer needs to pick the project up.',
+		default: true,
+	},
 	{
 		key: 'br-round1',
 		feature: 'booking',
@@ -254,7 +271,7 @@ const versionCount = (f) =>
 			v.branch && SECTIONS.some((s) => s.key === v.section && s.feature === f.key),
 	).length;
 
-const featureRows = FEATURES.map((f) => {
+const featureRows = FEATURES.filter((f) => f.key !== 'handover').map((f) => {
 	const n = versionCount(f);
 	const meta = n
 		? `<span class="row-count">${n} ${n === 1 ? 'prototype' : 'prototypes'}</span>`
@@ -416,6 +433,17 @@ body {
 }
 /* home: stacked feature list */
 .feature-list { display: flex; flex-direction: column; gap: 10px; width: min(440px, 100%); }
+.handover-banner {
+	display: flex; align-items: center; gap: 14px; width: 100%; max-width: 560px;
+	background: #12796f; color: #fff; border: none; border-radius: 14px;
+	padding: 16px 18px; margin: 2px 0 18px; cursor: pointer; text-align: left;
+	font-family: inherit;
+}
+.handover-banner .hb-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.handover-banner .hb-title { font-size: 16px; font-weight: 800; }
+.handover-banner .hb-sub { font-size: 12.5px; opacity: 0.85; line-height: 1.45; }
+.handover-banner .row-chev { color: rgba(255,255,255,0.7); font-size: 22px; }
+.handover-banner:hover { background: #0f6b62; }
 .feature-row {
 	display: flex; align-items: center; gap: 10px; text-align: left;
 	background: var(--card); border: 1px solid var(--line); border-radius: 14px;
@@ -539,6 +567,10 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 		<div class="home" id="home">
 			<div class="brand"><span class="brand-dot">K</span><h1>Kiki prototypes</h1></div>
 			<p class="sub">Pick a feature area, then a prototype version to walk through. Everything is clickable.</p>
+			<button class="handover-banner" data-version="handover">
+				<span class="hb-body"><span class="hb-title">Designer handover</span><span class="hb-sub">New to the project? Start here: the work to date, the decisions behind it, and the components.</span></span>
+				<span class="row-chev">›</span>
+			</button>
 			<div class="feature-list">
 ${featureRows}
 			</div>
