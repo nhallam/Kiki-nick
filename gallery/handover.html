@@ -633,6 +633,10 @@
 	var hoHome = document.getElementById('ho-home');
 	function hoShow(key) {
 		var title = null;
+		// Leaving a page must silence it: pause any playing video.
+		document.querySelectorAll('video').forEach(function (v) {
+			try { v.pause(); } catch (e) {}
+		});
 		document.querySelectorAll('.ho-page').forEach(function (pg) {
 			pg.hidden = pg.dataset.page !== key;
 			if (!pg.hidden) {
