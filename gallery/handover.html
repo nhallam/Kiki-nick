@@ -436,8 +436,56 @@
 			<span class="vp-text">Video coming soon</span>
 			<span class="vp-sub">Nick is recording a walkthrough for this section</span>
 		</div>
-		<div class="panel"><span class="ph-chip">Placeholder copy</span>
-			<p>Nick will write this: how the prototypes get made, working with Claude, how a change goes from a note to a deployed version, and how to pick that workflow up (or replace it with your own).</p>
+		<div class="panel">
+			<figure style="margin:0">
+				<svg viewBox="0 0 1000 200" role="img" aria-label="How a change ships: Nick briefs Claude Code, which commits to GitHub; Vercel auto-deploys the main branch; the site serves at kiki-nick.vercel.app." style="display:block;max-width:100%;height:auto">
+					<defs>
+						<marker id="wf-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+							<path d="M0 0 L10 5 L0 10 z" fill="#1f2937" />
+						</marker>
+					</defs>
+					<line x1="195" y1="80" x2="267" y2="80" stroke="#1f2937" stroke-width="2" marker-end="url(#wf-arrow)" />
+					<text x="235" y="66" font-size="12.5" font-weight="700" fill="#1f2937" text-anchor="middle">git push</text>
+					<line x1="465" y1="80" x2="537" y2="80" stroke="#1f2937" stroke-width="2" marker-end="url(#wf-arrow)" />
+					<text x="505" y="66" font-size="12.5" font-weight="700" fill="#1f2937" text-anchor="middle">auto-deploy</text>
+					<line x1="735" y1="80" x2="807" y2="80" stroke="#1f2937" stroke-width="2" marker-end="url(#wf-arrow)" />
+					<text x="775" y="66" font-size="12.5" font-weight="700" fill="#1f2937" text-anchor="middle">serves</text>
+
+					<g>
+						<rect x="5" y="40" width="190" height="80" rx="12" fill="#fff" stroke="#ddd" />
+						<rect x="7" y="42" width="186" height="5" rx="2.5" fill="#20a598" />
+						<text x="100" y="72" font-size="15" font-weight="800" fill="#1f2937" text-anchor="middle">Claude Code</text>
+						<text x="100" y="91" font-size="11.5" fill="#667080" text-anchor="middle">Nick briefs in chat; Claude</text>
+						<text x="100" y="106" font-size="11.5" fill="#667080" text-anchor="middle">edits, builds and commits</text>
+					</g>
+					<g>
+						<rect x="275" y="40" width="190" height="80" rx="12" fill="#fff" stroke="#ddd" />
+						<rect x="277" y="42" width="186" height="5" rx="2.5" fill="#1f2937" />
+						<text x="370" y="72" font-size="15" font-weight="800" fill="#1f2937" text-anchor="middle">GitHub</text>
+						<text x="370" y="91" font-size="11.5" fill="#667080" text-anchor="middle">nhallam/Kiki-nick · a branch</text>
+						<text x="370" y="106" font-size="11.5" fill="#667080" text-anchor="middle">per version, merged to main</text>
+					</g>
+					<g>
+						<rect x="545" y="40" width="190" height="80" rx="12" fill="#fff" stroke="#ddd" />
+						<rect x="547" y="42" width="186" height="5" rx="2.5" fill="#1f2937" />
+						<text x="640" y="72" font-size="15" font-weight="800" fill="#1f2937" text-anchor="middle">Vercel</text>
+						<text x="640" y="91" font-size="11.5" fill="#667080" text-anchor="middle">watches main; redeploys</text>
+						<text x="640" y="106" font-size="11.5" fill="#667080" text-anchor="middle">the site on every push</text>
+					</g>
+					<g>
+						<rect x="815" y="40" width="180" height="80" rx="12" fill="#fff" stroke="#ddd" />
+						<rect x="817" y="42" width="176" height="5" rx="2.5" fill="#12796f" />
+						<text x="905" y="72" font-size="14" font-weight="800" fill="#1f2937" text-anchor="middle">kiki-nick.vercel.app</text>
+						<text x="905" y="91" font-size="11.5" fill="#667080" text-anchor="middle">this site: the gallery,</text>
+						<text x="905" y="106" font-size="11.5" fill="#667080" text-anchor="middle">prototypes and handover</text>
+					</g>
+				</svg>
+				<figcaption style="font-size:13px;color:var(--gray);line-height:1.55;margin-top:10px">
+					Every change in this project travelled this pipeline, usually in a few minutes end to end. Each frozen
+					prototype version lives on its own GitHub branch, so nothing old ever changes; Vercel simply serves
+					whatever the main branch holds (its config points at the gallery folder, no build step).
+				</figcaption>
+			</figure>
 		</div>
 	</div>
 	<div class="ho-page" data-page="bigpicture" hidden>
