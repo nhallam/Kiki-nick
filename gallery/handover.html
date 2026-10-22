@@ -182,7 +182,6 @@
 		<button class="toc-row" data-page="bigpicture"><span class="toc-num">5</span><span class="toc-label">Product architecture and IA</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
 		<button class="toc-row" data-page="future"><span class="toc-num">6</span><span class="toc-label">Nick's Future Ideas</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
 		<button class="toc-row" data-page="figma"><span class="toc-num">7</span><span class="toc-label">Figma</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
-		<button class="toc-row" data-page="practical"><span class="toc-num">8</span><span class="toc-label">Practical notes</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
 	</div>
 	</div>
 
@@ -620,16 +619,6 @@
 			</a>
 			<div class="fg-row muted-row">More links to come</div>
 		</div>
-	</div>
-	<div class="ho-page" data-page="practical" hidden>
-		<h1 class="ho-title">Practical notes</h1>
-
-	<div class="panel">
-		<p><b>Where things live.</b> Repo: <code>nhallam/Kiki-nick</code> on GitHub. Each version is frozen on its own branch (<code>matching-v30-base</code> through <code>matching-v37</code>; round 1&ndash;2 on the <code>booking-flow-*</code> and <code>round2*</code> branches). The gallery launcher is built by <code>gallery/build.mjs</code> on the <code>flow-gallery</code> branch and served from <code>main</code> by Vercel at <a href="https://kiki-nick.vercel.app" target="_blank">kiki-nick.vercel.app</a>. The same gallery is mirrored to a private Claude artifact link for client sharing.</p>
-		<p><b>How a change ships.</b> Work lands on the current version branch (today: <code>matching-v37</code>), the single-file build (<code>dist/index.html</code>) is committed with it, the gallery is rebuilt on <code>flow-gallery</code> and merged to <code>main</code>. New explorations get a new <code>matching-v3x</code> branch and a gallery tile, so old versions never change under the client.</p>
-		<p><b>The app itself</b> is Vite + React + TypeScript, one self-contained HTML file per version. State for the whole two-phone demo lives in <code>src/store.ts</code>; most copy and data (listings, guests, restriction categories) in <code>src/data.ts</code> and <code>src/screens/HostRequest.tsx</code> (<code>REQUEST_PREVIEWS</code>).</p>
-	</div>
-
 	</div>
 </div>
 <script>
