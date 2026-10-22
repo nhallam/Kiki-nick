@@ -139,6 +139,7 @@
 	.toc-label { flex: 1; }
 	.toc-chev { color: var(--border-medium); font-size: 18px; }
 	.contents-hint { font-size: 13px; color: var(--gray); margin: -6px 0 10px; }
+	.toc-vid { display: inline-flex; align-items: center; gap: 5px; color: var(--gray); font-size: 12.5px; font-weight: 700; flex-shrink: 0; margin-right: 2px; }
 	.toc-read { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border-medium); color: transparent; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 	.toc-read:hover { border-color: var(--primary-strong); }
 	.toc-row.read .toc-read { background: var(--primary-strong); border-color: var(--primary-strong); color: var(--white); }
@@ -510,17 +511,30 @@
 	// its absolute URL here; the placeholder swaps for a player with a
 	// speed control. null keeps the "coming soon" placeholder.
 	var VIDEOS = {
-		background: null, // e.g. 'https://kiki-nick.vercel.app/videos/background.mp4'
+		background: null, // e.g. { src: 'https://kiki-nick.vercel.app/videos/background.mp4', mins: 9 }
 		recent: null,
-		working: 'https://kiki-nick.vercel.app/videos/working.mp4',
+		working: { src: 'https://kiki-nick.vercel.app/videos/working.mp4', mins: 9 },
 		bigpicture: null,
 	};
+	// ---- Video icon + length on the contents rows ----
+	var VID_ICON =
+		'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden><rect x="2" y="6" width="13" height="12" rx="2.5"/><path d="M15 10.5 22 7v10l-7-3.5"/></svg>';
+	document.querySelectorAll('.toc-row[data-page]').forEach(function (row) {
+		var entry = VIDEOS[row.dataset.page];
+		if (!entry || !entry.mins) return;
+		var chip = document.createElement('span');
+		chip.className = 'toc-vid';
+		chip.innerHTML = VID_ICON + '<span>' + entry.mins + ' min</span>';
+		row.insertBefore(chip, row.querySelector('.toc-read'));
+	});
+
 	var SPEEDS = [1, 1.25, 1.5, 2];
 	var savedRate = 1;
 	try { savedRate = parseFloat(localStorage.getItem('ho-rate')) || 1; } catch (e) {}
 	document.querySelectorAll('.video-ph[data-video]').forEach(function (ph) {
-		var url = VIDEOS[ph.dataset.video];
-		if (!url) return;
+		var entry = VIDEOS[ph.dataset.video];
+		if (!entry) return;
+		var url = entry.src;
 		var wrap = document.createElement('div');
 		wrap.className = 'vid-wrap';
 		var vid = document.createElement('video');
