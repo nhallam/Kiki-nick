@@ -192,15 +192,15 @@ const VERSIONS = [
 
 const FEATURES = [
 	{ key: 'handover', title: 'Design handover' },
-	{ key: 'booking', title: 'Booking Request Flow' },
+	{ key: 'booking', title: 'Booking request flow' },
 	{ key: 'matches', title: 'Matches flow' },
 	{ key: 'notifications', title: 'Notifications' },
-	{ key: 'appnav', title: 'App Navigation and IA' },
+	{ key: 'appnav', title: 'App navigation and IA' },
 	{ key: 'listingflow', title: 'Listing flow (and profile tab)' },
-	{ key: 'explore', title: 'Explore Tab & Map' },
+	{ key: 'explore', title: 'Explore tab and map' },
 	{ key: 'ratings', title: 'Ratings and reviews' },
 	{ key: 'messaging', title: 'Messaging' },
-	{ key: 'listingdetail', title: 'Listing Detail Page' },
+	{ key: 'listingdetail', title: 'Listing detail page' },
 ];
 
 const SECTIONS = [
@@ -687,7 +687,10 @@ ${featurePages}
 		hoSub = false;
 		frame.srcdoc = decode(data[src]); // fresh document each open, flow restarts
 		document.querySelector('.phone-stage').classList.toggle('wide', !!wides[id]);
-		barTitle.textContent = features[id] + ' \u00b7 ' + labels[id];
+		// The handover's top level is its own name; everything else is
+		// "Feature \u00b7 version".
+		barTitle.textContent =
+			id === 'handover' ? features[id] : features[id] + ' \u00b7 ' + labels[id];
 		launcher.classList.add('hidden');
 		viewer.classList.add('active');
 		// Only sibling versions from the same round belong in the bar; a
@@ -767,7 +770,7 @@ ${featurePages}
 		hoSub = !!d.page;
 		barTitle.textContent = d.page
 			? features.handover + ' \u00b7 ' + d.title
-			: features.handover + ' \u00b7 ' + labels.handover;
+			: features.handover;
 	});
 	document.getElementById('backBtn').addEventListener('click', function () {
 		if (openId === 'handover' && hoSub) {
