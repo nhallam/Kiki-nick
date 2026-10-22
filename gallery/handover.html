@@ -146,6 +146,14 @@
 	.toc-label { flex: 1; }
 	.toc-chev { color: var(--border-medium); font-size: 18px; }
 	.contents-hint { font-size: 13px; color: var(--gray); margin: -6px 0 10px; }
+	.table-scroll { overflow-x: auto; }
+	table.audit { min-width: 720px; }
+	td.tk { font-weight: 700; white-space: nowrap; }
+	.na { color: var(--gray); font-size: 12.5px; }
+	.chip-drift, .chip-match, .chip-proto { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; border-radius: 6px; padding: 2px 6px; margin-left: 5px; vertical-align: 1px; }
+	.chip-drift { color: var(--pending); background: var(--pending-tint); border: 1px solid var(--pending); }
+	.chip-match { color: var(--primary-strong); background: var(--primary-tint); border: 1px solid var(--primary-strong); }
+	.chip-proto { color: var(--gray); background: var(--light-gray); border: 1px solid var(--border-medium); }
 	.toc-vid { display: inline-flex; align-items: center; gap: 5px; color: var(--gray); font-size: 12.5px; font-weight: 700; flex-shrink: 0; margin-right: 2px; }
 	.toc-read { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border-medium); color: transparent; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 	.toc-read:hover { border-color: var(--primary-strong); }
@@ -318,6 +326,62 @@
 	</div>
 	<div class="ho-page" data-page="design-system" hidden>
 		<h1 class="ho-title">Current design system</h1>
+
+		<div class="panel">
+			<p>There isn't one design system today; there are <b>three layers that partly disagree</b>. A tiny canonical
+			token package holds only the teal and the typeface; the web and mobile apps each grew their own fuller
+			vocabulary on top; and the 2026 prototypes added a fourth, contrast-checked set that only exists here.
+			The table below lays them side by side so the reconciliation work is visible at a glance.</p>
+		</div>
+
+		<div class="comp">
+			<div class="comp-title">Where the system lives</div>
+			<table>
+				<tr><th>Layer</th><th>Where</th><th>What it holds</th></tr>
+				<tr><td class="tk">Canonical tokens</td><td><code>packages/ui/general/src/tokens.ts</code></td><td>Primary teal palette, two input greys, Inter. Created to stop web/mobile drift (KIK-389); never grew beyond that.</td></tr>
+				<tr><td class="tk">Web theme</td><td><code>packages/ui/web/src/theme/theme.ts</code></td><td>MUI theme: full semantic palette, text trio, 24-step shadows, radius 12, type scale (d1/d2, h1&ndash;h4; h5/h6 banned).</td></tr>
+				<tr><td class="tk">Mobile theme</td><td><code>apps/mobile-app/theme/theme.ts</code></td><td>RN Paper theme + a COLORS object of 60+ ad-hoc names (pillGray, mintBackground, socialProofOverlay...), roundness 10.</td></tr>
+				<tr><td class="tk">Prototype set</td><td><code>Kiki-nick: src/theme.ts + styles.css</code></td><td>The production port plus contrast-safe additions, with ratios documented. Unofficial.</td></tr>
+			</table>
+			<p class="small muted" style="margin-top:10px">All in the <code>nhallam/kiki</code> monorepo except the prototype set, which lives in this project's repo.</p>
+		</div>
+
+		<div class="comp">
+			<div class="comp-title">The same concepts, four answers</div>
+			<div class="comp-note">Canonical is what the shared token package declares; web and mobile are what each app actually uses; prototypes are what the 2026 work settled on. Amber rows are where production disagrees with itself.</div>
+			<div class="table-scroll">
+			<table class="audit">
+				<tr><th>Concept</th><th>Canonical</th><th>Web (MUI)</th><th>Mobile (Paper + COLORS)</th><th>Prototypes (3.x)</th></tr>
+				<tr><td class="tk">Primary teal <span class="chip-match">match</span></td><td><span class="sw" style="background:#20A598"></span>#20A598</td><td><span class="sw" style="background:#20A598"></span>#20A598</td><td><span class="sw" style="background:#20A598"></span>#20A598</td><td><span class="sw" style="background:#20A598"></span>#20A598</td></tr>
+				<tr><td class="tk">Primary dark <span class="chip-drift">drift</span></td><td><span class="sw" style="background:#157A70"></span>#157A70</td><td><span class="sw" style="background:#157A70"></span>#157A70</td><td><span class="sw" style="background:#0F6E56"></span>#0F6E56</td><td><span class="sw" style="background:#0F6E56"></span>#0F6E56</td></tr>
+				<tr><td class="tk">Contrast-safe teal <span class="chip-proto">proto only</span></td><td><span class="na">not set</span></td><td><span class="na">not set</span></td><td><span class="na">not set</span></td><td><span class="sw" style="background:#12796F"></span>#12796F <span class="na">(brand teal is 3.04:1 on white)</span></td></tr>
+				<tr><td class="tk">Error <span class="chip-drift">drift</span></td><td><span class="na">not set</span></td><td><span class="sw" style="background:#F25642"></span>#F25642</td><td><span class="sw" style="background:#D32F2F"></span>#D32F2F</td><td><span class="sw" style="background:#C62828"></span>#C62828</td></tr>
+				<tr><td class="tk">Warning / pending <span class="chip-drift">drift</span></td><td><span class="na">not set</span></td><td><span class="sw" style="background:#EC930E"></span>#EC930E</td><td><span class="sw" style="background:#F59E0B"></span>#F59E0B</td><td><span class="sw" style="background:#8A5A00"></span>#8A5A00 <span class="na">on #FDF0D9</span></td></tr>
+				<tr><td class="tk">Success <span class="chip-drift">drift</span></td><td><span class="na">not set</span></td><td><span class="sw" style="background:#31CA6E"></span>#31CA6E</td><td><span class="sw" style="background:#16A34A"></span>#16A34A</td><td><span class="sw" style="background:#12833C"></span>#12833C</td></tr>
+				<tr><td class="tk">Info <span class="chip-drift">drift</span></td><td><span class="na">not set</span></td><td><span class="sw" style="background:#20BFE2"></span>#20BFE2</td><td><span class="sw" style="background:#0284C7"></span>#0284C7</td><td><span class="na">not set</span></td></tr>
+				<tr><td class="tk">Body text <span class="chip-drift">drift</span></td><td><span class="na">not set</span></td><td><span class="sw" style="background:#383E3C"></span>#383E3C</td><td><span class="sw" style="background:#1F2937"></span>#1F2937</td><td><span class="sw" style="background:#1F2937"></span>#1F2937</td></tr>
+				<tr><td class="tk">Secondary text <span class="chip-drift">drift</span></td><td><span class="na">not set</span></td><td><span class="sw" style="background:#626A68"></span>#626A68</td><td><span class="sw" style="background:#9CA3AF"></span>#9CA3AF <span class="na">+ #6E7675</span></td><td><span class="sw" style="background:#667080"></span>#667080</td></tr>
+				<tr><td class="tk">Typeface <span class="chip-match">match</span></td><td>Inter</td><td>Inter</td><td>Inter</td><td>Inter</td></tr>
+				<tr><td class="tk">Corner radius <span class="chip-drift">drift</span></td><td><span class="na">not set</span></td><td>12px</td><td>10px</td><td>12px</td></tr>
+				<tr><td class="tk">Shadows <span class="chip-drift">drift</span></td><td><span class="na">not set</span></td><td>24-step scale</td><td>2 presets (soft, card)</td><td>mostly flat, borders</td></tr>
+			</table>
+			</div>
+		</div>
+
+		<div class="comp">
+			<div class="comp-title">The gaps, honestly</div>
+			<ul class="gap-list">
+				<li><b>Only the teal and Inter are genuinely shared.</b> Every semantic colour (error, warning, success, info) has two production values, one per platform.</li>
+				<li><b>Even "primary dark" disagrees with itself:</b> the canonical token says #157A70, mobile uses #0F6E56.</li>
+				<li><b>73 distinct hardcoded hex values</b> sit in components outside any theme (15 mobile component files alone).</li>
+				<li><b>Mobile has no type scale</b>; web has one, with h5/h6 deliberately disabled.</li>
+				<li><b>Accessibility is unaddressed in production:</b> brand teal carries white text at 3.04:1. The prototype set added contrast-safe variants (#12796F text teal, #8A5A00 amber) with ratios annotated in the CSS.</li>
+				<li>The canonical package's own comment invites growth ("add tokens here as more values become genuinely shared"); the reconciliation stopped after the teal.</li>
+			</ul>
+		</div>
+
+		<h2 style="margin-top:34px">The prototype component inventory</h2>
+		<p class="contents-hint" style="margin:-4px 0 12px">What the 2026 prototypes use today: the newest, most considered layer, and a candidate starting point for the real system.</p>
 
 
 	<div class="comp">
