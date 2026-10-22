@@ -191,7 +191,7 @@ const VERSIONS = [
 ];
 
 const FEATURES = [
-	{ key: 'handover', title: 'Designer handover' },
+	{ key: 'handover', title: 'Design handover' },
 	{ key: 'booking', title: 'Booking Request Flow' },
 	{ key: 'matches', title: 'Matches flow' },
 	{ key: 'notifications', title: 'Notifications' },
@@ -285,7 +285,7 @@ const featureRows = FEATURES.filter((f) => f.key !== 'handover').map((f) => {
 
 // One page per feature: round tabs (when there are 2+ rounds), then the
 // version cards for the active round. Empty features get a placeholder.
-const featurePages = FEATURES.map((f) => {
+const featurePages = FEATURES.filter((f) => f.key !== 'handover').map((f) => {
 	const secs = SECTIONS.filter((s) => s.feature === f.key);
 	let inner;
 	if (secs.length === 0) {
@@ -313,7 +313,7 @@ ${VERSIONS.filter((v) => v.section === sec.key)
 		inner = `${tabs}\n<div class="cards">\n${blocks}\n</div>`;
 	}
 	return `<div class="feature-page" data-feature="${f.key}" hidden>
-		<button class="feature-back">\u2190 All features</button>
+		<button class="feature-back" data-to="prototypes">\u2190 All prototypes</button>
 		<h2 class="feature-title">${f.title}</h2>
 ${inner}
 	</div>`;
@@ -433,17 +433,28 @@ body {
 }
 /* home: stacked feature list */
 .feature-list { display: flex; flex-direction: column; gap: 10px; width: min(440px, 100%); }
-.handover-banner {
-	display: flex; align-items: center; gap: 14px; width: 100%; max-width: 560px;
-	background: #12796f; color: #fff; border: none; border-radius: 14px;
-	padding: 16px 18px; margin: 2px 0 18px; cursor: pointer; text-align: left;
-	font-family: inherit;
+.big-cards {
+	display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+	width: 100%; max-width: 640px; margin-top: 6px;
 }
-.handover-banner .hb-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.handover-banner .hb-title { font-size: 16px; font-weight: 800; }
-.handover-banner .hb-sub { font-size: 12.5px; opacity: 0.85; line-height: 1.45; }
-.handover-banner .row-chev { color: rgba(255,255,255,0.7); font-size: 22px; }
-.handover-banner:hover { background: #0f6b62; }
+@media (max-width: 560px) { .big-cards { grid-template-columns: 1fr; } }
+.big-card {
+	display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+	min-height: 230px; background: var(--card); border: 1px solid var(--line);
+	border-radius: 18px; padding: 24px 22px; cursor: pointer; text-align: left;
+	font-family: inherit; color: var(--ink);
+	transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.big-card:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(15, 40, 35, 0.1); }
+.big-card .bc-icon {
+	width: 52px; height: 52px; border-radius: 14px; background: var(--tint);
+	color: var(--primary-dark); display: flex; align-items: center; justify-content: center;
+	margin-bottom: 4px;
+}
+.big-card .bc-title { font-size: 18px; font-weight: 800; }
+.big-card .bc-sub { font-size: 13.5px; color: var(--muted); line-height: 1.55; flex: 1; }
+.big-card .bc-go { font-size: 13.5px; font-weight: 700; color: var(--primary-dark); }
+.proto-sub { font-size: 14px; color: var(--muted); margin: -6px 0 16px; }
 .feature-row {
 	display: flex; align-items: center; gap: 10px; text-align: left;
 	background: var(--card); border: 1px solid var(--line); border-radius: 14px;
@@ -565,12 +576,31 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 <div id="gallery-root">
 	<div class="launcher" id="launcher">
 		<div class="home" id="home">
-			<div class="brand"><span class="brand-dot">K</span><h1>Kiki prototypes</h1></div>
-			<p class="sub">Pick a feature area, then a prototype version to walk through. Everything is clickable.</p>
-			<button class="handover-banner" data-version="handover">
-				<span class="hb-body"><span class="hb-title">Designer handover</span><span class="hb-sub">New to the project? Start here: the work to date, the decisions behind it, and the components.</span></span>
-				<span class="row-chev">›</span>
-			</button>
+			<div class="brand"><span class="brand-dot">K</span><h1>Design at Kiki</h1></div>
+			<p class="sub">One home for the design work on Kiki's booking and matching experience.</p>
+			<div class="big-cards">
+				<button class="big-card" data-version="handover">
+					<span class="bc-icon" aria-hidden>
+						<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4.5A2.5 2.5 0 0 1 4.5 2H12v17.5H4.5A2.5 2.5 0 0 0 2 22z"/><path d="M22 4.5A2.5 2.5 0 0 0 19.5 2H12v17.5h7.5a2.5 2.5 0 0 1 2.5 2.5z"/><path d="M5.5 6.5h3.5M5.5 10h3.5"/></svg>
+					</span>
+					<span class="bc-title">Design handover</span>
+					<span class="bc-sub">The work to date, the decisions behind it, and the components it uses. Start here.</span>
+					<span class="bc-go">Open ›</span>
+				</button>
+				<button class="big-card" data-page="prototypes">
+					<span class="bc-icon" aria-hidden>
+						<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"/><path d="M16 8h2a2 2 0 0 1 2 2v12"/><path d="M2 22h20"/><path d="M7.5 6h2M7.5 10h2M7.5 14h2M12 18.5v3.5"/></svg>
+					</span>
+					<span class="bc-title">Prototypes</span>
+					<span class="bc-sub">Every interactive build, organised by feature area and round. The highest number is the live one.</span>
+					<span class="bc-go">Open ›</span>
+				</button>
+			</div>
+		</div>
+		<div class="feature-page" data-feature="prototypes" hidden>
+			<button class="feature-back" data-to="">← Home</button>
+			<h2 class="feature-title">Prototypes</h2>
+			<p class="proto-sub">Pick a feature area, then a prototype version to walk through. Everything is clickable.</p>
 			<div class="feature-list">
 ${featureRows}
 			</div>
@@ -715,7 +745,10 @@ ${featurePages}
 		});
 	});
 	document.querySelectorAll('.feature-back').forEach(function (btn) {
-		btn.addEventListener('click', function () { go(''); });
+		btn.addEventListener('click', function () { go(btn.dataset.to || ''); });
+	});
+	document.querySelectorAll('[data-page]').forEach(function (el) {
+		el.addEventListener('click', function () { go(el.dataset.page); });
 	});
 	document.querySelectorAll('[data-version]').forEach(function (el) {
 		el.addEventListener('click', function () {
@@ -735,11 +768,11 @@ ${featurePages}
 
 writeFileSync(
 	join(root, 'gallery/artifact.html'),
-	'<title>Kiki - Booking Flow Versions</title>\n' + body,
+	'<title>Design at Kiki</title>\n' + body,
 );
 writeFileSync(
 	join(root, 'gallery/index.html'),
-	'<!doctype html>\n<html lang="en">\n<head>\n<meta charset="UTF-8" />\n<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n<title>Kiki - Booking Flow Versions</title>\n</head>\n<body>' +
+	'<!doctype html>\n<html lang="en">\n<head>\n<meta charset="UTF-8" />\n<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n<title>Design at Kiki</title>\n</head>\n<body>' +
 		body +
 		'</body>\n</html>\n',
 );

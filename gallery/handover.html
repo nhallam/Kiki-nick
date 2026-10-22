@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Kiki - designer handover</title>
+<title>Design handover - Kiki</title>
 <style>
 	:root {
 		--primary: #20a598;
@@ -22,9 +22,10 @@
 		--host: #2f4a72;
 	}
 	* { margin: 0; padding: 0; box-sizing: border-box; }
+	html { scroll-behavior: smooth; }
 	body {
 		font-family: 'Inter', -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
-		background: #e7e9ec;
+		background: #f2f5f4;
 		color: var(--dark);
 		-webkit-font-smoothing: antialiased;
 		padding: 36px 16px 90px;
@@ -32,6 +33,7 @@
 	.page { max-width: 880px; margin: 0 auto; }
 	h1 { font-size: 28px; margin-bottom: 4px; }
 	.byline { font-size: 14px; color: var(--gray); margin-bottom: 26px; }
+	.welcome { font-size: 19px; font-weight: 800; margin-bottom: 10px; }
 	h2 { font-size: 20px; margin: 42px 0 12px; }
 	h3 { font-size: 15.5px; margin: 22px 0 8px; }
 	p, li { font-size: 14.5px; line-height: 1.65; color: var(--dark); }
@@ -113,34 +115,37 @@
 	.restrict-chip { display: inline-block; font-size: 12px; font-weight: 700; color: var(--pending); background: var(--pending-tint); border: 1px solid var(--pending); border-radius: 8px; padding: 3px 9px; }
 
 	.gap-list li { margin-bottom: 8px; }
-	.toc { columns: 2; column-gap: 30px; }
-	.toc li { break-inside: avoid; }
-	@media (max-width: 640px) { .toc { columns: 1; } }
+	.toc-panel { padding: 8px 10px; }
+	.toc-row { display: flex; align-items: center; gap: 13px; padding: 13px 12px; text-decoration: none; color: var(--dark); font-size: 14.5px; font-weight: 600; border-radius: 8px; }
+	.toc-row + .toc-row { border-top: 1px solid var(--border-light); }
+	.toc-row:hover { background: var(--light-gray); }
+	.toc-num { width: 24px; height: 24px; border-radius: 50%; background: var(--primary-tint); color: var(--primary-strong); font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+	.toc-label { flex: 1; }
+	.toc-chev { color: var(--border-medium); font-size: 18px; }
 </style>
 </head>
 <body>
 <div class="page">
-	<h1>Designer handover</h1>
-	<div class="byline">Kiki booking-request and matches-flow prototypes · last updated 13 October 2026</div>
+	<h1>Design handover</h1>
+	<div class="byline">Kiki booking-request and matches-flow prototypes · last updated 22 October 2026</div>
 
 	<div class="panel">
-		<p>Welcome! This page is the map to everything in this gallery: what was built, in what order, why it changed along the way, and the pieces it's made of. The prototypes are fully interactive HTML builds of two areas of the Kiki home-swap app: the <b>Booking Request Flow</b> (a guest asking to stay) and the <b>Matches Flow</b> (what happens between a request landing and a confirmed stay). Every numbered version in the gallery is frozen and stays openable, so you can compare any two rounds side by side. The highest number is always the live one; right now that's <b>3.7</b>.</p>
+		<p class="welcome">Welcome, Laura &#128075;</p>
+		<p>This page is the map to everything in this gallery: what was built, in what order, why it changed along the way, and the pieces it's made of. The prototypes are fully interactive HTML builds of two areas of the Kiki home-swap app: the <b>Booking Request Flow</b> (a guest asking to stay) and the <b>Matches Flow</b> (what happens between a request landing and a confirmed stay). Every numbered version in the gallery is frozen and stays openable, so you can compare any two rounds side by side. The highest number is always the live one; right now that's <b>3.7</b>.</p>
 	</div>
 
 	<h2>Contents</h2>
-	<div class="panel">
-		<ol class="toc">
-			<li>Driving the demos</li>
-			<li>The two flows at a glance</li>
-			<li>Version history (1.0 to 3.7)</li>
-			<li>Decisions that shaped the design</li>
-			<li>Components and tokens</li>
-			<li>Known gaps and open threads</li>
-			<li>Practical notes (branches, deploys)</li>
-		</ol>
+	<div class="panel toc-panel">
+		<a class="toc-row" href="#demos"><span class="toc-num">1</span><span class="toc-label">Driving the demos</span><span class="toc-chev">›</span></a>
+		<a class="toc-row" href="#flows"><span class="toc-num">2</span><span class="toc-label">The two flows at a glance</span><span class="toc-chev">›</span></a>
+		<a class="toc-row" href="#history"><span class="toc-num">3</span><span class="toc-label">Version history (1.0 to 3.7)</span><span class="toc-chev">›</span></a>
+		<a class="toc-row" href="#decisions"><span class="toc-num">4</span><span class="toc-label">Decisions that shaped the design</span><span class="toc-chev">›</span></a>
+		<a class="toc-row" href="#components"><span class="toc-num">5</span><span class="toc-label">Components and tokens</span><span class="toc-chev">›</span></a>
+		<a class="toc-row" href="#gaps"><span class="toc-num">6</span><span class="toc-label">Known gaps and open threads</span><span class="toc-chev">›</span></a>
+		<a class="toc-row" href="#practical"><span class="toc-num">7</span><span class="toc-label">Practical notes (branches, deploys)</span><span class="toc-chev">›</span></a>
 	</div>
 
-	<h2>1 · Driving the demos</h2>
+	<h2 id="demos">1 · Driving the demos</h2>
 	<div class="panel">
 		<p>From 3.0 onwards each prototype is <b>two live phones side by side</b>: the guest on the left (Melissa by default), the host Ryan on the right. They share state, so the host acting on a request updates the guest's phone instantly. Three bits of demo chrome sit outside the phones:</p>
 		<ul>
@@ -152,7 +157,7 @@
 		<p>Two supporting pages live beside the prototypes: the <a href="https://kiki-nick.vercel.app/flow.html" target="_blank">flow map</a> (every pathway a request can take, including the trip model and the 48-hour checklist) and the <a href="https://kiki-nick.vercel.app/cards.html" target="_blank">card options</a> page (the explorations behind the current card designs, kept for reference).</p>
 	</div>
 
-	<h2>2 · The two flows at a glance</h2>
+	<h2 id="flows">2 · The two flows at a glance</h2>
 	<div class="panel">
 		<h3>Booking Request Flow (rounds 1 and 2)</h3>
 		<p>Round 1 rebuilt the shipped 4-step flow faithfully (1.0), then explored three directions: best-practice polish (1.1), a restructured 3-step flow (1.2), and a review-centric, Airbnb-style hub with editor sheets (1.3). <b>The client chose 1.3</b>, and round 2 (2.0&ndash;2.4) refined that direction through client feedback: window stepper, the Staying/Hosting Trips split, the amber pending state, calendar work and an accessibility pass. 2.4 was the last active booking-flow build; its ideas carried into round 3.</p>
@@ -160,7 +165,7 @@
 		<p>Everything after a request is sent: the host's inbox and consent model, the 48-hour reserved window (signing + payments), mutual confirmation, the match screen, declines and revocations, and (3.7) listing restrictions. The full state machine is drawn on the <a href="https://kiki-nick.vercel.app/flow.html" target="_blank">flow map</a>; the short version: <b>New &rarr; Offered &rarr; Reserved &rarr; Confirmed</b>, with Declined (reopenable) and Revoked (automatic) as the side exits.</p>
 	</div>
 
-	<h2>3 · Version history</h2>
+	<h2 id="history">3 · Version history</h2>
 
 	<div class="ver"><div class="ver-head"><span class="ver-num">1.0&ndash;1.3</span><span class="ver-name">Round 1: the fork in the road</span></div>
 		<p>1.0 is the control (the live app, rebuilt). 1.1 polished it, 1.2 restructured it, 1.3 replaced the wizard with one "Review and request" hub where Change buttons open dates/guests editor sheets. The client picked 1.3; every later flow builds on its editor-sheet pattern.</p>
@@ -208,7 +213,7 @@
 		<div class="why"><b>Why</b>Users were frustrated to discover restrictions only after requesting. The client's category list is still to come; the categories live in one map (<code>RESTRICTION_INFO</code> in <code>src/data.ts</code>) so swapping in the real list is a one-file change.</div>
 	</div>
 
-	<h2>4 · Decisions that shaped the design</h2>
+	<h2 id="decisions">4 · Decisions that shaped the design</h2>
 	<div class="panel">
 		<h3>Statuses are words, not badges</h3>
 		<div class="quote">"I don't love these badge designs. I preferred the &bull; with the text."<span class="who">Nick, reviewing pill-badge options</span></div>
@@ -238,7 +243,7 @@
 		</ul>
 	</div>
 
-	<h2>5 · Components and tokens</h2>
+	<h2 id="components">5 · Components and tokens</h2>
 
 	<div class="comp">
 		<div class="comp-title">Colour tokens (ported from the real app)</div>
@@ -347,7 +352,7 @@
 		</ul>
 	</div>
 
-	<h2>6 · Known gaps and open threads</h2>
+	<h2 id="gaps">6 · Known gaps and open threads</h2>
 	<div class="panel">
 		<ul class="gap-list">
 			<li><b>Restriction categories are placeholders.</b> The client owes the real list; it drops into <code>RESTRICTION_INFO</code> in <code>src/data.ts</code>. Also flagged to the client: "Looking for a female" as a decline reason goes to the guest verbatim, worth a policy/legal look before production.</li>
@@ -360,12 +365,23 @@
 		</ul>
 	</div>
 
-	<h2>7 · Practical notes</h2>
+	<h2 id="practical">7 · Practical notes</h2>
 	<div class="panel">
 		<p><b>Where things live.</b> Repo: <code>nhallam/Kiki-nick</code> on GitHub. Each version is frozen on its own branch (<code>matching-v30-base</code> through <code>matching-v37</code>; round 1&ndash;2 on the <code>booking-flow-*</code> and <code>round2*</code> branches). The gallery launcher is built by <code>gallery/build.mjs</code> on the <code>flow-gallery</code> branch and served from <code>main</code> by Vercel at <a href="https://kiki-nick.vercel.app" target="_blank">kiki-nick.vercel.app</a>. The same gallery is mirrored to a private Claude artifact link for client sharing.</p>
 		<p><b>How a change ships.</b> Work lands on the current version branch (today: <code>matching-v37</code>), the single-file build (<code>dist/index.html</code>) is committed with it, the gallery is rebuilt on <code>flow-gallery</code> and merged to <code>main</code>. New explorations get a new <code>matching-v3x</code> branch and a gallery tile, so old versions never change under the client.</p>
 		<p><b>The app itself</b> is Vite + React + TypeScript, one self-contained HTML file per version. State for the whole two-phone demo lives in <code>src/store.ts</code>; most copy and data (listings, guests, restriction categories) in <code>src/data.ts</code> and <code>src/screens/HostRequest.tsx</code> (<code>REQUEST_PREVIEWS</code>).</p>
 	</div>
 </div>
+<script>
+	// Inside the gallery the page runs in a srcdoc iframe, where a plain
+	// #anchor href resolves against the parent URL. Scroll with JS instead.
+	document.querySelectorAll('a.toc-row').forEach(function (a) {
+		a.addEventListener('click', function (e) {
+			e.preventDefault();
+			var el = document.getElementById(a.getAttribute('href').slice(1));
+			if (el) el.scrollIntoView({ behavior: 'smooth' });
+		});
+	});
+</script>
 </body>
 </html>
