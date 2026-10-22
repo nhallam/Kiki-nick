@@ -313,8 +313,6 @@ ${VERSIONS.filter((v) => v.section === sec.key)
 		inner = `${tabs}\n<div class="cards">\n${blocks}\n</div>`;
 	}
 	return `<div class="feature-page" data-feature="${f.key}" hidden>
-		<button class="feature-back" data-to="prototypes">\u2190 All prototypes</button>
-		<h2 class="feature-title">${f.title}</h2>
 ${inner}
 	</div>`;
 }).join('\n');
@@ -345,6 +343,14 @@ const featureKeysById = JSON.stringify(
 const wides = JSON.stringify(
 	Object.fromEntries(VERSIONS.filter((v) => v.wide).map((v) => [v.id, 1])),
 );
+
+// Launcher pages' top-bar titles (the viewer sets its own).
+const pageTitles = JSON.stringify({
+	prototypes: 'Prototypes',
+	...Object.fromEntries(
+		FEATURES.filter((f) => f.key !== 'handover').map((f) => [f.key, f.title]),
+	),
+});
 
 const chips = VERSIONS.filter((v) => v.branch)
 	.map(
@@ -475,14 +481,6 @@ body {
 /* feature pages */
 .feature-page { display: flex; flex-direction: column; width: min(440px, 100%); }
 .feature-page[hidden] { display: none; }
-.feature-back {
-	align-self: flex-start;
-	font-family: inherit; font-size: 13.5px; font-weight: 700;
-	color: var(--primary-dark); background: var(--tint);
-	border: none; border-radius: 16px; padding: 8px 14px; cursor: pointer;
-	margin-bottom: 16px;
-}
-.feature-title { font-size: 21px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 12px; }
 .empty-note {
 	background: var(--card); border: 1px dashed var(--line); border-radius: 14px;
 	padding: 22px 18px; font-size: 13.5px; color: var(--muted); text-align: center;
@@ -536,11 +534,13 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 .viewer { flex: 1; display: none; flex-direction: column; min-height: 0; }
 .viewer.active { display: flex; }
 .launcher.hidden { display: none; }
+/* One top nav for every page below home: transparent, floating over the
+   page background, back pill + current title (+ version chips in the viewer). */
 .bar {
 	display: flex; align-items: center; gap: 10px;
-	padding: 9px 14px; background: var(--card);
-	border-bottom: 1px solid var(--line); flex-shrink: 0; flex-wrap: wrap;
+	padding: 12px 14px; flex-shrink: 0; flex-wrap: wrap;
 }
+.bar[hidden] { display: none; }
 .bar-back {
 	display: flex; align-items: center; gap: 6px;
 	font-family: inherit; font-size: 14px; font-weight: 700;
@@ -574,6 +574,11 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 </style>
 
 <div id="gallery-root">
+	<div class="bar" id="topbar" hidden>
+		<button class="bar-back" id="backBtn">← Back</button>
+		<span class="bar-title" id="barTitle"></span>
+		<span class="bar-chips">${chips}</span>
+	</div>
 	<div class="launcher" id="launcher">
 		<div class="home" id="home">
 			<div class="brand"><h1>Product design handover</h1></div>
@@ -598,8 +603,6 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 			<p class="hint">Any questions for Nick? <button class="hint-mail" id="copyMail" type="button" title="Copy email address">nrhallam@gmail.com</button><span class="copy-note" id="copyNote" hidden>Copied</span></p>
 		</div>
 		<div class="feature-page" data-feature="prototypes" hidden>
-			<button class="feature-back" data-to="">← Home</button>
-			<h2 class="feature-title">Prototypes</h2>
 			<p class="proto-sub">Pick a feature area, then a prototype version to walk through. Everything is clickable.</p>
 			<div class="feature-list">
 ${featureRows}
@@ -608,11 +611,6 @@ ${featureRows}
 ${featurePages}
 	</div>
 	<div class="viewer" id="viewer">
-		<div class="bar">
-		<button class="bar-back" id="backBtn">← Back</button>
-			<span class="bar-title" id="barTitle"></span>
-			<span class="bar-chips">${chips}</span>
-		</div>
 		<div class="viewer-main">
 			<div class="frame-col">
 				<div class="phone-stage">
@@ -636,7 +634,12 @@ ${featurePages}
 	var launcher = document.getElementById('launcher');
 	var viewer = document.getElementById('viewer');
 	var frame = document.getElementById('frame');
+	var topbar = document.getElementById('topbar');
 	var barTitle = document.getElementById('barTitle');
+	var pageTitles = ${pageTitles};
+	function hideChips() {
+		document.querySelectorAll('.bar-chip').forEach(function (c) { c.hidden = true; });
+	}
 
 	function decode(b64) {
 		var bytes = Uint8Array.from(atob(b64), function (c) { return c.charCodeAt(0); });
@@ -717,8 +720,9 @@ ${featurePages}
 	// The URL hash is the source of truth: '' = home, '#feature' = a
 	// feature page, '#feature/versionId' = a prototype. Refreshing (or
 	// sharing the link) restores the same view, and browser back/forward
-	// walk the history.
+	// walk the history. The shared top bar shows everywhere except home.
 	var openId = null;
+	var curFeature = null;
 	function applyHash() {
 		var parts = decodeURIComponent(location.hash.replace(/^#\\/?/, ''))
 			.split('/')
@@ -728,12 +732,23 @@ ${featurePages}
 			showFeature(parts[0]);
 			if (sections[vid]) activateSection(sections[vid]);
 			openId = vid;
+			curFeature = parts[0];
+			topbar.hidden = false;
 			open(vid);
 			return;
 		}
 		if (viewer.classList.contains('active')) close();
 		openId = null;
-		if (!parts[0] || !showFeature(parts[0])) showHome();
+		if (!parts[0] || !showFeature(parts[0])) {
+			showHome();
+			curFeature = null;
+			topbar.hidden = true;
+		} else {
+			curFeature = parts[0];
+			topbar.hidden = false;
+			barTitle.textContent = pageTitles[parts[0]] || '';
+			hideChips();
+		}
 	}
 	function go(h) {
 		// Setting an identical hash fires no event, so render directly.
@@ -746,9 +761,6 @@ ${featurePages}
 			row.blur();
 			go(row.dataset.feature);
 		});
-	});
-	document.querySelectorAll('.feature-back').forEach(function (btn) {
-		btn.addEventListener('click', function () { go(btn.dataset.to || ''); });
 	});
 	document.querySelectorAll('[data-page]').forEach(function (el) {
 		el.addEventListener('click', function () { go(el.dataset.page); });
@@ -775,7 +787,15 @@ ${featurePages}
 			frame.contentWindow.postMessage({ type: 'ho-back' }, '*');
 			return;
 		}
-		go(openId ? featureKeys[openId] : '');
+		if (openId) {
+			// Leaving the handover goes home (it sits on the home screen);
+			// leaving a prototype goes to its feature page.
+			go(openId === 'handover' ? '' : featureKeys[openId]);
+			return;
+		}
+		// On a launcher page: feature pages step up to Prototypes, which
+		// steps up to home.
+		go(curFeature === 'prototypes' || !curFeature ? '' : 'prototypes');
 	});
 	// The email line copies instead of opening a mail client.
 	var copyMail = document.getElementById('copyMail');
