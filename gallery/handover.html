@@ -124,6 +124,12 @@
 	.vp-text { color: #fff; font-size: 15.5px; font-weight: 700; }
 	.vp-sub { color: #9aa4b2; font-size: 13px; }
 	.ph-chip { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--pending); background: var(--pending-tint); border: 1px solid var(--pending); border-radius: 7px; padding: 3px 8px; margin-bottom: 10px; }
+	.vid-wrap { margin-bottom: 14px; }
+	.vid-wrap video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 12px; }
+	.vid-speed { display: flex; align-items: center; gap: 7px; margin-top: 9px; }
+	.vs-label { font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 0.04em; margin-right: 3px; }
+	.vs-btn { border: 1px solid var(--border-medium); background: var(--white); color: var(--gray); font-size: 12.5px; font-weight: 700; border-radius: 13px; padding: 5px 12px; cursor: pointer; font-family: inherit; }
+	.vs-btn.on { background: var(--primary-strong); border-color: var(--primary-strong); color: var(--white); }
 	.fg-row { padding: 13px 14px; border: 1px dashed var(--border-medium); border-radius: 10px; margin-top: 10px; font-size: 14px; color: var(--gray); font-weight: 600; }
 	.toc-panel { padding: 8px 10px; }
 	.toc-row { width: 100%; background: none; border: none; cursor: pointer; font-family: inherit; text-align: left; display: flex; align-items: center; gap: 13px; padding: 13px 12px; text-decoration: none; color: var(--dark); font-size: 14.5px; font-weight: 600; border-radius: 8px; }
@@ -160,7 +166,7 @@
 	<div class="ho-page" data-page="background" hidden>
 		<div class="ho-pagehead"><button class="ho-back">← Contents</button></div>
 		<h1 class="ho-title">Background information</h1>
-		<div class="video-ph" role="img" aria-label="Video placeholder">
+		<div class="video-ph" role="img" aria-label="Video placeholder" data-video="background">
 			<span class="vp-play">▶</span>
 			<span class="vp-text">Video coming soon</span>
 			<span class="vp-sub">Nick is recording a walkthrough for this section</span>
@@ -172,7 +178,7 @@
 	<div class="ho-page" data-page="recent" hidden>
 		<div class="ho-pagehead"><button class="ho-back">← Contents</button></div>
 		<h1 class="ho-title">Recent design (2026)</h1>
-		<div class="video-ph" role="img" aria-label="Video placeholder">
+		<div class="video-ph" role="img" aria-label="Video placeholder" data-video="recent">
 			<span class="vp-play">▶</span>
 			<span class="vp-text">Video coming soon</span>
 			<span class="vp-sub">Nick is recording a walkthrough for this section</span>
@@ -414,7 +420,7 @@
 	<div class="ho-page" data-page="working" hidden>
 		<div class="ho-pagehead"><button class="ho-back">← Contents</button></div>
 		<h1 class="ho-title">How I've been working</h1>
-		<div class="video-ph" role="img" aria-label="Video placeholder">
+		<div class="video-ph" role="img" aria-label="Video placeholder" data-video="working">
 			<span class="vp-play">▶</span>
 			<span class="vp-text">Video coming soon</span>
 			<span class="vp-sub">Nick is recording a walkthrough for this section</span>
@@ -426,7 +432,7 @@
 	<div class="ho-page" data-page="bigpicture" hidden>
 		<div class="ho-pagehead"><button class="ho-back">← Contents</button></div>
 		<h1 class="ho-title">Big picture thinking on Kiki</h1>
-		<div class="video-ph" role="img" aria-label="Video placeholder">
+		<div class="video-ph" role="img" aria-label="Video placeholder" data-video="bigpicture">
 			<span class="vp-play">▶</span>
 			<span class="vp-text">Video coming soon</span>
 			<span class="vp-sub">Nick is recording a walkthrough for this section</span>
@@ -472,6 +478,50 @@
 	});
 	document.querySelectorAll('.ho-back').forEach(function (btn) {
 		btn.addEventListener('click', function () { hoShow(null); });
+	});
+
+	// ---- Videos ----
+	// Drop a file into gallery/videos/ on the flow-gallery branch and put
+	// its absolute URL here; the placeholder swaps for a player with a
+	// speed control. null keeps the "coming soon" placeholder.
+	var VIDEOS = {
+		background: null, // e.g. 'https://kiki-nick.vercel.app/videos/background.mp4'
+		recent: null,
+		working: null,
+		bigpicture: null,
+	};
+	var SPEEDS = [1, 1.25, 1.5, 2];
+	var savedRate = 1;
+	try { savedRate = parseFloat(localStorage.getItem('ho-rate')) || 1; } catch (e) {}
+	document.querySelectorAll('.video-ph[data-video]').forEach(function (ph) {
+		var url = VIDEOS[ph.dataset.video];
+		if (!url) return;
+		var wrap = document.createElement('div');
+		wrap.className = 'vid-wrap';
+		var vid = document.createElement('video');
+		vid.src = url;
+		vid.controls = true;
+		vid.preload = 'metadata';
+		vid.setAttribute('playsinline', '');
+		var row = document.createElement('div');
+		row.className = 'vid-speed';
+		row.innerHTML = '<span class="vs-label">Speed</span>';
+		SPEEDS.forEach(function (r) {
+			var b = document.createElement('button');
+			b.className = 'vs-btn' + (r === savedRate ? ' on' : '');
+			b.textContent = r + '\u00d7';
+			b.addEventListener('click', function () {
+				vid.playbackRate = r;
+				try { localStorage.setItem('ho-rate', String(r)); } catch (e) {}
+				row.querySelectorAll('.vs-btn').forEach(function (x) { x.classList.remove('on'); });
+				b.classList.add('on');
+			});
+			row.appendChild(b);
+		});
+		vid.addEventListener('loadedmetadata', function () { vid.playbackRate = savedRate; });
+		wrap.appendChild(vid);
+		wrap.appendChild(row);
+		ph.replaceWith(wrap);
 	});
 </script>
 </body>
