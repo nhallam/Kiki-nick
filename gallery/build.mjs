@@ -684,6 +684,7 @@ ${featurePages}
 	function open(id) {
 		var src = aliases[id] || id;
 		if (!data[src]) return;
+		hoSub = false;
 		frame.srcdoc = decode(data[src]); // fresh document each open, flow restarts
 		document.querySelector('.phone-stage').classList.toggle('wide', !!wides[id]);
 		barTitle.textContent = features[id] + ' \u00b7 ' + labels[id];
@@ -756,7 +757,23 @@ ${featurePages}
 			go(featureKeys[el.dataset.version] + '/' + el.dataset.version);
 		});
 	});
+	// The handover's section pages report themselves from inside the
+	// iframe; while one is open, Back steps to its contents instead of
+	// leaving the handover, and the bar says where you are.
+	var hoSub = false;
+	window.addEventListener('message', function (e) {
+		var d = e.data || {};
+		if (d.type !== 'ho-page' || openId !== 'handover') return;
+		hoSub = !!d.page;
+		barTitle.textContent = d.page
+			? features.handover + ' \u00b7 ' + d.title
+			: features.handover + ' \u00b7 ' + labels.handover;
+	});
 	document.getElementById('backBtn').addEventListener('click', function () {
+		if (openId === 'handover' && hoSub) {
+			frame.contentWindow.postMessage({ type: 'ho-back' }, '*');
+			return;
+		}
 		go(openId ? featureKeys[openId] : '');
 	});
 	window.addEventListener('hashchange', applyHash);

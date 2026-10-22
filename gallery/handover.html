@@ -178,7 +178,6 @@
 	</div>
 
 	<div class="ho-page" data-page="background" hidden>
-		<div class="ho-pagehead"><button class="ho-back">← Contents</button></div>
 		<h1 class="ho-title">Background information</h1>
 		<div class="video-ph" role="img" aria-label="Video placeholder" data-video="background">
 			<span class="vp-play">▶</span>
@@ -190,7 +189,6 @@
 		</div>
 	</div>
 	<div class="ho-page" data-page="recent" hidden>
-		<div class="ho-pagehead"><button class="ho-back">← Contents</button></div>
 		<h1 class="ho-title">Recent design (2026)</h1>
 		<div class="video-ph" role="img" aria-label="Video placeholder" data-video="recent">
 			<span class="vp-play">▶</span>
@@ -318,7 +316,6 @@
 	
 	</div>
 	<div class="ho-page" data-page="design-system" hidden>
-		<div class="ho-pagehead"><button class="ho-back">← Contents</button></div>
 		<h1 class="ho-title">Current design system</h1>
 
 
@@ -432,7 +429,6 @@
 	
 	</div>
 	<div class="ho-page" data-page="working" hidden>
-		<div class="ho-pagehead"><button class="ho-back">← Contents</button></div>
 		<h1 class="ho-title">How I've been working</h1>
 		<div class="video-ph" role="img" aria-label="Video placeholder" data-video="working">
 			<span class="vp-play">▶</span>
@@ -444,7 +440,6 @@
 		</div>
 	</div>
 	<div class="ho-page" data-page="bigpicture" hidden>
-		<div class="ho-pagehead"><button class="ho-back">← Contents</button></div>
 		<h1 class="ho-title">Big picture thinking on Kiki</h1>
 		<div class="video-ph" role="img" aria-label="Video placeholder" data-video="bigpicture">
 			<span class="vp-play">▶</span>
@@ -456,7 +451,6 @@
 		</div>
 	</div>
 	<div class="ho-page" data-page="figma" hidden>
-		<div class="ho-pagehead"><button class="ho-back">← Contents</button></div>
 		<h1 class="ho-title">Figma</h1>
 		<div class="video-ph" role="img" aria-label="Video placeholder" data-video="figma">
 			<span class="vp-play">▶</span>
@@ -478,7 +472,6 @@
 		</div>
 	</div>
 	<div class="ho-page" data-page="practical" hidden>
-		<div class="ho-pagehead"><button class="ho-back">← Contents</button></div>
 		<h1 class="ho-title">Practical notes</h1>
 
 	<div class="panel">
@@ -490,20 +483,31 @@
 	</div>
 </div>
 <script>
-	// Contents rows open their own page; back returns to the menu.
+	// Contents rows open their own page. Inside the gallery the top bar's
+	// Back is the way back: we tell the parent which page is open and it
+	// sends ho-back to return here, so there is only one back control.
 	var hoHome = document.getElementById('ho-home');
 	function hoShow(key) {
+		var title = null;
 		document.querySelectorAll('.ho-page').forEach(function (pg) {
 			pg.hidden = pg.dataset.page !== key;
+			if (!pg.hidden) {
+				var t = pg.querySelector('.ho-title');
+				if (t) title = t.textContent;
+			}
 		});
 		hoHome.hidden = !!key;
 		window.scrollTo(0, 0);
+		try {
+			if (window.parent !== window)
+				window.parent.postMessage({ type: 'ho-page', page: key || null, title: title }, '*');
+		} catch (e) {}
 	}
 	document.querySelectorAll('.toc-row[data-page]').forEach(function (row) {
 		row.addEventListener('click', function () { hoShow(row.dataset.page); });
 	});
-	document.querySelectorAll('.ho-back').forEach(function (btn) {
-		btn.addEventListener('click', function () { hoShow(null); });
+	window.addEventListener('message', function (e) {
+		if (e.data && e.data.type === 'ho-back') hoShow(null);
 	});
 
 	// ---- Read ticks on the contents rows ----
