@@ -175,36 +175,50 @@
 	<h2>Contents</h2>
 	<p class="contents-hint">Tick a section off once you’ve been through it.</p>
 	<div class="panel toc-panel">
-		<button class="toc-row" data-page="background"><span class="toc-num">1</span><span class="toc-label">Background information</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
-		<button class="toc-row" data-page="working"><span class="toc-num">2</span><span class="toc-label">How I've been working</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
-		<button class="toc-row" data-page="recent"><span class="toc-num">3</span><span class="toc-label">Booking request flow and matches flow</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
+		<button class="toc-row" data-page="working"><span class="toc-num">1</span><span class="toc-label">How I've been working</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
+		<button class="toc-row" data-page="booking-flow"><span class="toc-num">2</span><span class="toc-label">Booking request flow</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
+		<button class="toc-row" data-page="matches-flow"><span class="toc-num">3</span><span class="toc-label">Matches flow</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
 		<button class="toc-row" data-page="design-system"><span class="toc-num">4</span><span class="toc-label">Current design system</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
 		<button class="toc-row" data-page="bigpicture"><span class="toc-num">5</span><span class="toc-label">Product architecture and IA</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
 		<button class="toc-row" data-page="future"><span class="toc-num">6</span><span class="toc-label">Nick's Future Ideas</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
 		<button class="toc-row" data-page="figma"><span class="toc-num">7</span><span class="toc-label">Figma</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
+		<button class="toc-row" data-page="summary"><span class="toc-num">8</span><span class="toc-label">Summary</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
 	</div>
 	</div>
 
-	<div class="ho-page" data-page="background" hidden>
-		<h1 class="ho-title">Background information</h1>
-		<div class="video-ph" role="img" aria-label="Video placeholder" data-video="background">
+	<div class="ho-page" data-page="booking-flow" hidden>
+		<h1 class="ho-title">Booking request flow</h1>
+		<div class="video-ph" role="img" aria-label="Video placeholder" data-video="booking-flow">
 			<span class="vp-play">▶</span>
 			<span class="vp-text">Video coming soon</span>
 			<span class="vp-sub">Nick is recording a walkthrough for this section</span>
 		</div>
 		<div class="panel"><span class="ph-chip">Placeholder copy</span>
-			<p>Nick will write this: where Kiki came from, who the clients are, what the product does today and where the design work fits into it.</p>
+			<p>Nick will write this: the story of the booking request work, rounds 1 and 2.</p>
 		</div>
+		<div class="panel">
+			<p>Round 1 rebuilt the shipped 4-step flow faithfully (1.0), then explored three directions: best-practice polish (1.1), a restructured 3-step flow (1.2), and a review-centric, Airbnb-style hub with editor sheets (1.3). <b>The client chose 1.3</b>, and round 2 (2.0&ndash;2.4) refined that direction through client feedback: window stepper, the Staying/Hosting Trips split, the amber pending state, calendar work and an accessibility pass. 2.4 was the last active booking-flow build; its ideas carried into round 3.</p>
+		</div>
+		<h2>Version history (1.0 to 2.4)</h2>
+<div class="ver"><div class="ver-head"><span class="ver-num">1.0&ndash;1.3</span><span class="ver-name">Round 1: the fork in the road</span></div>
+		<p>1.0 is the control (the live app, rebuilt). 1.1 polished it, 1.2 restructured it, 1.3 replaced the wizard with one "Review and request" hub where Change buttons open dates/guests editor sheets. The client picked 1.3; every later flow builds on its editor-sheet pattern.</p>
 	</div>
-	<div class="ho-page" data-page="recent" hidden>
-		<h1 class="ho-title">Booking request flow and matches flow</h1>
-		<div class="video-ph" role="img" aria-label="Video placeholder" data-video="recent">
+	<div class="ver"><div class="ver-head"><span class="ver-num">2.0&ndash;2.4</span><span class="ver-name">Round 2: refining the chosen direction</span></div>
+		<p>Client-feedback rounds on 1.3: a 3-page flow with a window stepper and host preview (2.0), trimmed review card and live Trips tabs (2.1), Nina's Flat with three date windows plus the Staying/Hosting split and an accessibility pass (2.2), the amber pending state and calendar legend from the product review (2.3), and 2.4 as the final working build.</p>
+	</div>
+	</div>
+	<div class="ho-page" data-page="matches-flow" hidden>
+		<h1 class="ho-title">Matches flow</h1>
+		<div class="video-ph" role="img" aria-label="Video placeholder" data-video="matches-flow">
 			<span class="vp-play">▶</span>
 			<span class="vp-text">Video coming soon</span>
 			<span class="vp-sub">Nick is recording a walkthrough for this section</span>
 		</div>
 		<div class="panel"><span class="ph-chip">Placeholder copy</span>
-			<p>Nick will write this: a guided tour of the 2026 design work. Everything below is the detailed record of that work, kept here for reference.</p>
+			<p>Nick will write this: the story of the matches flow work, round 3.</p>
+		</div>
+		<div class="panel">
+			<p>Everything after a request is sent: the host's inbox and consent model, the 48-hour reserved window (signing + payments), mutual confirmation, the match screen, declines and revocations, and (3.7) listing restrictions. The full state machine is drawn on the <a href="https://kiki-nick.vercel.app/flow.html" target="_blank">flow map</a>; the short version: <b>New &rarr; Offered &rarr; Reserved &rarr; Confirmed</b>, with Declined (reopenable) and Revoked (automatic) as the side exits.</p>
 		</div>
 <h2 id="demos">Driving the demos</h2>
 	<div class="panel">
@@ -219,24 +233,9 @@
 	</div>
 
 	
-<h2 id="flows">The two flows at a glance</h2>
-	<div class="panel">
-		<h3>Booking Request Flow (rounds 1 and 2)</h3>
-		<p>Round 1 rebuilt the shipped 4-step flow faithfully (1.0), then explored three directions: best-practice polish (1.1), a restructured 3-step flow (1.2), and a review-centric, Airbnb-style hub with editor sheets (1.3). <b>The client chose 1.3</b>, and round 2 (2.0&ndash;2.4) refined that direction through client feedback: window stepper, the Staying/Hosting Trips split, the amber pending state, calendar work and an accessibility pass. 2.4 was the last active booking-flow build; its ideas carried into round 3.</p>
-		<h3>Matches Flow (round 3, the main body of work)</h3>
-		<p>Everything after a request is sent: the host's inbox and consent model, the 48-hour reserved window (signing + payments), mutual confirmation, the match screen, declines and revocations, and (3.7) listing restrictions. The full state machine is drawn on the <a href="https://kiki-nick.vercel.app/flow.html" target="_blank">flow map</a>; the short version: <b>New &rarr; Offered &rarr; Reserved &rarr; Confirmed</b>, with Declined (reopenable) and Revoked (automatic) as the side exits.</p>
-	</div>
 
-	
-<h2 id="history">Version history (1.0 to 3.7)</h2>
-
-	<div class="ver"><div class="ver-head"><span class="ver-num">1.0&ndash;1.3</span><span class="ver-name">Round 1: the fork in the road</span></div>
-		<p>1.0 is the control (the live app, rebuilt). 1.1 polished it, 1.2 restructured it, 1.3 replaced the wizard with one "Review and request" hub where Change buttons open dates/guests editor sheets. The client picked 1.3; every later flow builds on its editor-sheet pattern.</p>
-	</div>
-	<div class="ver"><div class="ver-head"><span class="ver-num">2.0&ndash;2.4</span><span class="ver-name">Round 2: refining the chosen direction</span></div>
-		<p>Client-feedback rounds on 1.3: a 3-page flow with a window stepper and host preview (2.0), trimmed review card and live Trips tabs (2.1), Nina's Flat with three date windows plus the Staying/Hosting split and an accessibility pass (2.2), the amber pending state and calendar legend from the product review (2.3), and 2.4 as the final working build.</p>
-	</div>
-	<div class="ver"><div class="ver-head"><span class="ver-num">3.0</span><span class="ver-name">The dual-phone stage</span></div>
+		<h2>Version history (3.0 to 3.7)</h2>
+<div class="ver"><div class="ver-head"><span class="ver-num">3.0</span><span class="ver-name">The dual-phone stage</span></div>
 		<p>Guest and host side by side, both live and independent, sharing one state. This is the foundation every matches-flow idea is demoed on.</p>
 	</div>
 	<div class="ver"><div class="ver-head"><span class="ver-num">3.1</span><span class="ver-name">The match screen</span></div>
@@ -275,8 +274,6 @@
 		<p>Listings can carry restrictions (currently placeholder categories: solo travellers only, women only, women preferred). They show as a chip on Explore cards, a tappable "Who can stay" section on the listing with plain-language explainer sheets, and inline warnings in the booking flow. <b>Requests outside a host's preferences stay possible</b> ("request anyway"), they're just clearly flagged as unlikely to be accepted.</p>
 		<div class="why"><b>Why</b>Users were frustrated to discover restrictions only after requesting. The client's category list is still to come; the categories live in one map (<code>RESTRICTION_INFO</code> in <code>src/data.ts</code>) so swapping in the real list is a one-file change.</div>
 	</div>
-
-	
 <h2 id="decisions">Decisions that shaped the design</h2>
 	<div class="panel">
 		<h3>Statuses are words, not badges</h3>
@@ -308,6 +305,7 @@
 	</div>
 
 	
+
 <h2 id="gaps">Known gaps and open threads</h2>
 	<div class="panel">
 		<ul class="gap-list">
@@ -320,10 +318,8 @@
 			<li><b>Profile faces</b> are StyleGAN-generated (not real people), downscaled and embedded; Nina has no face asset yet (initial circle).</li>
 		</ul>
 	</div>
-
-	
 	</div>
-	<div class="ho-page" data-page="design-system" hidden>
+<div class="ho-page" data-page="design-system" hidden>
 		<h1 class="ho-title">Current design system</h1>
 		<div class="video-ph" role="img" aria-label="Video placeholder" data-video="design-system">
 			<span class="vp-play">▶</span>
@@ -620,6 +616,15 @@
 			<div class="fg-row muted-row">More links to come</div>
 		</div>
 	</div>
+	<div class="ho-page" data-page="summary" hidden>
+		<h1 class="ho-title">Summary</h1>
+		<div class="video-ph" role="img" aria-label="Video placeholder" data-video="summary">
+			<span class="vp-play">▶</span>
+			<span class="vp-text">Video coming soon</span>
+			<span class="vp-sub">Nick is recording a walkthrough for this section</span>
+		</div>
+	</div>
+
 </div>
 <script>
 	// Contents rows open their own page. Inside the gallery the top bar's
@@ -673,9 +678,10 @@
 	// its absolute URL here; the placeholder swaps for a player with a
 	// speed control. null keeps the "coming soon" placeholder.
 	var VIDEOS = {
-		background: null, // e.g. { src: 'https://kiki-nick.vercel.app/videos/background.mp4', mins: 9 }
+		'booking-flow': null,
+		'matches-flow': null,
+		summary: null,
 		'design-system': { src: 'https://kiki-nick.vercel.app/videos/design-system.mp4', mins: 3 },
-		recent: null,
 		working: { src: 'https://kiki-nick.vercel.app/videos/working.mp4', mins: 9 },
 		bigpicture: { src: 'https://kiki-nick.vercel.app/videos/bigpicture.mp4', mins: 4 },
 		future: { src: 'https://kiki-nick.vercel.app/videos/future.mp4', mins: 4 },
