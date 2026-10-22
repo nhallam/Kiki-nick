@@ -58,13 +58,7 @@ body {
 .brand {
 	display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
 }
-.brand-dot {
-	width: 34px; height: 34px; border-radius: 50%;
-	background: var(--primary); color: #fff;
-	display: flex; align-items: center; justify-content: center;
-	font-weight: 800; font-size: 17px;
-}
-.brand h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; }
+.brand h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 22px; }
 .launcher .sub {
 	font-size: 15px; color: var(--muted); margin-bottom: 28px; text-align: center;
 	max-width: 420px; line-height: 22px;
@@ -92,7 +86,12 @@ body {
 .big-card .bc-title { font-size: 18px; font-weight: 800; }
 .big-card .bc-sub { font-size: 13.5px; color: var(--muted); line-height: 1.55; flex: 1; }
 .big-card .bc-go { font-size: 13.5px; font-weight: 700; color: var(--primary-dark); }
-.hint-mail { color: var(--primary-dark); font-weight: 700; }
+.hint-mail {
+	background: none; border: none; padding: 0; cursor: pointer;
+	font-family: inherit; font-size: inherit;
+	color: var(--primary-dark); font-weight: 700; text-decoration: underline;
+}
+.copy-note { margin-left: 6px; color: var(--primary-dark); font-weight: 700; }
 .proto-sub { font-size: 14px; color: var(--muted); margin: -6px 0 16px; }
 .feature-row {
 	display: flex; align-items: center; gap: 10px; text-align: left;
@@ -215,8 +214,7 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 <div id="gallery-root">
 	<div class="launcher" id="launcher">
 		<div class="home" id="home">
-			<div class="brand"><span class="brand-dot">K</span><h1>Design at Kiki</h1></div>
-			<p class="sub">One home for the design work on Kiki's booking and matching experience.</p>
+			<div class="brand"><h1>Product design handover</h1></div>
 			<div class="big-cards">
 				<button class="big-card" data-version="handover">
 					<span class="bc-icon" aria-hidden>
@@ -235,7 +233,7 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 					<span class="bc-go">Open ›</span>
 				</button>
 			</div>
-			<p class="hint">Any questions for Nick? <a class="hint-mail" href="mailto:nrhallam@gmail.com">nrhallam@gmail.com</a></p>
+			<p class="hint">Any questions for Nick? <button class="hint-mail" id="copyMail" type="button" title="Copy email address">nrhallam@gmail.com</button><span class="copy-note" id="copyNote" hidden>Copied</span></p>
 		</div>
 		<div class="feature-page" data-feature="prototypes" hidden>
 			<button class="feature-back" data-to="">← Home</button>
@@ -616,6 +614,33 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 		}
 		go(openId ? featureKeys[openId] : '');
 	});
+	// The email line copies instead of opening a mail client.
+	var copyMail = document.getElementById('copyMail');
+	var copyNote = document.getElementById('copyNote');
+	var copyNoteTimer;
+	function copied() {
+		copyNote.hidden = false;
+		clearTimeout(copyNoteTimer);
+		copyNoteTimer = setTimeout(function () { copyNote.hidden = true; }, 1800);
+	}
+	function copyFallback(text) {
+		var ta = document.createElement('textarea');
+		ta.value = text;
+		ta.style.position = 'fixed';
+		ta.style.opacity = '0';
+		document.body.appendChild(ta);
+		ta.select();
+		try { document.execCommand('copy'); } catch (e) {}
+		document.body.removeChild(ta);
+		copied();
+	}
+	copyMail.addEventListener('click', function () {
+		var text = copyMail.textContent.trim();
+		if (navigator.clipboard && navigator.clipboard.writeText) {
+			navigator.clipboard.writeText(text).then(copied, function () { copyFallback(text); });
+		} else copyFallback(text);
+	});
+
 	window.addEventListener('hashchange', applyHash);
 
 	// Restore the view the URL points at.
