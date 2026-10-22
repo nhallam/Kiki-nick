@@ -454,6 +454,7 @@ body {
 .big-card .bc-title { font-size: 18px; font-weight: 800; }
 .big-card .bc-sub { font-size: 13.5px; color: var(--muted); line-height: 1.55; flex: 1; }
 .big-card .bc-go { font-size: 13.5px; font-weight: 700; color: var(--primary-dark); }
+.hint-mail { color: var(--primary-dark); font-weight: 700; }
 .proto-sub { font-size: 14px; color: var(--muted); margin: -6px 0 16px; }
 .feature-row {
 	display: flex; align-items: center; gap: 10px; text-align: left;
@@ -596,6 +597,7 @@ button.card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2
 					<span class="bc-go">Open ›</span>
 				</button>
 			</div>
+			<p class="hint">Any questions for Nick? <a class="hint-mail" href="mailto:nrhallam@gmail.com">nrhallam@gmail.com</a></p>
 		</div>
 		<div class="feature-page" data-feature="prototypes" hidden>
 			<button class="feature-back" data-to="">← Home</button>
@@ -606,7 +608,6 @@ ${featureRows}
 			</div>
 		</div>
 ${featurePages}
-		<p class="hint">Use "Back" at the top of any prototype to come back here.</p>
 	</div>
 	<div class="viewer" id="viewer">
 		<div class="bar">
