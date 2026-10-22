@@ -130,6 +130,13 @@
 	.vs-label { font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 0.04em; margin-right: 3px; }
 	.vs-btn { border: 1px solid var(--border-medium); background: var(--white); color: var(--gray); font-size: 12.5px; font-weight: 700; border-radius: 13px; padding: 5px 12px; cursor: pointer; font-family: inherit; }
 	.vs-btn.on { background: var(--primary-strong); border-color: var(--primary-strong); color: var(--white); }
+	.fg-link { display: flex; align-items: center; gap: 13px; padding: 14px; border: 1px solid var(--border-light); border-radius: 12px; text-decoration: none; color: var(--dark); }
+	.fg-link:hover { background: var(--light-gray); }
+	.fg-logo { width: 38px; height: 38px; border-radius: 10px; background: #1f2937; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+	.fg-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+	.fg-name { font-size: 14.5px; font-weight: 700; }
+	.fg-sub { font-size: 12.5px; color: var(--gray); }
+	.fg-open { font-size: 13px; font-weight: 700; color: var(--primary-strong); flex-shrink: 0; }
 	.fg-row { padding: 13px 14px; border: 1px dashed var(--border-medium); border-radius: 10px; margin-top: 10px; font-size: 14px; color: var(--gray); font-weight: 600; }
 	.toc-panel { padding: 8px 10px; }
 	.toc-row { width: 100%; background: none; border: none; cursor: pointer; font-family: inherit; text-align: left; display: flex; align-items: center; gap: 13px; padding: 13px 12px; text-decoration: none; color: var(--dark); font-size: 14.5px; font-weight: 600; border-radius: 8px; }
@@ -452,10 +459,17 @@
 		<div class="ho-pagehead"><button class="ho-back">← Contents</button></div>
 		<h1 class="ho-title">Figma</h1>
 		<div class="panel">
-			<span class="ph-chip">Links coming</span>
-			<p>Nick will drop the Figma links here.</p>
-			<div class="fg-row muted-row">Figma file 1 · link to come</div>
-			<div class="fg-row muted-row">Figma file 2 · link to come</div>
+			<a class="fg-link" href="https://www.figma.com/design/RtUblSYiMaUl3RB51P3MRc/Working-File-Kiki?node-id=4192-236&amp;t=E6gzu3npqohIKlHR-1" target="_blank" rel="noopener">
+				<span class="fg-logo" aria-hidden>
+					<svg width="16" height="24" viewBox="0 0 38 57"><path fill="#ff7262" d="M19 0H9.5a9.5 9.5 0 0 0 0 19H19z"/><path fill="#f24e1e" d="M19 0h9.5a9.5 9.5 0 1 1 0 19H19z"/><path fill="#a259ff" d="M19 19H9.5a9.5 9.5 0 0 0 0 19H19z"/><path fill="#1abcfe" d="M19 28.5A9.5 9.5 0 1 1 28.5 38 9.5 9.5 0 0 1 19 28.5z"/><path fill="#0acf83" d="M19 38H9.5a9.5 9.5 0 1 0 9.5 9.5z"/></svg>
+				</span>
+				<span class="fg-body">
+					<span class="fg-name">Working File · Kiki</span>
+					<span class="fg-sub">The main Figma design file</span>
+				</span>
+				<span class="fg-open">Open ↗</span>
+			</a>
+			<div class="fg-row muted-row">More links to come</div>
 		</div>
 	</div>
 	<div class="ho-page" data-page="practical" hidden>
