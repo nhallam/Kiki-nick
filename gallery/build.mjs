@@ -155,7 +155,7 @@ const VERSIONS = [
 	},
 	{
 		id: 'cards36',
-		label: '3.6 · card options',
+		label: 'Card options',
 		section: 'mf-round3',
 		blurb:
 			'Design options for the booking-request cards: four directions next to the current design, each in both status states.',
