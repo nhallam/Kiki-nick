@@ -138,6 +138,11 @@
 	.toc-num { width: 24px; height: 24px; border-radius: 50%; background: var(--primary-tint); color: var(--primary-strong); font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 	.toc-label { flex: 1; }
 	.toc-chev { color: var(--border-medium); font-size: 18px; }
+	.contents-hint { font-size: 13px; color: var(--gray); margin: -6px 0 10px; }
+	.toc-read { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border-medium); color: transparent; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+	.toc-read:hover { border-color: var(--primary-strong); }
+	.toc-row.read .toc-read { background: var(--primary-strong); border-color: var(--primary-strong); color: var(--white); }
+	.toc-row.read .toc-label { color: var(--gray); }
 </style>
 </head>
 <body>
@@ -152,14 +157,15 @@
 	</div>
 
 	<h2>Contents</h2>
+	<p class="contents-hint">Tick a section off once you’ve been through it.</p>
 	<div class="panel toc-panel">
-		<button class="toc-row" data-page="background"><span class="toc-num">1</span><span class="toc-label">Background information</span><span class="toc-chev">›</span></button>
-		<button class="toc-row" data-page="recent"><span class="toc-num">2</span><span class="toc-label">Recent design (2026)</span><span class="toc-chev">›</span></button>
-		<button class="toc-row" data-page="design-system"><span class="toc-num">3</span><span class="toc-label">Current design system</span><span class="toc-chev">›</span></button>
-		<button class="toc-row" data-page="working"><span class="toc-num">4</span><span class="toc-label">How I've been working</span><span class="toc-chev">›</span></button>
-		<button class="toc-row" data-page="bigpicture"><span class="toc-num">5</span><span class="toc-label">Big picture thinking on Kiki</span><span class="toc-chev">›</span></button>
-		<button class="toc-row" data-page="figma"><span class="toc-num">6</span><span class="toc-label">Figma</span><span class="toc-chev">›</span></button>
-		<button class="toc-row" data-page="practical"><span class="toc-num">7</span><span class="toc-label">Practical notes</span><span class="toc-chev">›</span></button>
+		<button class="toc-row" data-page="background"><span class="toc-num">1</span><span class="toc-label">Background information</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
+		<button class="toc-row" data-page="recent"><span class="toc-num">2</span><span class="toc-label">Recent design (2026)</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
+		<button class="toc-row" data-page="design-system"><span class="toc-num">3</span><span class="toc-label">Current design system</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
+		<button class="toc-row" data-page="working"><span class="toc-num">4</span><span class="toc-label">How I've been working</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
+		<button class="toc-row" data-page="bigpicture"><span class="toc-num">5</span><span class="toc-label">Big picture thinking on Kiki</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
+		<button class="toc-row" data-page="figma"><span class="toc-num">6</span><span class="toc-label">Figma</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
+		<button class="toc-row" data-page="practical"><span class="toc-num">7</span><span class="toc-label">Practical notes</span><span class="toc-read" role="checkbox" aria-checked="false" aria-label="Mark as read" title="Mark as read">✓</span><span class="toc-chev">›</span></button>
 	</div>
 	</div>
 
@@ -478,6 +484,25 @@
 	});
 	document.querySelectorAll('.ho-back').forEach(function (btn) {
 		btn.addEventListener('click', function () { hoShow(null); });
+	});
+
+	// ---- Read ticks on the contents rows ----
+	var readState = {};
+	try { readState = JSON.parse(localStorage.getItem('ho-read') || '{}'); } catch (e) {}
+	document.querySelectorAll('.toc-row[data-page]').forEach(function (row) {
+		var tick = row.querySelector('.toc-read');
+		function render() {
+			var on = !!readState[row.dataset.page];
+			row.classList.toggle('read', on);
+			tick.setAttribute('aria-checked', on ? 'true' : 'false');
+		}
+		render();
+		tick.addEventListener('click', function (e) {
+			e.stopPropagation();
+			readState[row.dataset.page] = !readState[row.dataset.page];
+			try { localStorage.setItem('ho-read', JSON.stringify(readState)); } catch (e2) {}
+			render();
+		});
 	});
 
 	// ---- Videos ----
